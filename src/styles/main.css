@@ -1,0 +1,255 @@
+/* Geist font */
+@import url("https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-mono/style.min.css");
+
+:root {
+  --key-unit: 56px;
+  --key-gap: 4px;
+  --key-radius: 7px;
+  --frame-padding: 20px;
+  --frame-radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100vh;
+  font-family: "Geist Mono", "SF Mono", Menlo, Monaco, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: radial-gradient(ellipse 100% 80% at 50% 50%, #1a1a1c, #0a0a0b);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Keyboard frame */
+.keyboard-frame {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--key-gap);
+  padding: var(--frame-padding);
+  background: linear-gradient(
+    165deg,
+    #d4d4d8 0%,
+    #c4c4c8 20%,
+    #b8b8bc 50%,
+    #acacb0 80%,
+    #a0a0a4 100%
+  );
+  border-radius: var(--frame-radius);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 0 80px 20px rgba(160, 160, 170, 0.06),
+    0 40px 80px -20px rgba(0, 0, 0, 0.6),
+    0 20px 40px -15px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.keyboard-row {
+  display: flex;
+  gap: var(--key-gap);
+  justify-content: flex-start;
+}
+
+/* Individual key */
+.key {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--key-unit);
+  min-width: var(--key-unit);
+  background: linear-gradient(180deg, #fafafa 0%, #f0f0f2 30%, #e8e8eb 70%, #e0e0e3 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--key-radius);
+  cursor: default;
+  user-select: none;
+  transition: all 0.08s ease-out;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 1px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.key:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8fa 30%, #f0f0f3 70%, #eaeaed 100%);
+}
+
+.key:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02),
+    0 0px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Key labels - single label */
+.key-label {
+  font-family: "Geist Mono", "SF Mono", monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c2c2e;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Function keys */
+.key-function {
+  background: linear-gradient(180deg, #f0f0f4 0%, #e6e6ea 30%, #dfdfe3 70%, #d8d8dc 100%);
+}
+
+.key-function:hover {
+  background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f4 30%, #e9e9ed 70%, #e2e2e6 100%);
+}
+
+.key-function .key-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #48484a;
+  text-transform: lowercase;
+}
+
+/* Modifier keys */
+.key-modifier .key-label {
+  font-size: 18px;
+  font-weight: 400;
+  color: #3c3c3e;
+}
+
+/* Space bar */
+.key-space {
+  background: linear-gradient(180deg, #f5f5f9 0%, #eaeaee 40%, #e2e2e6 70%, #dcdce0 100%);
+}
+
+.key-space:hover {
+  background: linear-gradient(180deg, #fdfdf8 0%, #f4f4f8 40%, #ececf0 70%, #e6e6ea 100%);
+}
+
+/* Keys with secondary labels (like number row) */
+.key-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1;
+}
+
+.key-label-secondary {
+  font-family: "Geist Mono", "SF Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6e6e73;
+}
+
+.key-label-primary {
+  font-family: "Geist Mono", "SF Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2c2c2e;
+}
+
+/* Arrow key cluster */
+.arrow-cluster {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--key-gap);
+}
+
+.arrow-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.arrow-vertical .key {
+  border-radius: var(--key-radius);
+}
+
+.arrow-vertical .key:first-child {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.arrow-vertical .key:last-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+/* Arrow keys styling */
+.arrow-cluster .key .key-label {
+  font-size: 12px;
+  color: #48484a;
+}
+
+/* Title */
+.keyboard-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  :root {
+    --key-unit: 38px;
+    --key-gap: 2px;
+    --frame-padding: 12px;
+  }
+  .key-label {
+    font-size: 11px;
+  }
+  .key-function .key-label {
+    font-size: 9px;
+  }
+  .key-label-primary {
+    font-size: 12px;
+  }
+  .key-label-secondary {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --key-unit: 28px;
+    --key-gap: 2px;
+    --frame-padding: 8px;
+    --key-radius: 4px;
+  }
+  .key-label {
+    font-size: 9px;
+  }
+  .key-function .key-label {
+    font-size: 7px;
+  }
+  .key-label-primary {
+    font-size: 9px;
+  }
+  .key-label-secondary {
+    font-size: 6px;
+  }
+}
