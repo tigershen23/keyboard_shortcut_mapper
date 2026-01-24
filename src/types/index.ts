@@ -23,3 +23,17 @@ export interface LayerConfig {
   accentColor: string;
   rippleColor: string;
 }
+
+export interface KeyMapping {
+  keyId: string;
+  action: string;
+  appName?: string;
+  iconPath?: string;
+  description?: string;
+  color?: string;
+}
+
+export interface LayerMappings {
+  hyper: KeyMapping[];
+  command: KeyMapping[];
+}

@@ -1,6 +1,6 @@
 # Keyboard Shortcut Mapper
 
-**Status:** Phase 2 Complete, Phase 5 Partially Complete
+**Status:** Phase 3 Complete
 
 A fully client-side TypeScript/React application to visualize keyboard mapping layers on a MacBook keyboard. Displays three layers:
 
@@ -15,23 +15,26 @@ A fully client-side TypeScript/React application to visualize keyboard mapping l
 ```
 keyboard_shortcut_mapper/
 ├── src/
-│   ├── index.ts              # Bun server with HMR
+│   ├── index.ts              # Bun server with HMR + icon serving
 │   ├── index.html            # Entry HTML with bg-gradient div
-│   ├── frontend.tsx          # React root + app component
+│   ├── frontend.tsx          # React root + app component + GlobalStyles
 │   ├── components/
-│   │   ├── Keyboard.tsx      # Full keyboard layout renderer
-│   │   ├── Key.tsx           # Individual key with press effects
-│   │   └── LayerIndicator.tsx # Layer tab switcher UI
+│   │   ├── Keyboard.tsx      # Full keyboard layout (styled-components)
+│   │   ├── Key.tsx           # Individual key with press effects (styled-components)
+│   │   └── LayerIndicator.tsx # Layer tab switcher UI (styled-components)
 │   ├── context/
-│   │   └── LayerContext.tsx  # Layer state management
+│   │   ├── LayerContext.tsx  # Layer state management
+│   │   └── MappingContext.tsx # Mapping state and lookup
 │   ├── hooks/
 │   │   └── useKeyboardListener.ts # Physical keyboard event handling
 │   ├── data/
-│   │   └── macbook-layout.ts # 78-key MacBook US ANSI layout definition
+│   │   ├── macbook-layout.ts # 64-key MacBook US ANSI layout (no function row)
+│   │   ├── default-mappings.ts # Default Hyper + Command layer mappings
+│   │   └── icon-manifest.ts  # Icon manifest loader
 │   ├── styles/
-│   │   └── main.css          # Responsive styling, animations, layer effects
+│   │   └── GlobalStyles.ts   # Global CSS (reset, fonts, background, CSS vars)
 │   ├── types/
-│   │   └── index.ts          # TypeScript types for keys/layout/layers
+│   │   └── index.ts          # TypeScript types for keys/layout/layers/mappings
 │   └── static/icons/         # Downloaded app icons (PNG/ICNS)
 │       └── icon-manifest.json
 ├── scripts/
@@ -42,7 +45,8 @@ keyboard_shortcut_mapper/
 │   ├── 01_phases.md
 │   ├── 02_phase_1_initial_layout.md
 │   ├── 03_phase_5_app_icons_download.md
-│   └── 04_phase_2_layer_system.md
+│   ├── 04_phase_2_layer_system.md
+│   └── 05_phase_3_mapping.md
 ├── CLAUDE.md                 # Bun/project conventions
 ├── package.json
 ├── tsconfig.json
@@ -57,7 +61,7 @@ keyboard_shortcut_mapper/
 | ----- | ---------------- | ----------------------------- |
 | 1     | Base Keyboard UI | ✅ Complete                   |
 | 2     | Layer System     | ✅ Complete                   |
-| 3     | Mapping Display  | ⬜ Not started                |
+| 3     | Mapping Display  | ✅ Complete                   |
 | 4     | Local Storage    | ⬜ Not started                |
 | 5     | App Icons        | 🟡 Partial (icons downloaded) |
 | 6     | Editor UI        | ⬜ Not started                |
@@ -71,15 +75,16 @@ keyboard_shortcut_mapper/
 
 ### What was built:
 
-- Full 78-key MacBook US ANSI layout (6 rows)
+- Full 64-key MacBook US ANSI layout (5 rows, no function row)
 - React components: `Keyboard.tsx`, `Key.tsx`
 - Layout data: `macbook-layout.ts` with all key definitions
-- Accurate key widths (Tab 1.5u, Caps Lock 1.75u, Shift 2.25u/2.75u, Space 6.25u, etc.)
+- Accurate key widths (Tab 1.5u, Caps Lock 1.75u, Shift 2.25u/2.75u, Space 5u, etc.)
 - Proper arrow key cluster with half-height up/down keys
 - Keys with dual labels (number row shows both symbol and number)
 
 ### Styling features:
 
+- **styled-components** for colocated, type-safe component styling
 - Viewport-responsive sizing using CSS `clamp()` with vw/vh units
 - Animated gradient mesh background (warm amber/coral tones)
 - Keyboard frame with depth shadows and ambient glow
@@ -87,6 +92,12 @@ keyboard_shortcut_mapper/
 - Entry animations for keyboard and title
 - Media queries for ultrawide (21:9) and mobile (<768px) screens
 - Noise texture overlay for visual depth
+
+### Styling architecture:
+
+- **GlobalStyles.ts**: CSS reset, font imports, CSS custom properties, background gradient, media query breakpoints
+- **Component-level styles**: Each component (Key, Keyboard, LayerIndicator) uses styled-components with TypeScript props for dynamic styling
+- **Transient props** (`$prop`): styled-components convention to prevent DOM attribute warnings
 
 ### Key CSS variables:
 
@@ -141,6 +152,60 @@ keyboard_shortcut_mapper/
 
 ---
 
+## Phase 3 — Complete
+
+**Goal:** Display shortcut mappings overlaid on keys with app icons
+
+### What was built:
+
+- **KeyMapping types**: `KeyMapping` and `LayerMappings` interfaces for mapping data
+- **MappingContext**: React context with O(1) key lookups for mapping retrieval
+- **Icon manifest loader**: `getIconPath()` helper for resolving app icons
+- **Default mappings**: 17 Hyper layer app shortcuts + 8 Command layer system commands
+- **Mapping display**: Keys show app icon + action label when mapped
+- **Unmapped key styling**: Dimmed (35% opacity) on non-base layers
+
+### Hyper Layer Mappings:
+
+| Key | App            | Key | App           |
+|-----|----------------|-----|---------------|
+| Z   | Chrome         | Q   | Ghostty       |
+| A   | ChatGPT Atlas  | W   | Figma         |
+| D   | Cursor         | E   | Spotify       |
+| F   | Slack          | R   | Vimcal        |
+| G   | Messages       | T   | Linear        |
+| H   | Superhuman     | ]   | Anki          |
+| J   | Trello         | Y   | Bitwarden     |
+| K   | Obsidian       |     |               |
+| L   | Notes (Raycast)|     |               |
+| ;   | ChatGPT        |     |               |
+| '   | Raycast AI     |     |               |
+
+### Command Layer Mappings:
+
+| Key | Action    | Key | Action  |
+|-----|-----------|-----|---------|
+| L   | Lock      | P   | Play    |
+| S   | Sleep     | N   | Next    |
+| M   | Mute      | B   | Back    |
+| U   | Vol +     | D   | Vol -   |
+
+### Files created:
+
+- `src/types/index.ts` — Added `KeyMapping`, `LayerMappings` types
+- `src/data/default-mappings.ts` — Default mapping definitions
+- `src/data/icon-manifest.ts` — Icon manifest loader with typed access
+- `src/context/MappingContext.tsx` — Mapping state and lookup context
+
+### Visual design:
+
+- Mapped keys show icon (50% height) + label (truncated if needed)
+- Unmapped keys: 35% opacity, slightly desaturated
+- Icons scale with key size: `clamp(16px, 2vw, 32px)`
+- Space bar uses horizontal layout for mappings
+
+---
+
 ## Phase 5 — Partial
 
 **Goal:** Fetch app icons from macosicons.com API
@@ -175,13 +240,14 @@ bun --hot src/index.ts
 
 ## Next Steps
 
-**Phase 3: Mapping Display**
-
-- Show shortcut mappings overlaid on keys
-- App icons on Hyper layer keys
-- Dimmed styling for unmapped keys
-
 **Phase 4: Local Storage**
 
 - Persist mappings across browser sessions
 - Reset to defaults option
+
+**Phase 6: Editor UI**
+
+- Click to edit key mappings
+- App/action picker interface
+- Icon upload support
+

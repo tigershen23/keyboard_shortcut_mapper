@@ -1,29 +1,9 @@
 import type { KeyboardLayout } from "../types";
 
-// MacBook Pro keyboard layout - US ANSI
+// MacBook Pro keyboard layout - US ANSI (without function row)
 // All rows are 15 units wide for proper alignment
 export const macbookLayout: KeyboardLayout = [
-  // Row 0: Function keys - 15 units total
-  // 14 keys × 15/14 ≈ 1.071 each
-  {
-    keys: [
-      { id: "esc", label: "esc", width: 1.5, isFunction: true },
-      { id: "f1", label: "F1", width: 1, isFunction: true },
-      { id: "f2", label: "F2", width: 1, isFunction: true },
-      { id: "f3", label: "F3", width: 1, isFunction: true },
-      { id: "f4", label: "F4", width: 1, isFunction: true },
-      { id: "f5", label: "F5", width: 1, isFunction: true },
-      { id: "f6", label: "F6", width: 1, isFunction: true },
-      { id: "f7", label: "F7", width: 1, isFunction: true },
-      { id: "f8", label: "F8", width: 1, isFunction: true },
-      { id: "f9", label: "F9", width: 1, isFunction: true },
-      { id: "f10", label: "F10", width: 1, isFunction: true },
-      { id: "f11", label: "F11", width: 1, isFunction: true },
-      { id: "f12", label: "F12", width: 1, isFunction: true },
-      { id: "touchid", label: "⏏", width: 1.5, isFunction: true },
-    ],
-  },
-  // Row 1: Number row - 15 units total
+  // Row 0: Number row - 15 units total
   // 1×13 + 1.5 = 14.5, need backtick at 1.5
   {
     keys: [
@@ -123,10 +103,9 @@ export const macbookLayout: KeyboardLayout = [
 ];
 
 // Key counts per row for verification:
-// Row 0: 14 keys (esc, F1-F12, eject)
-// Row 1: 14 keys (`, 1-0, -, =, backspace)
-// Row 2: 14 keys (tab, Q-P, [, ], \)
-// Row 3: 13 keys (caps, A-L, ;, ', return)
-// Row 4: 12 keys (shift, Z-M, ,, ., /, shift)
-// Row 5: 11 keys (fn, ctrl, opt, cmd, space, cmd, opt, arrows x4)
-// Total: 78 keys
+// Row 0: 14 keys (`, 1-0, -, =, backspace)
+// Row 1: 14 keys (tab, Q-P, [, ], \)
+// Row 2: 13 keys (caps, A-L, ;, ', return)
+// Row 3: 12 keys (shift, Z-M, ,, ., /, shift)
+// Row 4: 11 keys (fn, ctrl, opt, cmd, space, cmd, opt, arrows x4)
+// Total: 64 keys

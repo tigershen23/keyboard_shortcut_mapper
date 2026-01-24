@@ -109,3 +109,5 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+
+- When writing plans do not include a bunch of code, always mostly instructions and prose, the code should be left for the coding step

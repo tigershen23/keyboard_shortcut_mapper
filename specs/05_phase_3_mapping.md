@@ -7,6 +7,7 @@
 ## Overview
 
 This phase adds:
+
 1. Mapping data schema for key → action associations
 2. Default mappings for Hyper layer (app switching) and Command layer (system actions)
 3. Key component updates to display mappings (app icons, action labels)
@@ -23,12 +24,12 @@ This phase adds:
 // src/types/index.ts (additions)
 
 export interface KeyMapping {
-  keyId: string;                  // References KeyDefinition.id (e.g., "a", "f1")
-  action: string;                 // Short action name displayed on key (e.g., "Safari", "Lock")
-  appName?: string;               // For icon lookup in manifest (e.g., "Safari", "Google Chrome")
-  iconPath?: string;              // Override path if different from manifest lookup
-  description?: string;           // Tooltip text for additional context
-  color?: string;                 // Optional custom accent color for this mapping
+  keyId: string; // References KeyDefinition.id (e.g., "a", "f1")
+  action: string; // Short action name displayed on key (e.g., "Safari", "Lock")
+  appName?: string; // For icon lookup in manifest (e.g., "Safari", "Google Chrome")
+  iconPath?: string; // Override path if different from manifest lookup
+  description?: string; // Tooltip text for additional context
+  color?: string; // Optional custom accent color for this mapping
 }
 
 export interface LayerMappings {
@@ -61,49 +62,34 @@ Add the `KeyMapping` and `LayerMappings` types shown above.
 
 Define default mappings for both layers. These are sample mappings the user will customize later.
 
-```typescript
-import type { LayerMappings } from "../types";
+The default mappings should include these Hyper layer shortcuts:
 
-export const defaultMappings: LayerMappings = {
-  hyper: [
-    // App switching shortcuts (Hyper + letter)
-    { keyId: "a", action: "Anki", appName: "Anki" },
-    { keyId: "b", action: "Bitwarden", appName: "Bitwarden" },
-    { keyId: "c", action: "Chrome", appName: "Google Chrome" },
-    { keyId: "d", action: "Discord", appName: "Discord" },
-    { keyId: "e", action: "Cursor", appName: "Cursor" },
-    { keyId: "f", action: "Finder", appName: "Finder" },
-    { keyId: "g", action: "Ghostty", appName: "Ghostty" },
-    { keyId: "h", action: "ChatGPT", appName: "ChatGPT" },
-    { keyId: "i", action: "Safari", appName: "Safari" },
-    { keyId: "k", action: "Kindle", appName: "Amazon Kindle" },
-    { keyId: "l", action: "Linear", appName: "Linear" },
-    { keyId: "m", action: "Superhuman", appName: "Superhuman" },
-    { keyId: "n", action: "Obsidian", appName: "Obsidian" },
-    { keyId: "o", action: "OrbStack", appName: "OrbStack" },
-    { keyId: "p", action: "Spotify", appName: "Spotify" },
-    { keyId: "r", action: "Raindrop", appName: "Raindrop.io" },
-    { keyId: "s", action: "Slack", appName: "Slack" },
-    { keyId: "t", action: "TablePlus", appName: "TablePlus" },
-    { keyId: "v", action: "Windsurf", appName: "Windsurf" },
-    { keyId: "w", action: "WhatsApp", appName: "WhatsApp" },
-    { keyId: "z", action: "Zoom", appName: "zoom.us" },
-  ],
-  command: [
-    // System commands (Hyper + Cmd + key)
-    { keyId: "l", action: "Lock", description: "Lock screen" },
-    { keyId: "s", action: "Sleep", description: "Sleep display" },
-    { keyId: "r", action: "Restart", description: "Restart system" },
-    { keyId: "q", action: "Quit All", description: "Quit all apps" },
-    { keyId: "m", action: "Mute", description: "Toggle mute" },
-    { keyId: "d", action: "DND", description: "Toggle Do Not Disturb" },
-    { keyId: "space", action: "Spotlight", description: "Open Spotlight" },
-    { keyId: "c", action: "Clipboard", description: "Clipboard history" },
-    { keyId: "e", action: "Emoji", description: "Emoji picker" },
-    { keyId: "p", action: "Screenshot", description: "Screenshot menu" },
-  ],
-};
-```
+**Hyper Layer Mappings:**
+
+| Key | App | Icon Lookup |
+|-----|-----|-------------|
+| Z | Chrome | Google Chrome |
+| A | ChatGPT Atlas | ChatGPT Atlas |
+| D | Cursor | Cursor |
+| F | Slack | Slack |
+| G | Messages | Messages |
+| H | Superhuman | Superhuman |
+| J | Trello | Trello |
+| K | Obsidian | Obsidian |
+| L | Raycast Notes | Raycast |
+| ; | ChatGPT | ChatGPT |
+| ' | Raycast AI | Raycast |
+| Q | Ghostty | Ghostty |
+| W | Figma | Figma |
+| E | Spotify | Spotify |
+| R | Vimcal | Vimcal |
+| T | Linear | Linear |
+| ] | Anki | Anki |
+| Y | Bitwarden | Bitwarden |
+
+Notes:
+- Some apps may not have icons in the manifest (Slack, Messages, Figma, Vimcal, Raycast)
+- The Command layer mappings can remain as placeholder system commands for now
 
 ### Step 3: Create Icon Manifest Loader
 
@@ -211,6 +197,7 @@ export function useMappingContext() {
 **File**: `src/components/Key.tsx` (modify)
 
 The Key component needs to handle three display modes:
+
 1. **Base layer**: Show standard key labels
 2. **Non-base layer with mapping**: Show icon + action label
 3. **Non-base layer without mapping**: Show dimmed/empty key
@@ -502,7 +489,8 @@ function App() {
 /* Unmapped keys on non-base layers */
 .key-unmapped {
   opacity: 0.35;
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     #f0f0f2 0%,
     #e8e8ea 25%,
     #e2e2e4 60%,
@@ -512,7 +500,8 @@ function App() {
 
 .key-unmapped:hover {
   opacity: 0.5;
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     #f4f4f6 0%,
     #ececee 25%,
     #e6e6e8 60%,
@@ -582,6 +571,7 @@ Bun.serve({
 ### Mapped Key Appearance
 
 Keys with mappings display:
+
 1. **App icon** (top, ~50% of key height)
 2. **Action label** (bottom, truncated if needed)
 
@@ -590,6 +580,7 @@ The icon and label are vertically stacked and centered within the key.
 ### Unmapped Key Appearance
 
 Keys without mappings on non-base layers:
+
 - Reduced opacity (35%)
 - Slightly desaturated background
 - No label displayed
@@ -598,12 +589,14 @@ Keys without mappings on non-base layers:
 ### Icon Sizing
 
 Icons scale with the key unit:
+
 - Standard keys: `clamp(16px, 2vw, 32px)`
 - Space bar: `clamp(20px, 2.5vw, 36px)`
 
 ### Label Truncation
 
 Action labels use:
+
 - `text-overflow: ellipsis`
 - `white-space: nowrap`
 - Max width constrained to key width
@@ -631,11 +624,13 @@ The `getIconPath` function returns the PNG path for web display.
 ### Missing Icons Handling
 
 When an icon is not found in the manifest:
+
 1. The key displays only the action label (no icon)
 2. Label sizing adjusts to fill available space
 3. Consider showing first letter as fallback in future iteration
 
 Available icons (33 apps):
+
 - Ghostty, ChatGPT, Bitwarden, Cursor, Spotify, Rize, Claude, Aqua Voice
 - Superhuman, Google Chrome, Anki, Obsidian, WhatsApp, Discord, Safari
 - Trello, Zoom, QMK Toolbox, Stats, Raindrop.io, Loom, Amazon Kindle
@@ -645,17 +640,17 @@ Available icons (33 apps):
 
 ## File Changes Summary
 
-| File | Change Type | Description |
-|------|-------------|-------------|
-| `src/types/index.ts` | Modify | Add `KeyMapping`, `LayerMappings` types |
-| `src/data/default-mappings.ts` | New | Default mapping definitions |
-| `src/data/icon-manifest.ts` | New | Icon manifest loader with typed access |
-| `src/context/MappingContext.tsx` | New | Mapping state and lookup context |
-| `src/components/Key.tsx` | Modify | Add mapping display mode |
-| `src/components/Keyboard.tsx` | Modify | Pass mapping data to keys |
-| `src/frontend.tsx` | Modify | Add MappingProvider |
-| `src/styles/main.css` | Modify | Add mapping and unmapped key styles |
-| `src/index.ts` | Modify | Add static icon serving route |
+| File                             | Change Type | Description                             |
+| -------------------------------- | ----------- | --------------------------------------- |
+| `src/types/index.ts`             | Modify      | Add `KeyMapping`, `LayerMappings` types |
+| `src/data/default-mappings.ts`   | New         | Default mapping definitions             |
+| `src/data/icon-manifest.ts`      | New         | Icon manifest loader with typed access  |
+| `src/context/MappingContext.tsx` | New         | Mapping state and lookup context        |
+| `src/components/Key.tsx`         | Modify      | Add mapping display mode                |
+| `src/components/Keyboard.tsx`    | Modify      | Pass mapping data to keys               |
+| `src/frontend.tsx`               | Modify      | Add MappingProvider                     |
+| `src/styles/main.css`            | Modify      | Add mapping and unmapped key styles     |
+| `src/index.ts`                   | Modify      | Add static icon serving route           |
 
 ---
 
@@ -675,11 +670,3 @@ Available icons (33 apps):
 - [ ] No console errors for missing icons
 
 ---
-
-## Future Considerations (Phase 6)
-
-- Click-to-edit mapping modal
-- App name autocomplete with icon preview
-- Custom icon upload
-- Drag-and-drop key reordering
-- Export/import mapping configuration

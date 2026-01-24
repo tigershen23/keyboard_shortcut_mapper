@@ -6,7 +6,8 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "@types/styled-components": "^5.1.36"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -14,6 +15,7 @@
   "dependencies": {
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "styled-components": "^6.3.8",
     "tailwindcss": "^4.1.18"
   }
 }
