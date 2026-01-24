@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
+import React, { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 import type { LayerConfig, LayerType } from "../types";
 
 const LAYERS: LayerConfig[] = [

@@ -1,5 +1,4 @@
-import type React from "react";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getIconPath } from "../data/icon-manifest";
 import type { KeyMapping, LayerMappings, LayerType } from "../types";
 import { loadMappings, resetMappings as resetStoredMappings, saveMappings } from "../utils/storage";
@@ -11,12 +10,18 @@ interface MappingContextValue {
   updateMapping: (layer: LayerType, mapping: KeyMapping) => void;
   deleteMapping: (layer: LayerType, keyId: string) => void;
   resetToDefaults: () => void;
+  selectedKeyId: string | null;
+  selectedKeyRect: DOMRect | null;
+  selectKey: (keyId: string, element: HTMLElement) => void;
+  clearSelection: () => void;
 }
 
 const MappingContext = createContext<MappingContextValue | null>(null);
 
 export function MappingProvider({ children }: { children: React.ReactNode }) {
   const [mappings, setMappings] = useState<LayerMappings>(() => loadMappings());
+  const [selectedKeyId, setSelectedKeyId] = useState<string | null>(null);
+  const [selectedKeyRect, setSelectedKeyRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     saveMappings(mappings);
@@ -86,6 +91,16 @@ export function MappingProvider({ children }: { children: React.ReactNode }) {
     setMappings(defaults);
   }, []);
 
+  const selectKey = useCallback((keyId: string, element: HTMLElement) => {
+    setSelectedKeyId(keyId);
+    setSelectedKeyRect(element.getBoundingClientRect());
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedKeyId(null);
+    setSelectedKeyRect(null);
+  }, []);
+
   const value: MappingContextValue = useMemo(
     () => ({
       mappings,
@@ -94,8 +109,23 @@ export function MappingProvider({ children }: { children: React.ReactNode }) {
       updateMapping,
       deleteMapping,
       resetToDefaults,
+      selectedKeyId,
+      selectedKeyRect,
+      selectKey,
+      clearSelection,
     }),
-    [mappings, getMappingForKey, getIconForMapping, updateMapping, deleteMapping, resetToDefaults],
+    [
+      mappings,
+      getMappingForKey,
+      getIconForMapping,
+      updateMapping,
+      deleteMapping,
+      resetToDefaults,
+      selectedKeyId,
+      selectedKeyRect,
+      selectKey,
+      clearSelection,
+    ],
   );
 
   return <MappingContext.Provider value={value}>{children}</MappingContext.Provider>;

@@ -1,13 +1,15 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import styled, { keyframes } from "styled-components";
 import { Keyboard } from "./components/Keyboard";
+import { KeyPopover } from "./components/KeyPopover";
 import { LayerIndicator } from "./components/LayerIndicator";
 import { LayerProvider, useLayerContext } from "./context/LayerContext";
-import { MappingProvider } from "./context/MappingContext";
+import { MappingProvider, useMappingContext } from "./context/MappingContext";
 import { macbookLayout } from "./data/macbook-layout";
 import { useKeyboardListener } from "./hooks/useKeyboardListener";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import type { KeyMapping } from "./types";
 
 const titleEnter = keyframes`
   from {
@@ -36,7 +38,18 @@ const KeyboardTitle = styled.p`
 
 function AppContent() {
   const { currentLayer, currentLayerConfig, cycleLayer } = useLayerContext();
+  const {
+    selectedKeyId,
+    selectedKeyRect,
+    selectKey,
+    clearSelection,
+    getMappingForKey,
+    updateMapping,
+    deleteMapping,
+  } = useMappingContext();
   const [pressedKeyId, setPressedKeyId] = useState<string | null>(null);
+
+  const isEditing = selectedKeyId !== null;
 
   const handleKeyPress = useCallback((keyId: string) => {
     setPressedKeyId(keyId);
@@ -46,7 +59,27 @@ function AppContent() {
   useKeyboardListener({
     onKeyPress: handleKeyPress,
     onLayerCycle: cycleLayer,
+    disabled: isEditing,
   });
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally clearing selection when layer changes
+  useEffect(() => {
+    clearSelection();
+  }, [currentLayer, clearSelection]);
+
+  const currentMapping = selectedKeyId ? getMappingForKey(selectedKeyId, currentLayer) : null;
+
+  const handleSave = (mapping: KeyMapping) => {
+    updateMapping(currentLayer, mapping);
+    clearSelection();
+  };
+
+  const handleDelete = () => {
+    if (selectedKeyId) {
+      deleteMapping(currentLayer, selectedKeyId);
+      clearSelection();
+    }
+  };
 
   return (
     <>
@@ -57,7 +90,23 @@ function AppContent() {
         pressedKeyId={pressedKeyId}
         onKeyPress={handleKeyPress}
         rippleColor={currentLayerConfig.rippleColor}
+        layerAccent={currentLayerConfig.accentColor}
+        selectedKeyId={selectedKeyId}
+        onKeySelect={selectKey}
       />
+
+      {selectedKeyId && selectedKeyRect && currentLayer !== "base" && (
+        <KeyPopover
+          keyId={selectedKeyId}
+          keyRect={selectedKeyRect}
+          currentMapping={currentMapping}
+          layerAccent={currentLayerConfig.accentColor}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          onClose={clearSelection}
+        />
+      )}
+
       <KeyboardTitle>MacBook Pro — US ANSI</KeyboardTitle>
     </>
   );

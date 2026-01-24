@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
@@ -114,6 +114,9 @@ interface KeyboardProps {
   pressedKeyId: string | null;
   onKeyPress: (keyId: string) => void;
   rippleColor: string;
+  layerAccent: string;
+  selectedKeyId: string | null;
+  onKeySelect: (keyId: string, element: HTMLElement) => void;
 }
 
 export function Keyboard({
@@ -123,12 +126,18 @@ export function Keyboard({
   pressedKeyId,
   onKeyPress,
   rippleColor,
+  layerAccent,
+  selectedKeyId,
+  onKeySelect,
 }: KeyboardProps) {
   const { getMappingForKey, getIconForMapping } = useMappingContext();
+
+  const isEditable = currentLayer !== "base";
 
   const renderKey = (key: KeyDefinition) => {
     const mapping = getMappingForKey(key.id, currentLayer);
     const iconPath = mapping ? getIconForMapping(mapping) : null;
+    const isRegularKey = !key.isModifier && !key.isFunction && !isSpecialKey(key.id);
 
     return (
       <Key
@@ -140,6 +149,10 @@ export function Keyboard({
         currentLayer={currentLayer}
         mapping={mapping}
         iconPath={iconPath}
+        isEditable={isEditable && isRegularKey}
+        isSelected={selectedKeyId === key.id}
+        layerAccent={layerAccent}
+        onSelect={onKeySelect}
       />
     );
   };
@@ -155,6 +168,22 @@ export function Keyboard({
       })}
     </KeyboardFrame>
   );
+}
+
+function isSpecialKey(id: string): boolean {
+  const specialKeys = [
+    "esc",
+    "backspace",
+    "tab",
+    "caps",
+    "return",
+    "space",
+    "arrow-left",
+    "arrow-right",
+    "arrow-up",
+    "arrow-down",
+  ];
+  return specialKeys.includes(id);
 }
 
 interface ModifierRowProps {

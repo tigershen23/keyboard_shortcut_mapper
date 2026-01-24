@@ -1,3 +1,4 @@
+import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useLayerContext } from "../context/LayerContext";
 
@@ -58,17 +59,6 @@ const IndicatorLabel = styled.span`
   color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
   padding: 0 clamp(8px, 1vw, 12px);
-`;
-
-const IndicatorShortcut = styled.kbd`
-  font-family: "Geist Mono", "SF Mono", monospace;
-  font-size: clamp(10px, 1vw, 12px);
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: clamp(4px, 0.5vw, 6px);
-  padding: clamp(3px, 0.4vw, 5px) clamp(5px, 0.6vw, 8px);
 `;
 
 interface LayerTabProps {
@@ -138,7 +128,6 @@ export function LayerIndicator() {
             );
           })}
         </IndicatorTabs>
-        <IndicatorShortcut>⇥</IndicatorShortcut>
       </IndicatorWrapper>
     </IndicatorContainer>
   );

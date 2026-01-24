@@ -1,3 +1,4 @@
+import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import type { KeyDefinition, KeyMapping, LayerType } from "../types";
 
@@ -28,6 +29,9 @@ interface StyledKeyProps {
   $isSpace?: boolean;
   $isPressed?: boolean;
   $isDimmed?: boolean;
+  $isEditable?: boolean;
+  $isSelected?: boolean;
+  $layerAccent?: string;
   $rippleColor?: string;
   $width: number;
   $height: number;
@@ -201,6 +205,22 @@ const StyledKey = styled.div<StyledKeyProps>`
         );
       }
     `}
+
+  ${({ $isEditable }) =>
+    $isEditable &&
+    css`
+      cursor: pointer;
+    `}
+
+  ${({ $isSelected, $layerAccent }) =>
+    $isSelected &&
+    css`
+      box-shadow:
+        inset 0 0 0 2px ${$layerAccent || "rgba(100, 180, 160, 0.9)"},
+        0 0 16px ${$layerAccent || "rgba(100, 180, 160, 0.4)"},
+        0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+    `}
 `;
 
 const KeyLabels = styled.div`
@@ -329,6 +349,10 @@ interface KeyProps {
   currentLayer?: LayerType;
   mapping?: KeyMapping | null;
   iconPath?: string | null;
+  isEditable?: boolean;
+  isSelected?: boolean;
+  layerAccent?: string;
+  onSelect?: (keyId: string, element: HTMLElement) => void;
 }
 
 export function Key({
@@ -339,6 +363,10 @@ export function Key({
   currentLayer = "base",
   mapping,
   iconPath,
+  isEditable,
+  isSelected,
+  layerAccent,
+  onSelect,
 }: KeyProps) {
   const { id, label, secondaryLabel, width = 1, height = 1, isModifier, isFunction } = definition;
 
@@ -352,6 +380,14 @@ export function Key({
   const showMapping = !isBaseLayer && isRegularKey && hasMapping;
   const isDimmed = !isBaseLayer && isRegularKey && !hasMapping;
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isEditable && onSelect) {
+      onSelect(id, e.currentTarget);
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <StyledKey
       $isFunction={isFunction}
@@ -359,11 +395,14 @@ export function Key({
       $isSpace={isSpace}
       $isPressed={isPressed}
       $isDimmed={isDimmed}
+      $isEditable={isEditable}
+      $isSelected={isSelected}
+      $layerAccent={layerAccent}
       $rippleColor={rippleColor}
       $width={width}
       $height={height}
       data-key-id={id}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {showBaseLabel && renderBaseLabel(label, secondaryLabel, isFunction, isModifier)}
       {showMapping && mapping && renderMappingContent(mapping, iconPath, isSpace, isCommandLayer)}

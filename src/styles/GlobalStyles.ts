@@ -16,9 +16,6 @@ export const meshShift = keyframes`
 `;
 
 export const GlobalStyles = createGlobalStyle`
-  @import url("https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-mono/style.min.css");
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap');
-
   :root {
     --key-unit: clamp(28px, 5vw, 70px);
     --key-gap: clamp(2px, 0.35vw, 6px);
@@ -128,6 +125,7 @@ export const GlobalStyles = createGlobalStyle`
     height: 100vh;
     min-height: 100vh;
     padding: clamp(20px, 3vw, 50px);
+    isolation: isolate;
   }
 
   @media (min-aspect-ratio: 21/9) {

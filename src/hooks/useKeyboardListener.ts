@@ -88,10 +88,17 @@ const codeToKeyId: Record<string, string> = {
 interface UseKeyboardListenerOptions {
   onKeyPress: (keyId: string) => void;
   onLayerCycle: (direction: "forward" | "backward") => void;
+  disabled?: boolean;
 }
 
-export function useKeyboardListener({ onKeyPress, onLayerCycle }: UseKeyboardListenerOptions) {
+export function useKeyboardListener({
+  onKeyPress,
+  onLayerCycle,
+  disabled,
+}: UseKeyboardListenerOptions) {
   useEffect(() => {
+    if (disabled) return;
+
     function handleKeyDown(event: KeyboardEvent) {
       // Allow system shortcuts through (but not shift alone)
       if (event.metaKey || event.ctrlKey || event.altKey) {
@@ -120,5 +127,5 @@ export function useKeyboardListener({ onKeyPress, onLayerCycle }: UseKeyboardLis
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onKeyPress, onLayerCycle]);
+  }, [onKeyPress, onLayerCycle, disabled]);
 }
