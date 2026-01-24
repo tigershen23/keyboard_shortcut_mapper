@@ -535,6 +535,7 @@ body > .noise-overlay {
   font-weight: 500;
   color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
+  padding: 0 clamp(8px, 1vw, 12px);
 }
 
 .layer-indicator-shortcut {
@@ -557,7 +558,7 @@ body > .noise-overlay {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 100px;
+  border-radius: clamp(12px, 1.5vw, 18px);
   animation: indicatorEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
   opacity: 0;
 }
@@ -569,7 +570,7 @@ body > .noise-overlay {
   padding: clamp(6px, 0.8vw, 10px) clamp(10px, 1.2vw, 16px);
   background: transparent;
   border: none;
-  border-radius: 100px;
+  border-radius: clamp(8px, 1vw, 12px);
   cursor: pointer;
   transition: all 0.2s ease;
   opacity: 0.45;

@@ -1,12 +1,12 @@
 # Keyboard Shortcut Mapper
 
-**Status:** Phase 1 Complete, Phase 5 Partially Complete
+**Status:** Phase 2 Complete, Phase 5 Partially Complete
 
 A fully client-side TypeScript/React application to visualize keyboard mapping layers on a MacBook keyboard. Displays three layers:
 
 1. **Base Layer** — Standard MacBook keyboard layout
 2. **Hyper Layer** — Mappings triggered by Hyper key (app switching)
-3. **Hyper+Command Layer** — Mappings triggered by Hyper+Command (system commands)
+3. **Command Layer** — Mappings triggered by Hyper+Command (system commands)
 
 ---
 
@@ -17,16 +17,21 @@ keyboard_shortcut_mapper/
 ├── src/
 │   ├── index.ts              # Bun server with HMR
 │   ├── index.html            # Entry HTML with bg-gradient div
-│   ├── frontend.tsx          # React root + Keyboard component
+│   ├── frontend.tsx          # React root + app component
 │   ├── components/
 │   │   ├── Keyboard.tsx      # Full keyboard layout renderer
-│   │   └── Key.tsx           # Individual key component
+│   │   ├── Key.tsx           # Individual key with press effects
+│   │   └── LayerIndicator.tsx # Layer tab switcher UI
+│   ├── context/
+│   │   └── LayerContext.tsx  # Layer state management
+│   ├── hooks/
+│   │   └── useKeyboardListener.ts # Physical keyboard event handling
 │   ├── data/
 │   │   └── macbook-layout.ts # 78-key MacBook US ANSI layout definition
 │   ├── styles/
-│   │   └── main.css          # Responsive styling, animated gradient bg
+│   │   └── main.css          # Responsive styling, animations, layer effects
 │   ├── types/
-│   │   └── index.ts          # TypeScript types for keys/layout
+│   │   └── index.ts          # TypeScript types for keys/layout/layers
 │   └── static/icons/         # Downloaded app icons (PNG/ICNS)
 │       └── icon-manifest.json
 ├── scripts/
@@ -36,7 +41,8 @@ keyboard_shortcut_mapper/
 │   ├── 00_start.md
 │   ├── 01_phases.md
 │   ├── 02_phase_1_initial_layout.md
-│   └── 03_phase_5_app_icons_download.md
+│   ├── 03_phase_5_app_icons_download.md
+│   └── 04_phase_2_layer_system.md
 ├── CLAUDE.md                 # Bun/project conventions
 ├── package.json
 ├── tsconfig.json
@@ -50,7 +56,7 @@ keyboard_shortcut_mapper/
 | Phase | Description      | Status                        |
 | ----- | ---------------- | ----------------------------- |
 | 1     | Base Keyboard UI | ✅ Complete                   |
-| 2     | Layer System     | ⬜ Not started                |
+| 2     | Layer System     | ✅ Complete                   |
 | 3     | Mapping Display  | ⬜ Not started                |
 | 4     | Local Storage    | ⬜ Not started                |
 | 5     | App Icons        | 🟡 Partial (icons downloaded) |
@@ -85,10 +91,53 @@ keyboard_shortcut_mapper/
 ### Key CSS variables:
 
 ```css
---key-unit: clamp(28px, 5vw, 70px) --key-gap: clamp(2px, 0.35vw, 6px)
-  --key-radius: clamp(4px, 0.6vw, 10px)
-  --frame-padding: clamp(12px, 1.8vw, 32px);
+--key-unit: clamp(28px, 5vw, 70px);
+--key-gap: clamp(2px, 0.35vw, 6px);
+--key-radius: clamp(4px, 0.6vw, 10px);
+--frame-padding: clamp(12px, 1.8vw, 32px);
 ```
+
+---
+
+## Phase 2 — Complete
+
+**Goal:** Implement three-layer system with keyboard navigation and visual feedback
+
+### What was built:
+
+- **Layer System**: Base → Hyper → Command layers with Tab key cycling (Shift+Tab goes backward)
+- **LayerContext**: React context for global layer state management
+- **LayerIndicator**: Tab-style switcher showing all three layers with clickable buttons
+- **Physical Keyboard Listener**: Intercepts keypresses, triggers visual feedback, passes through system shortcuts (Cmd/Ctrl/Alt combos)
+- **Ink Ripple Effect**: Two-layer CSS animation (diagonal gradient + solid fill) on key press
+- **Layer Glow**: Subtle colored glow behind keyboard frame matching active layer
+
+### Components created:
+
+- `src/context/LayerContext.tsx` — Layer state provider with cycling logic
+- `src/hooks/useKeyboardListener.ts` — Keyboard event handling with modifier passthrough
+- `src/components/LayerIndicator.tsx` — Tab switcher UI with page title
+
+### Layer colors:
+
+| Layer   | Accent Color                    | Ripple Color                    |
+| ------- | ------------------------------- | ------------------------------- |
+| Base    | `rgba(255, 255, 255, 0.6)`      | `rgba(140, 160, 150, 0.45)`     |
+| Hyper   | `rgba(100, 180, 160, 0.85)`     | `rgba(100, 180, 160, 0.5)`      |
+| Command | `rgba(200, 140, 120, 0.85)`     | `rgba(200, 140, 120, 0.5)`      |
+
+### Keyboard behavior:
+
+- Tab: Cycle forward through layers
+- Shift+Tab: Cycle backward through layers
+- Any key (no modifiers): Trigger ink ripple effect
+- Cmd/Ctrl/Alt + key: Passes through to browser (system shortcuts work)
+- Shift alone: Does not trigger ripple (reserved for shortcuts)
+
+### Key display changes:
+
+- Regular keys (letters, numbers, symbols) show blank on non-base layers
+- Modifier keys, function keys, and special keys (arrows, space, etc.) always show labels
 
 ---
 
@@ -126,14 +175,13 @@ bun --hot src/index.ts
 
 ## Next Steps
 
-**Phase 2: Layer System**
-
-- Tab key toggles between Base/Hyper/Hyper+Cmd layers
-- Visual indicator for active layer
-- Transition animations between layers
-
 **Phase 3: Mapping Display**
 
 - Show shortcut mappings overlaid on keys
 - App icons on Hyper layer keys
 - Dimmed styling for unmapped keys
+
+**Phase 4: Local Storage**
+
+- Persist mappings across browser sessions
+- Reset to defaults option

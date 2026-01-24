@@ -9,6 +9,7 @@ export function LayerIndicator() {
       <h1 className="page-title">Mac Keyboard Shortcuts</h1>
       <div className="layer-indicator-wrapper">
         <div className="layer-indicator-tabs">
+          <span className="layer-indicator-label">Layer →</span>
           {layers.map((layer) => (
             <button
               key={layer.id}
@@ -21,10 +22,7 @@ export function LayerIndicator() {
             </button>
           ))}
         </div>
-        <div className="layer-indicator-caption">
-          <span className="layer-indicator-label">Layer</span>
-          <kbd className="layer-indicator-shortcut">⇥</kbd>
-        </div>
+        <kbd className="layer-indicator-shortcut">⇥</kbd>
       </div>
     </div>
   );
