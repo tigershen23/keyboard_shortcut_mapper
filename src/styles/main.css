@@ -240,35 +240,66 @@ body > .noise-overlay {
   overflow: hidden;
 }
 
-/* Ink ripple effect */
+/* Key press effect - refined luminous wash */
+.key::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--ripple-color, rgba(140, 160, 150, 0.3)) 0%,
+    transparent 50%,
+    var(--ripple-color, rgba(140, 160, 150, 0.15)) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .key::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center,
-    var(--ripple-color, rgba(140, 160, 150, 0.45)) 0%,
-    transparent 70%
-  );
+  border-radius: inherit;
+  background: var(--ripple-color, rgba(140, 160, 150, 0.25));
   opacity: 0;
-  transform: scale(0);
   pointer-events: none;
+  z-index: 0;
+}
+
+.key.key-pressed::before {
+  animation: keyFlash 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .key.key-pressed::after {
-  animation: inkRipple 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: keyGlow 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes inkRipple {
+@keyframes keyFlash {
   0% {
-    opacity: 0.6;
-    transform: scale(0);
+    opacity: 0;
   }
-  50% {
-    opacity: 0.4;
+  20% {
+    opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: scale(1.2);
+  }
+}
+
+@keyframes keyGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  30% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
 
@@ -290,6 +321,20 @@ body > .noise-overlay {
     0 0 2px rgba(0, 0, 0, 0.06);
 }
 
+/* Blank keys on non-base layers */
+.key-blank {
+  opacity: 0.5;
+}
+
+/* Pressed key state */
+.key.key-pressed {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.01),
+    0 0 2px rgba(0, 0, 0, 0.08);
+}
+
 /* Key labels - single label */
 .key-label {
   font-family: "Geist Mono", "SF Mono", monospace;
@@ -299,6 +344,14 @@ body > .noise-overlay {
   line-height: 1;
   white-space: nowrap;
   text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Key labels container z-index */
+.key-labels {
+  position: relative;
+  z-index: 2;
 }
 
 /* Function keys */
@@ -443,59 +496,77 @@ body > .noise-overlay {
   }
 }
 
+/* Page Title */
+.page-title {
+  font-family: "Instrument Sans", sans-serif;
+  font-size: clamp(16px, 2vw, 26px);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.01em;
+  margin: 0;
+  animation: indicatorEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  opacity: 0;
+}
+
 /* Layer Indicator */
 .layer-indicator-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 0.8vw, 10px);
-  animation: indicatorEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-  opacity: 0;
+  gap: clamp(10px, 1.2vw, 16px);
 }
 
-.layer-indicator-header {
+.layer-indicator-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 0.8vw, 10px);
+}
+
+.layer-indicator-caption {
   display: flex;
   align-items: center;
   gap: clamp(6px, 0.8vw, 10px);
 }
 
-.layer-indicator-title {
+.layer-indicator-label {
   font-family: "Instrument Sans", sans-serif;
   font-size: clamp(10px, 1vw, 13px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.02em;
 }
 
 .layer-indicator-shortcut {
   font-family: "Geist Mono", "SF Mono", monospace;
-  font-size: clamp(9px, 0.9vw, 11px);
+  font-size: clamp(10px, 1vw, 12px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: clamp(3px, 0.4vw, 5px);
-  padding: clamp(2px, 0.3vw, 4px) clamp(5px, 0.6vw, 8px);
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: clamp(4px, 0.5vw, 6px);
+  padding: clamp(3px, 0.4vw, 5px) clamp(5px, 0.6vw, 8px);
 }
 
 .layer-indicator-tabs {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 0.5vw, 6px);
+  gap: clamp(2px, 0.3vw, 4px);
   padding: clamp(4px, 0.5vw, 6px);
   background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 100px;
+  animation: indicatorEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
 }
 
 .layer-tab {
   display: flex;
   align-items: center;
   gap: clamp(5px, 0.6vw, 8px);
-  padding: clamp(6px, 0.8vw, 10px) clamp(12px, 1.4vw, 18px);
+  padding: clamp(6px, 0.8vw, 10px) clamp(10px, 1.2vw, 16px);
   background: transparent;
   border: none;
   border-radius: 100px;

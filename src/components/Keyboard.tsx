@@ -20,7 +20,10 @@ export function Keyboard({
   rippleColor,
 }: KeyboardProps) {
   return (
-    <div className={`keyboard-frame ${className ?? ""}`} data-layer={currentLayer}>
+    <div
+      className={`keyboard-frame ${className ?? ""}`}
+      data-layer={currentLayer}
+    >
       {layout.map((row, rowIndex) => {
         if (rowIndex === 5) {
           return (
@@ -30,6 +33,7 @@ export function Keyboard({
               pressedKeyId={pressedKeyId}
               onKeyPress={onKeyPress}
               rippleColor={rippleColor}
+              currentLayer={currentLayer}
             />
           );
         }
@@ -43,6 +47,7 @@ export function Keyboard({
                 isPressed={pressedKeyId === key.id}
                 onClick={() => onKeyPress(key.id)}
                 rippleColor={rippleColor}
+                currentLayer={currentLayer}
               />
             ))}
           </div>
@@ -57,9 +62,16 @@ interface ModifierRowProps {
   pressedKeyId: string | null;
   onKeyPress: (keyId: string) => void;
   rippleColor: string;
+  currentLayer: LayerType;
 }
 
-function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRowProps) {
+function ModifierRow({
+  keys,
+  pressedKeyId,
+  onKeyPress,
+  rippleColor,
+  currentLayer,
+}: ModifierRowProps) {
   const modifierKeys = keys.slice(0, 7);
   const arrowKeys = keys.slice(7);
 
@@ -77,6 +89,7 @@ function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRo
           isPressed={pressedKeyId === key.id}
           onClick={() => onKeyPress(key.id)}
           rippleColor={rippleColor}
+          currentLayer={currentLayer}
         />
       ))}
 
@@ -87,6 +100,7 @@ function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRo
             isPressed={pressedKeyId === arrowLeft.id}
             onClick={() => onKeyPress(arrowLeft.id)}
             rippleColor={rippleColor}
+            currentLayer={currentLayer}
           />
         )}
         <div className="arrow-vertical">
@@ -96,6 +110,7 @@ function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRo
               isPressed={pressedKeyId === arrowUp.id}
               onClick={() => onKeyPress(arrowUp.id)}
               rippleColor={rippleColor}
+              currentLayer={currentLayer}
             />
           )}
           {arrowDown && (
@@ -104,6 +119,7 @@ function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRo
               isPressed={pressedKeyId === arrowDown.id}
               onClick={() => onKeyPress(arrowDown.id)}
               rippleColor={rippleColor}
+              currentLayer={currentLayer}
             />
           )}
         </div>
@@ -113,6 +129,7 @@ function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRo
             isPressed={pressedKeyId === arrowRight.id}
             onClick={() => onKeyPress(arrowRight.id)}
             rippleColor={rippleColor}
+            currentLayer={currentLayer}
           />
         )}
       </div>

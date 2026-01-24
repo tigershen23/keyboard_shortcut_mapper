@@ -87,13 +87,13 @@ const codeToKeyId: Record<string, string> = {
 
 interface UseKeyboardListenerOptions {
   onKeyPress: (keyId: string) => void;
-  onLayerCycle: () => void;
+  onLayerCycle: (direction: "forward" | "backward") => void;
 }
 
 export function useKeyboardListener({ onKeyPress, onLayerCycle }: UseKeyboardListenerOptions) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      // Always allow system shortcuts through
+      // Allow system shortcuts through (but not shift alone)
       if (event.metaKey || event.ctrlKey || event.altKey) {
         return;
       }
@@ -101,10 +101,15 @@ export function useKeyboardListener({ onKeyPress, onLayerCycle }: UseKeyboardLis
       const keyId = codeToKeyId[event.code];
       if (!keyId) return;
 
-      // Tab cycles layers
+      // Tab cycles layers (shift+tab goes backward)
       if (keyId === "tab") {
         event.preventDefault();
-        onLayerCycle();
+        onLayerCycle(event.shiftKey ? "backward" : "forward");
+        return;
+      }
+
+      // Shift keys should not trigger ripple (they're modifiers for shortcuts)
+      if (keyId === "shift-left" || keyId === "shift-right") {
         return;
       }
 
