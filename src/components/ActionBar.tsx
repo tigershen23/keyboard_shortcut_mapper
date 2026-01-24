@@ -4,28 +4,20 @@ import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
 import { generateMappingsMarkdown } from "../utils/generateMarkdown";
 
-const barEnter = keyframes`
+const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 `;
 
 const ActionBarContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: clamp(4px, 0.5vw, 8px);
-  padding: clamp(4px, 0.5vw, 6px);
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: clamp(8px, 1vw, 12px);
-  animation: ${barEnter} 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  gap: clamp(12px, 1.5vw, 20px);
+  animation: ${fadeIn} 0.5s ease 0.4s forwards;
   opacity: 0;
 `;
 
@@ -36,24 +28,40 @@ interface ActionButtonProps {
 const ActionButton = styled.button<ActionButtonProps>`
   display: flex;
   align-items: center;
-  gap: clamp(5px, 0.6vw, 8px);
-  padding: clamp(6px, 0.8vw, 10px) clamp(10px, 1.2vw, 16px);
+  gap: clamp(4px, 0.5vw, 6px);
+  padding: 0;
   background: transparent;
   border: none;
-  border-radius: clamp(6px, 0.8vw, 10px);
   cursor: pointer;
   transition: all 0.2s ease;
   color: ${({ $isSuccess }) =>
-    $isSuccess ? "rgba(120, 220, 150, 0.9)" : "rgba(255, 255, 255, 0.45)"};
+    $isSuccess ? "rgba(120, 220, 150, 0.85)" : "rgba(255, 255, 255, 0.3)"};
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+  }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
     color: ${({ $isSuccess }) =>
-      $isSuccess ? "rgba(120, 220, 150, 0.9)" : "rgba(255, 255, 255, 0.85)"};
+      $isSuccess ? "rgba(120, 220, 150, 0.85)" : "rgba(255, 255, 255, 0.6)"};
+
+    &::after {
+      transform: scaleX(1);
+    }
   }
 
   &:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
 `;
 
@@ -61,8 +69,8 @@ const ButtonIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(14px, 1.4vw, 18px);
-  height: clamp(14px, 1.4vw, 18px);
+  width: clamp(11px, 1.1vw, 14px);
+  height: clamp(11px, 1.1vw, 14px);
 
   svg {
     width: 100%;
@@ -72,9 +80,10 @@ const ButtonIcon = styled.span`
 
 const ButtonLabel = styled.span`
   font-family: "Instrument Sans", sans-serif;
-  font-size: clamp(11px, 1.1vw, 14px);
+  font-size: clamp(10px, 1vw, 13px);
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   white-space: nowrap;
 `;
 
