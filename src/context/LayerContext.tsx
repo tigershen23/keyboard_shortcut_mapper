@@ -1,5 +1,6 @@
 import React, { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 import type { LayerConfig, LayerType } from "../types";
+import { loadSelectedLayer, saveSelectedLayer } from "../utils/storage";
 
 const LAYERS: LayerConfig[] = [
   {
@@ -36,7 +37,7 @@ interface LayerContextValue {
 const LayerContext = createContext<LayerContextValue | null>(null);
 
 export function LayerProvider({ children }: { children: ReactNode }) {
-  const [currentLayer, setCurrentLayer] = useState<LayerType>("base");
+  const [currentLayer, setCurrentLayer] = useState<LayerType>(loadSelectedLayer);
 
   const cycleLayer = useCallback((direction: "forward" | "backward" = "forward") => {
     setCurrentLayer((current) => {
@@ -45,11 +46,14 @@ export function LayerProvider({ children }: { children: ReactNode }) {
         direction === "forward"
           ? (currentIndex + 1) % LAYERS.length
           : (currentIndex - 1 + LAYERS.length) % LAYERS.length;
-      return LAYERS[nextIndex].id;
+      const nextLayer = LAYERS[nextIndex].id;
+      saveSelectedLayer(nextLayer);
+      return nextLayer;
     });
   }, []);
 
   const setLayer = useCallback((layer: LayerType) => {
+    saveSelectedLayer(layer);
     setCurrentLayer(layer);
   }, []);
 

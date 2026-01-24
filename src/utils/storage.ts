@@ -1,7 +1,8 @@
 import { defaultMappings } from "../data/default-mappings";
-import type { LayerMappings, StoredConfig } from "../types";
+import type { LayerMappings, LayerType, StoredConfig } from "../types";
 
 const STORAGE_KEY = "keyboard-shortcut-mapper";
+const LAYER_KEY = "keyboard-shortcut-mapper-layer";
 const CURRENT_VERSION = 1;
 
 export function saveMappings(mappings: LayerMappings): void {
@@ -43,4 +44,26 @@ export function loadMappings(): LayerMappings {
 export function resetMappings(): LayerMappings {
   localStorage.removeItem(STORAGE_KEY);
   return defaultMappings;
+}
+
+const VALID_LAYERS: LayerType[] = ["base", "hyper", "command"];
+
+export function saveSelectedLayer(layer: LayerType): void {
+  try {
+    localStorage.setItem(LAYER_KEY, layer);
+  } catch (e) {
+    console.error("Failed to save selected layer:", e);
+  }
+}
+
+export function loadSelectedLayer(): LayerType {
+  try {
+    const stored = localStorage.getItem(LAYER_KEY);
+    if (stored && VALID_LAYERS.includes(stored as LayerType)) {
+      return stored as LayerType;
+    }
+  } catch (e) {
+    console.error("Failed to load selected layer:", e);
+  }
+  return "base";
 }
