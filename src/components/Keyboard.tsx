@@ -1,24 +1,49 @@
 import React from "react";
 import { Key } from "./Key";
-import type { KeyboardLayout, KeyDefinition } from "../types";
+import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
 
 interface KeyboardProps {
   layout: KeyboardLayout;
   className?: string;
+  currentLayer: LayerType;
+  pressedKeyId: string | null;
+  onKeyPress: (keyId: string) => void;
+  rippleColor: string;
 }
 
-export function Keyboard({ layout, className }: KeyboardProps) {
+export function Keyboard({
+  layout,
+  className,
+  currentLayer,
+  pressedKeyId,
+  onKeyPress,
+  rippleColor,
+}: KeyboardProps) {
   return (
-    <div className={`keyboard-frame ${className ?? ""}`}>
+    <div className={`keyboard-frame ${className ?? ""}`} data-layer={currentLayer}>
       {layout.map((row, rowIndex) => {
         if (rowIndex === 5) {
-          return <ModifierRow key={rowIndex} keys={row.keys} />;
+          return (
+            <ModifierRow
+              key={rowIndex}
+              keys={row.keys}
+              pressedKeyId={pressedKeyId}
+              onKeyPress={onKeyPress}
+              rippleColor={rippleColor}
+            />
+          );
         }
 
         return (
           <div key={rowIndex} className="keyboard-row">
             {row.keys.map((key) => (
-              <Key key={key.id} definition={key} />
+              <Key
+                key={key.id}
+                definition={key}
+                isPressed={pressedKeyId === key.id}
+                onClick={() => onKeyPress(key.id)}
+                rippleColor={rippleColor}
+              />
             ))}
           </div>
         );
@@ -27,7 +52,14 @@ export function Keyboard({ layout, className }: KeyboardProps) {
   );
 }
 
-function ModifierRow({ keys }: { keys: KeyDefinition[] }) {
+interface ModifierRowProps {
+  keys: KeyDefinition[];
+  pressedKeyId: string | null;
+  onKeyPress: (keyId: string) => void;
+  rippleColor: string;
+}
+
+function ModifierRow({ keys, pressedKeyId, onKeyPress, rippleColor }: ModifierRowProps) {
   const modifierKeys = keys.slice(0, 7);
   const arrowKeys = keys.slice(7);
 
@@ -39,16 +71,50 @@ function ModifierRow({ keys }: { keys: KeyDefinition[] }) {
   return (
     <div className="keyboard-row">
       {modifierKeys.map((key) => (
-        <Key key={key.id} definition={key} />
+        <Key
+          key={key.id}
+          definition={key}
+          isPressed={pressedKeyId === key.id}
+          onClick={() => onKeyPress(key.id)}
+          rippleColor={rippleColor}
+        />
       ))}
 
       <div className="arrow-cluster">
-        {arrowLeft && <Key definition={arrowLeft} />}
+        {arrowLeft && (
+          <Key
+            definition={arrowLeft}
+            isPressed={pressedKeyId === arrowLeft.id}
+            onClick={() => onKeyPress(arrowLeft.id)}
+            rippleColor={rippleColor}
+          />
+        )}
         <div className="arrow-vertical">
-          {arrowUp && <Key definition={arrowUp} />}
-          {arrowDown && <Key definition={arrowDown} />}
+          {arrowUp && (
+            <Key
+              definition={arrowUp}
+              isPressed={pressedKeyId === arrowUp.id}
+              onClick={() => onKeyPress(arrowUp.id)}
+              rippleColor={rippleColor}
+            />
+          )}
+          {arrowDown && (
+            <Key
+              definition={arrowDown}
+              isPressed={pressedKeyId === arrowDown.id}
+              onClick={() => onKeyPress(arrowDown.id)}
+              rippleColor={rippleColor}
+            />
+          )}
         </div>
-        {arrowRight && <Key definition={arrowRight} />}
+        {arrowRight && (
+          <Key
+            definition={arrowRight}
+            isPressed={pressedKeyId === arrowRight.id}
+            onClick={() => onKeyPress(arrowRight.id)}
+            rippleColor={rippleColor}
+          />
+        )}
       </div>
     </div>
   );

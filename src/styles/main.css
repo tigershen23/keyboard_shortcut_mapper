@@ -167,6 +167,32 @@ body > .noise-overlay {
 
   /* Subtle entry animation */
   animation: keyboardEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  /* Layer glow transition */
+  --layer-glow: transparent;
+  transition: box-shadow 0.4s ease;
+}
+
+/* Layer glow pseudo-element */
+.keyboard-frame::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--layer-glow);
+  opacity: 1;
+  z-index: -1;
+  filter: blur(20px);
+  transition: background 0.4s ease;
+  pointer-events: none;
+}
+
+.keyboard-frame[data-layer="hyper"] {
+  --layer-glow: rgba(100, 180, 160, 0.15);
+}
+
+.keyboard-frame[data-layer="command"] {
+  --layer-glow: rgba(200, 140, 120, 0.15);
 }
 
 @keyframes keyboardEnter {
@@ -211,6 +237,39 @@ body > .noise-overlay {
     0 1px 2px rgba(0, 0, 0, 0.08),
     0 1px 1px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Ink ripple effect */
+.key::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+    var(--ripple-color, rgba(140, 160, 150, 0.45)) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.key.key-pressed::after {
+  animation: inkRipple 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes inkRipple {
+  0% {
+    opacity: 0.6;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 .key:hover {
@@ -381,5 +440,112 @@ body > .noise-overlay {
     --font-key-secondary: clamp(6px, 1.5vw, 10px);
     --font-key-modifier: clamp(10px, 2.5vw, 16px);
     --font-key-function: clamp(6px, 1.8vw, 11px);
+  }
+}
+
+/* Layer Indicator */
+.layer-indicator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 0.8vw, 10px);
+  animation: indicatorEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
+}
+
+.layer-indicator-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 0.8vw, 10px);
+}
+
+.layer-indicator-title {
+  font-family: "Instrument Sans", sans-serif;
+  font-size: clamp(10px, 1vw, 13px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.layer-indicator-shortcut {
+  font-family: "Geist Mono", "SF Mono", monospace;
+  font-size: clamp(9px, 0.9vw, 11px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: clamp(3px, 0.4vw, 5px);
+  padding: clamp(2px, 0.3vw, 4px) clamp(5px, 0.6vw, 8px);
+}
+
+.layer-indicator-tabs {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.5vw, 6px);
+  padding: clamp(4px, 0.5vw, 6px);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+}
+
+.layer-tab {
+  display: flex;
+  align-items: center;
+  gap: clamp(5px, 0.6vw, 8px);
+  padding: clamp(6px, 0.8vw, 10px) clamp(12px, 1.4vw, 18px);
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.45;
+}
+
+.layer-tab:hover {
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.layer-tab-active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.layer-tab-active:hover {
+  opacity: 1;
+}
+
+.layer-tab-dot {
+  width: clamp(6px, 0.7vw, 9px);
+  height: clamp(6px, 0.7vw, 9px);
+  border-radius: 50%;
+  background: var(--tab-accent, rgba(255, 255, 255, 0.6));
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.layer-tab-active .layer-tab-dot {
+  box-shadow: 0 0 8px var(--tab-accent, rgba(255, 255, 255, 0.4));
+}
+
+.layer-tab-label {
+  font-family: "Instrument Sans", sans-serif;
+  font-size: clamp(11px, 1.1vw, 14px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+@keyframes indicatorEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
