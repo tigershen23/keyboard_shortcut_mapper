@@ -37,3 +37,8 @@ export interface LayerMappings {
   hyper: KeyMapping[];
   command: KeyMapping[];
 }
+
+export interface StoredConfig {
+  version: number;
+  layers: LayerMappings;
+}

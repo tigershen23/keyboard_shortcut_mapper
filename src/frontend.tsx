@@ -1,12 +1,12 @@
-import React, { useState, useCallback } from "react";
-import styled, { keyframes } from "styled-components";
+import { useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
+import styled, { keyframes } from "styled-components";
 import { Keyboard } from "./components/Keyboard";
 import { LayerIndicator } from "./components/LayerIndicator";
 import { LayerProvider, useLayerContext } from "./context/LayerContext";
 import { MappingProvider } from "./context/MappingContext";
-import { useKeyboardListener } from "./hooks/useKeyboardListener";
 import { macbookLayout } from "./data/macbook-layout";
+import { useKeyboardListener } from "./hooks/useKeyboardListener";
 import { GlobalStyles } from "./styles/GlobalStyles";
 
 const titleEnter = keyframes`
@@ -21,7 +21,10 @@ const titleEnter = keyframes`
 `;
 
 const KeyboardTitle = styled.p`
-  font-family: "Instrument Sans", -apple-system, sans-serif;
+  font-family:
+    "Instrument Sans",
+    -apple-system,
+    sans-serif;
   font-size: clamp(10px, 1.1vw, 14px);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.35);

@@ -1,5 +1,5 @@
+import { parseArgs } from "node:util";
 import { $ } from "bun";
-import { parseArgs } from "util";
 
 const API_URL = "https://api.macosicons.com/api/v1/search";
 const API_KEY = process.env.MACOSICONS_API_KEY;

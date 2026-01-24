@@ -1,11 +1,5 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  type ReactNode,
-} from "react";
-import type { LayerType, LayerConfig } from "../types";
+import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
+import type { LayerConfig, LayerType } from "../types";
 
 const LAYERS: LayerConfig[] = [
   {
@@ -44,26 +38,22 @@ const LayerContext = createContext<LayerContextValue | null>(null);
 export function LayerProvider({ children }: { children: ReactNode }) {
   const [currentLayer, setCurrentLayer] = useState<LayerType>("base");
 
-  const cycleLayer = useCallback(
-    (direction: "forward" | "backward" = "forward") => {
-      setCurrentLayer((current) => {
-        const currentIndex = LAYERS.findIndex((l) => l.id === current);
-        const nextIndex =
-          direction === "forward"
-            ? (currentIndex + 1) % LAYERS.length
-            : (currentIndex - 1 + LAYERS.length) % LAYERS.length;
-        return LAYERS[nextIndex].id;
-      });
-    },
-    [],
-  );
+  const cycleLayer = useCallback((direction: "forward" | "backward" = "forward") => {
+    setCurrentLayer((current) => {
+      const currentIndex = LAYERS.findIndex((l) => l.id === current);
+      const nextIndex =
+        direction === "forward"
+          ? (currentIndex + 1) % LAYERS.length
+          : (currentIndex - 1 + LAYERS.length) % LAYERS.length;
+      return LAYERS[nextIndex].id;
+    });
+  }, []);
 
   const setLayer = useCallback((layer: LayerType) => {
     setCurrentLayer(layer);
   }, []);
 
-  const currentLayerConfig =
-    LAYERS.find((l) => l.id === currentLayer) ?? LAYERS[0];
+  const currentLayerConfig = LAYERS.find((l) => l.id === currentLayer) ?? LAYERS[0];
 
   return (
     <LayerContext.Provider

@@ -1,8 +1,8 @@
-import React from "react";
+import type React from "react";
 import styled, { css, keyframes } from "styled-components";
-import { Key } from "./Key";
 import { useMappingContext } from "../context/MappingContext";
 import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
+import { Key } from "./Key";
 
 const keyboardEnter = keyframes`
   from {
@@ -35,8 +35,8 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
   );
   border-radius: var(--frame-radius);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px)
-      rgba(180, 100, 60, 0.1),
+  box-shadow:
+    0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(180, 100, 60, 0.1),
     0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(160, 120, 70, 0.06),
     0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 120px) clamp(-10px, -2vw, -30px)
       rgba(0, 0, 0, 0.5),
@@ -148,18 +148,10 @@ export function Keyboard({
     <KeyboardFrame $layer={currentLayer} className={className}>
       {layout.map((row, rowIndex) => {
         if (rowIndex === 4) {
-          return (
-            <ModifierRow
-              key={rowIndex}
-              keys={row.keys}
-              renderKey={renderKey}
-            />
-          );
+          return <ModifierRow key={rowIndex} keys={row.keys} renderKey={renderKey} />;
         }
 
-        return (
-          <KeyboardRow key={rowIndex}>{row.keys.map(renderKey)}</KeyboardRow>
-        );
+        return <KeyboardRow key={rowIndex}>{row.keys.map(renderKey)}</KeyboardRow>;
       })}
     </KeyboardFrame>
   );

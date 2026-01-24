@@ -1,4 +1,3 @@
-import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useLayerContext } from "../context/LayerContext";
 
@@ -81,8 +80,7 @@ const LayerTab = styled.button<LayerTabProps>`
   align-items: center;
   gap: clamp(5px, 0.6vw, 8px);
   padding: clamp(6px, 0.8vw, 10px) clamp(10px, 1.2vw, 16px);
-  background: ${({ $isActive }) =>
-    $isActive ? "rgba(255, 255, 255, 0.1)" : "transparent"};
+  background: ${({ $isActive }) => ($isActive ? "rgba(255, 255, 255, 0.1)" : "transparent")};
   border: none;
   border-radius: clamp(8px, 1vw, 12px);
   cursor: pointer;
@@ -106,9 +104,10 @@ const TabDot = styled.span<TabDotProps>`
   height: clamp(6px, 0.7vw, 9px);
   border-radius: 50%;
   background: ${({ $accentColor }) => $accentColor};
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: ${({ $isActive, $accentColor }) =>
-    $isActive ? `0 0 8px ${$accentColor}` : "none"};
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: ${({ $isActive, $accentColor }) => ($isActive ? `0 0 8px ${$accentColor}` : "none")};
 `;
 
 const TabLabel = styled.span`
@@ -132,11 +131,7 @@ export function LayerIndicator() {
           {layers.map((layer) => {
             const isActive = currentLayer === layer.id;
             return (
-              <LayerTab
-                key={layer.id}
-                $isActive={isActive}
-                onClick={() => setLayer(layer.id)}
-              >
+              <LayerTab key={layer.id} $isActive={isActive} onClick={() => setLayer(layer.id)}>
                 <TabDot $isActive={isActive} $accentColor={layer.accentColor} />
                 <TabLabel>{layer.shortLabel}</TabLabel>
               </LayerTab>

@@ -1,4 +1,3 @@
-import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import type { KeyDefinition, KeyMapping, LayerType } from "../types";
 
@@ -40,12 +39,9 @@ const StyledKey = styled.div<StyledKeyProps>`
   align-items: center;
   justify-content: center;
   height: ${({ $height }) =>
-    $height === 0.5
-      ? `calc(var(--key-unit) / 2 - var(--key-gap) / 2)`
-      : `var(--key-unit)`};
+    $height === 0.5 ? `calc(var(--key-unit) / 2 - var(--key-gap) / 2)` : `var(--key-unit)`};
   min-width: var(--key-unit);
-  width: ${({ $width }) =>
-    `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
+  width: ${({ $width }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
   background: linear-gradient(
     180deg,
     #fcfcfd 0%,
@@ -58,14 +54,15 @@ const StyledKey = styled.div<StyledKeyProps>`
   cursor: default;
   user-select: none;
   transition: all 0.1s ease-out;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.08),
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.08),
     0 1px 1px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
   overflow: hidden;
 
-  --ripple-color: ${({ $rippleColor }) =>
-    $rippleColor || "rgba(140, 160, 150, 0.3)"};
+  --ripple-color: ${({ $rippleColor }) => $rippleColor || "rgba(140, 160, 150, 0.3)"};
 
   &::before {
     content: "";
@@ -102,8 +99,10 @@ const StyledKey = styled.div<StyledKeyProps>`
       #f5f5f7 60%,
       #efeff2 100%
     );
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.1),
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.02),
+      0 2px 4px rgba(0, 0, 0, 0.1),
       0 1px 2px rgba(0, 0, 0, 0.06);
   }
 
@@ -116,8 +115,10 @@ const StyledKey = styled.div<StyledKeyProps>`
       #eaeaec 60%,
       #e3e3e6 100%
     );
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.01), 0 0 2px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.01),
+      0 0 2px rgba(0, 0, 0, 0.06);
   }
 
   ${({ $isFunction }) =>
@@ -166,8 +167,10 @@ const StyledKey = styled.div<StyledKeyProps>`
     $isPressed &&
     css`
       transform: translateY(1px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.01), 0 0 2px rgba(0, 0, 0, 0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.01),
+        0 0 2px rgba(0, 0, 0, 0.08);
       &::before {
         animation: ${keyFlash} 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
@@ -337,15 +340,7 @@ export function Key({
   mapping,
   iconPath,
 }: KeyProps) {
-  const {
-    id,
-    label,
-    secondaryLabel,
-    width = 1,
-    height = 1,
-    isModifier,
-    isFunction,
-  } = definition;
+  const { id, label, secondaryLabel, width = 1, height = 1, isModifier, isFunction } = definition;
 
   const isBaseLayer = currentLayer === "base";
   const isRegularKey = !isModifier && !isFunction && !isSpecialKey(id);
@@ -380,7 +375,7 @@ function renderBaseLabel(
   label: string,
   secondaryLabel?: string,
   isFunction?: boolean,
-  isModifier?: boolean
+  isModifier?: boolean,
 ) {
   if (secondaryLabel) {
     return (
@@ -401,7 +396,7 @@ function renderMappingContent(
   mapping: KeyMapping,
   iconPath?: string | null,
   isSpace?: boolean,
-  isCommandLayer?: boolean
+  isCommandLayer?: boolean,
 ) {
   return (
     <KeyMapping $isSpace={isSpace}>
