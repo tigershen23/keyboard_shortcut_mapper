@@ -4,18 +4,18 @@
 
 /* Viewport-responsive sizing - keyboard scales with viewport */
 :root {
-  /* Base unit scales with viewport width, clamped for extremes */
-  --key-unit: clamp(36px, 5.8vw, 80px);
-  --key-gap: clamp(2px, 0.4vw, 6px);
-  --key-radius: clamp(5px, 0.65vw, 10px);
-  --frame-padding: clamp(14px, 2vw, 32px);
+  /* Base unit scales with viewport width, constrained to not overflow */
+  --key-unit: clamp(28px, 5vw, 70px);
+  --key-gap: clamp(2px, 0.35vw, 6px);
+  --key-radius: clamp(4px, 0.6vw, 10px);
+  --frame-padding: clamp(12px, 1.8vw, 32px);
   --frame-radius: clamp(10px, 1.4vw, 20px);
 
   /* Typography scales */
-  --font-key: clamp(11px, 1.45vw, 20px);
-  --font-key-secondary: clamp(9px, 1.1vw, 15px);
-  --font-key-modifier: clamp(14px, 1.8vw, 26px);
-  --font-key-function: clamp(9px, 1.2vw, 16px);
+  --font-key: clamp(10px, 1.3vw, 20px);
+  --font-key-secondary: clamp(8px, 1vw, 15px);
+  --font-key-modifier: clamp(12px, 1.6vw, 24px);
+  --font-key-function: clamp(8px, 1.1vw, 16px);
 }
 
 * {
@@ -25,69 +25,92 @@
 }
 
 html, body {
-  height: 100%;
+  margin: 0;
+  padding: 0;
   width: 100%;
+  height: 100%;
   overflow: hidden;
-  font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* Animated gradient mesh background */
+html {
+  background: #231418;
+}
+
 body {
+  background: transparent;
+}
+
+body {
+  font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #08080a;
   position: relative;
 }
 
-/* Gradient mesh layer */
-body::before {
+/* Fixed background container - extends way beyond viewport */
+.bg-gradient {
+  position: fixed;
+  top: -100px;
+  left: -100px;
+  right: -100px;
+  bottom: -100px;
+  z-index: 0;
+  background: linear-gradient(170deg, #1a1410 0%, #12100c 35%, #14100e 60%, #1a1215 80%, #231418 100%);
+}
+
+/* Gradient mesh layer - warm amber/coral tones */
+.bg-gradient::before {
   content: '';
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: -150px;
+  left: -150px;
+  right: -150px;
+  bottom: -150px;
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(55, 48, 107, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(45, 80, 120, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 70% 80%, rgba(90, 50, 90, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 60% at 30% 90%, rgba(30, 60, 90, 0.25) 0%, transparent 50%);
-  animation: meshShift 25s ease-in-out infinite;
-  opacity: 0.9;
+    radial-gradient(ellipse 60% 50% at 15% 25%, rgba(180, 90, 50, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 85% 15%, rgba(200, 120, 60, 0.4) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 75% 75%, rgba(160, 70, 90, 0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 5% 70%, rgba(140, 100, 50, 0.35) 0%, transparent 65%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(100, 50, 70, 0.5) 0%, transparent 70%);
+  filter: blur(80px);
+  animation: meshShift 30s ease-in-out infinite;
 }
 
 /* Secondary moving layer for depth */
-body::after {
+.bg-gradient::after {
   content: '';
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: -100px;
+  left: -100px;
+  right: -100px;
+  bottom: -100px;
   background:
-    radial-gradient(ellipse 50% 40% at 60% 30%, rgba(100, 70, 130, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 50% at 25% 60%, rgba(50, 90, 130, 0.15) 0%, transparent 50%);
-  animation: meshShift 20s ease-in-out infinite reverse;
-  opacity: 0.7;
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(190, 100, 70, 0.2) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 25% 60%, rgba(170, 130, 60, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(120, 60, 70, 0.3) 0%, transparent 65%);
+  filter: blur(60px);
+  animation: meshShift 22s ease-in-out infinite reverse;
 }
 
 @keyframes meshShift {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
-    filter: blur(60px);
+    transform: translate(0, 0) rotate(0deg);
+    filter: blur(80px);
   }
-  25% {
-    transform: translate(2%, -3%) scale(1.02);
+  33% {
+    transform: translate(5%, -5%) rotate(2deg);
+    filter: blur(90px);
+  }
+  66% {
+    transform: translate(-3%, 3%) rotate(-1deg);
     filter: blur(70px);
-  }
-  50% {
-    transform: translate(-1%, 2%) scale(0.98);
-    filter: blur(55px);
-  }
-  75% {
-    transform: translate(-2%, -1%) scale(1.01);
-    filter: blur(65px);
   }
 }
 
 /* Subtle noise texture overlay */
-#root::before {
+body > .noise-overlay {
   content: '';
   position: fixed;
   inset: 0;
@@ -105,9 +128,10 @@ body::after {
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 2.5vw, 40px);
-  width: 100%;
-  height: 100%;
-  padding: clamp(20px, 4vw, 60px);
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  padding: clamp(20px, 3vw, 50px);
 }
 
 /* Keyboard frame with ambient glow */
@@ -130,9 +154,9 @@ body::after {
 
   /* Layered shadow for depth + ambient glow */
   box-shadow:
-    /* Ambient colored glow */
-    0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(100, 80, 140, 0.12),
-    0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(60, 100, 140, 0.08),
+    /* Ambient colored glow - warm amber tones */
+    0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(180, 100, 60, 0.1),
+    0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(160, 120, 70, 0.06),
     /* Depth shadows */
     0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 120px) clamp(-10px, -2vw, -30px) rgba(0, 0, 0, 0.5),
     0 clamp(10px, 2vw, 30px) clamp(20px, 4vw, 60px) clamp(-8px, -1.5vw, -20px) rgba(0, 0, 0, 0.35),

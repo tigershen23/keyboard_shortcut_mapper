@@ -7,7 +7,7 @@ const server = Bun.serve({
   },
   development: {
     hmr: true,
-    console: true,
+    console: false,
   },
 });
 
