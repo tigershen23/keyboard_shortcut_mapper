@@ -1,13 +1,11 @@
-# Project Spec
+The goal of this project is to create a simple, beautiful interface to visualize the mapping layers on my keyboard. This will be a fully client-side, fully type-safe TypeScript and React application. The desired functionality is that I can, using keyboard shortcuts, toggle between the three layers. The first layer is just the base layer that shows the keyboard layout of a MacBook keyboard, and the second layer is going to be called the hyper layer. That will be the layer that encompasses what everything is mapped to when I press the hyper key. And then there should be a third layer that is hyper plus command. That is going to be the layer when I press the hyper plus command key. The hyper layer is going to be for switching between applications. The hyper plus command layer is going to be for commands such as toggling system appearance, locking the screen, et cetera. I'm still not exactly sure what the interaction patterns would be. My priorities are for it to be quick, efficient, visually compelling, and easy to use. There should also eventually be the ability to "save layouts." Make sure to use your frontend skill, but go multiple layers deeper than your first instinct about colors/layout/etc to produce something truly stunning and not obviously Claude-generated.
 
-## Overview
+But actually, let's just ignore that for now and just persist whatever the current thing is in some sort of local storage so that it survives refreshes.
 
-<!-- Describe what this project does -->
+As part of your research, please clone this repository to `~/code/clones` and see if there's any UI inspiration you can get from it for the keyboard layout itself in the UI. https://github.com/hodgef/react-simple-keyboard
 
-## Goals
+Before we start working, let's break this project down into phases together. So please do a bunch of research and understand the approach and put together specs/01_phases.md with a summary of the project and then all of the phases of the plan. No actual coding yet.
 
-<!-- List the main goals -->
+Roughly, I'm thinking that the first milestone will be just the initial UI, and then we can layer on the mappings. So basically, I want to be able to save that on the hyper layer. Hyper plus A will do XYZ and have that be quick to input and also be able to view it all fairly easily. Maybe we need to blow up the size of the keys because we will be typing or application names such as messages, et cetera, and the easiest way to view them will be overlaid onto the keys themselves, I think, with something like the original key label + the mapping below it.
 
-## Technical Details
-
-<!-- Implementation notes -->
+If there's some repository of application icons online we can call to match "Messages" to the correct icon, we can integrate with that too; that can be part of your initial research. Let's get to it.

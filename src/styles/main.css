@@ -1,12 +1,21 @@
-/* Geist font */
+/* Fonts */
 @import url("https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-mono/style.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap');
 
+/* Viewport-responsive sizing - keyboard scales with viewport */
 :root {
-  --key-unit: 56px;
-  --key-gap: 4px;
-  --key-radius: 7px;
-  --frame-padding: 20px;
-  --frame-radius: 14px;
+  /* Base unit scales with viewport width, clamped for extremes */
+  --key-unit: clamp(36px, 5.8vw, 80px);
+  --key-gap: clamp(2px, 0.4vw, 6px);
+  --key-radius: clamp(5px, 0.65vw, 10px);
+  --frame-padding: clamp(14px, 2vw, 32px);
+  --frame-radius: clamp(10px, 1.4vw, 20px);
+
+  /* Typography scales */
+  --font-key: clamp(11px, 1.45vw, 20px);
+  --font-key-secondary: clamp(9px, 1.1vw, 15px);
+  --font-key-modifier: clamp(14px, 1.8vw, 26px);
+  --font-key-function: clamp(9px, 1.2vw, 16px);
 }
 
 * {
@@ -15,29 +24,93 @@
   padding: 0;
 }
 
-html,
-body {
-  min-height: 100vh;
-  font-family: "Geist Mono", "SF Mono", Menlo, Monaco, monospace;
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Animated gradient mesh background */
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
-  background: radial-gradient(ellipse 100% 80% at 50% 50%, #1a1a1c, #0a0a0b);
+  background: #08080a;
+  position: relative;
+}
+
+/* Gradient mesh layer */
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(55, 48, 107, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(45, 80, 120, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 70% 80%, rgba(90, 50, 90, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 30% 90%, rgba(30, 60, 90, 0.25) 0%, transparent 50%);
+  animation: meshShift 25s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+/* Secondary moving layer for depth */
+body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 60% 30%, rgba(100, 70, 130, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 50% at 25% 60%, rgba(50, 90, 130, 0.15) 0%, transparent 50%);
+  animation: meshShift 20s ease-in-out infinite reverse;
+  opacity: 0.7;
+}
+
+@keyframes meshShift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    filter: blur(60px);
+  }
+  25% {
+    transform: translate(2%, -3%) scale(1.02);
+    filter: blur(70px);
+  }
+  50% {
+    transform: translate(-1%, 2%) scale(0.98);
+    filter: blur(55px);
+  }
+  75% {
+    transform: translate(-2%, -1%) scale(1.01);
+    filter: blur(65px);
+  }
+}
+
+/* Subtle noise texture overlay */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
 }
 
 #root {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  gap: clamp(16px, 2.5vw, 40px);
+  width: 100%;
+  height: 100%;
+  padding: clamp(20px, 4vw, 60px);
 }
 
-/* Keyboard frame */
+/* Keyboard frame with ambient glow */
 .keyboard-frame {
   position: relative;
   display: inline-flex;
@@ -45,22 +118,42 @@ body {
   gap: var(--key-gap);
   padding: var(--frame-padding);
   background: linear-gradient(
-    165deg,
-    #d4d4d8 0%,
-    #c4c4c8 20%,
-    #b8b8bc 50%,
-    #acacb0 80%,
-    #a0a0a4 100%
+    168deg,
+    #d8d8dc 0%,
+    #cdcdd1 15%,
+    #c2c2c6 40%,
+    #b7b7bb 70%,
+    #acacb0 100%
   );
   border-radius: var(--frame-radius);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  /* Layered shadow for depth + ambient glow */
   box-shadow:
-    0 0 80px 20px rgba(160, 160, 170, 0.06),
-    0 40px 80px -20px rgba(0, 0, 0, 0.6),
-    0 20px 40px -15px rgba(0, 0, 0, 0.4),
-    0 8px 20px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.08);
+    /* Ambient colored glow */
+    0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(100, 80, 140, 0.12),
+    0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(60, 100, 140, 0.08),
+    /* Depth shadows */
+    0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 120px) clamp(-10px, -2vw, -30px) rgba(0, 0, 0, 0.5),
+    0 clamp(10px, 2vw, 30px) clamp(20px, 4vw, 60px) clamp(-8px, -1.5vw, -20px) rgba(0, 0, 0, 0.35),
+    0 clamp(4px, 0.8vw, 12px) clamp(12px, 2vw, 30px) rgba(0, 0, 0, 0.2),
+    /* Inner highlights */
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+
+  /* Subtle entry animation */
+  animation: keyboardEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes keyboardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .keyboard-row {
@@ -77,38 +170,49 @@ body {
   justify-content: center;
   height: var(--key-unit);
   min-width: var(--key-unit);
-  background: linear-gradient(180deg, #fafafa 0%, #f0f0f2 30%, #e8e8eb 70%, #e0e0e3 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: linear-gradient(180deg,
+    #fcfcfd 0%,
+    #f4f4f6 25%,
+    #ededf0 60%,
+    #e5e5e8 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: var(--key-radius);
   cursor: default;
   user-select: none;
-  transition: all 0.08s ease-out;
+  transition: all 0.1s ease-out;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.03),
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 1px rgba(0, 0, 0, 0.06);
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 1px 1px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
 .key:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #f8f8fa 30%, #f0f0f3 70%, #eaeaed 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 25%, #f5f5f7 60%, #efeff2 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .key:active {
   transform: translateY(1px);
+  background: linear-gradient(180deg, #f8f8fa 0%, #f0f0f2 25%, #eaeaec 60%, #e3e3e6 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.02),
-    0 0px 2px rgba(0, 0, 0, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.01),
+    0 0 2px rgba(0, 0, 0, 0.06);
 }
 
 /* Key labels - single label */
 .key-label {
   font-family: "Geist Mono", "SF Mono", monospace;
-  font-size: 14px;
+  font-size: var(--font-key);
   font-weight: 500;
-  color: #2c2c2e;
+  color: #2a2a2c;
   line-height: 1;
   white-space: nowrap;
   text-align: center;
@@ -116,34 +220,34 @@ body {
 
 /* Function keys */
 .key-function {
-  background: linear-gradient(180deg, #f0f0f4 0%, #e6e6ea 30%, #dfdfe3 70%, #d8d8dc 100%);
+  background: linear-gradient(180deg, #f2f2f6 0%, #eaeaee 25%, #e4e4e8 60%, #dcdce0 100%);
 }
 
 .key-function:hover {
-  background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f4 30%, #e9e9ed 70%, #e2e2e6 100%);
+  background: linear-gradient(180deg, #fafafe 0%, #f4f4f8 25%, #eeeeef2 60%, #e6e6ea 100%);
 }
 
 .key-function .key-label {
-  font-size: 12px;
+  font-size: var(--font-key-function);
   font-weight: 500;
-  color: #48484a;
+  color: #4a4a4c;
   text-transform: lowercase;
 }
 
 /* Modifier keys */
 .key-modifier .key-label {
-  font-size: 18px;
+  font-size: var(--font-key-modifier);
   font-weight: 400;
-  color: #3c3c3e;
+  color: #3a3a3c;
 }
 
 /* Space bar */
 .key-space {
-  background: linear-gradient(180deg, #f5f5f9 0%, #eaeaee 40%, #e2e2e6 70%, #dcdce0 100%);
+  background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f4 35%, #e8e8ec 65%, #e0e0e4 100%);
 }
 
 .key-space:hover {
-  background: linear-gradient(180deg, #fdfdf8 0%, #f4f4f8 40%, #ececf0 70%, #e6e6ea 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8fc 35%, #f0f0f4 65%, #eaeaee 100%);
 }
 
 /* Keys with secondary labels (like number row) */
@@ -152,22 +256,22 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
+  gap: clamp(0px, 0.15vw, 2px);
   line-height: 1;
 }
 
 .key-label-secondary {
   font-family: "Geist Mono", "SF Mono", monospace;
-  font-size: 11px;
+  font-size: var(--font-key-secondary);
   font-weight: 500;
-  color: #6e6e73;
+  color: #707074;
 }
 
 .key-label-primary {
   font-family: "Geist Mono", "SF Mono", monospace;
-  font-size: 15px;
+  font-size: var(--font-key);
   font-weight: 500;
-  color: #2c2c2e;
+  color: #2a2a2c;
 }
 
 /* Arrow key cluster */
@@ -188,68 +292,70 @@ body {
 }
 
 .arrow-vertical .key:first-child {
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: clamp(1px, 0.2vw, 3px);
+  border-bottom-right-radius: clamp(1px, 0.2vw, 3px);
 }
 
 .arrow-vertical .key:last-child {
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
+  border-top-left-radius: clamp(1px, 0.2vw, 3px);
+  border-top-right-radius: clamp(1px, 0.2vw, 3px);
 }
 
 /* Arrow keys styling */
 .arrow-cluster .key .key-label {
-  font-size: 12px;
-  color: #48484a;
+  font-size: var(--font-key-function);
+  color: #4a4a4c;
 }
 
 /* Title */
 .keyboard-title {
-  font-size: 11px;
+  font-family: "Instrument Sans", -apple-system, sans-serif;
+  font-size: clamp(10px, 1.1vw, 14px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  animation: titleEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  opacity: 0;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  :root {
-    --key-unit: 38px;
-    --key-gap: 2px;
-    --frame-padding: 12px;
+@keyframes titleEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-  .key-label {
-    font-size: 11px;
-  }
-  .key-function .key-label {
-    font-size: 9px;
-  }
-  .key-label-primary {
-    font-size: 12px;
-  }
-  .key-label-secondary {
-    font-size: 8px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 600px) {
+/* Maintain aspect ratio on very wide screens */
+@media (min-aspect-ratio: 21/9) {
   :root {
-    --key-unit: 28px;
-    --key-gap: 2px;
-    --frame-padding: 8px;
-    --key-radius: 4px;
+    --key-unit: clamp(32px, 4.5vh, 72px);
+    --key-gap: clamp(2px, 0.3vh, 5px);
+    --key-radius: clamp(4px, 0.5vh, 9px);
+    --frame-padding: clamp(12px, 1.5vh, 28px);
+    --frame-radius: clamp(8px, 1vh, 18px);
+    --font-key: clamp(10px, 1.1vh, 18px);
+    --font-key-secondary: clamp(8px, 0.85vh, 14px);
+    --font-key-modifier: clamp(12px, 1.4vh, 22px);
+    --font-key-function: clamp(8px, 0.95vh, 15px);
   }
-  .key-label {
-    font-size: 9px;
-  }
-  .key-function .key-label {
-    font-size: 7px;
-  }
-  .key-label-primary {
-    font-size: 9px;
-  }
-  .key-label-secondary {
-    font-size: 6px;
+}
+
+/* Smaller screens */
+@media (max-width: 768px) {
+  :root {
+    --key-unit: clamp(24px, 8vw, 48px);
+    --key-gap: clamp(1px, 0.5vw, 3px);
+    --key-radius: clamp(3px, 0.8vw, 6px);
+    --frame-padding: clamp(8px, 2vw, 16px);
+    --frame-radius: clamp(6px, 1.5vw, 12px);
+    --font-key: clamp(8px, 2vw, 12px);
+    --font-key-secondary: clamp(6px, 1.5vw, 10px);
+    --font-key-modifier: clamp(10px, 2.5vw, 16px);
+    --font-key-function: clamp(6px, 1.8vw, 11px);
   }
 }

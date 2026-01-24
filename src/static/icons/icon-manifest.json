@@ -1,0 +1,205 @@
+{
+  "Ghostty": {
+    "pngPath": "/icons/ghostty.png",
+    "icnsPath": "/icons/ghostty.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/AQ9GnfXCUO/lowResPngFile_c704d8dbb7c3f0bed527cff399724916_low_res_Ghostty.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/AQ9GnfXCUO/icnsFile_26669b13ec440173280a875af6f3982c_Ghostty.icns",
+    "credit": null
+  },
+  "ChatGPT Atlas": {
+    "pngPath": "/icons/chatgpt-atlas.png",
+    "icnsPath": "/icons/chatgpt-atlas.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/KPYKJUdDc6/lowResPngFile_7ceb264dd12a51e1c6e2da733655f028_low_res_ChatGPT_Atlas.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/KPYKJUdDc6/icnsFile_247b29d033a18745bf1fdb035816a6fa_1761352390447.icns",
+    "credit": null
+  },
+  "Bitwarden": {
+    "pngPath": "/icons/bitwarden.png",
+    "icnsPath": "/icons/bitwarden.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/Z3Q71AYMSV/lowResPngFile_04a817cb516caf13f48840ceb0b5d2b0_Z3Q71AYMSV.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/Z3Q71AYMSV/icnsFile_6c3f588722dd8b50c19eed273ac0bcba_Z3Q71AYMSV.icns",
+    "credit": null
+  },
+  "Cursor": {
+    "pngPath": "/icons/cursor.png",
+    "icnsPath": "/icons/cursor.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/2cLpub2Yxt/lowResPngFile_a53a55de99ab2ebf5badf382a30875c2_low_res_Cursor.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/2cLpub2Yxt/icnsFile_86446646f423219819927e90bcaa1245_Cursor.icns",
+    "credit": null
+  },
+  "Spotify": {
+    "pngPath": "/icons/spotify.png",
+    "icnsPath": "/icons/spotify.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/AiVIJCBk89/lowResPngFile_8d99b5f5dec64894fe0f92479fd69be2_AiVIJCBk89.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/AiVIJCBk89/icnsFile_f04f23d543d92125ce79acdab110c116_AiVIJCBk89.icns",
+    "credit": null
+  },
+  "Rize": {
+    "pngPath": "/icons/rize.png",
+    "icnsPath": "/icons/rize.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/BIYCJMd6em/lowResPngFile_94529215660b3bd78a6f7acec0df0085_low_res_Rize.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/BIYCJMd6em/icnsFile_a801dea329cefe3dda79dabcf213ef02_Rize.icns",
+    "credit": null
+  },
+  "Aqua Voice": {
+    "pngPath": "/icons/aqua-voice.png",
+    "icnsPath": "/icons/aqua-voice.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/ELRsETXqy6/lowResPngFile_63e8d28897fec68941414dd8b925268e_ELRsETXqy6.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/ELRsETXqy6/icnsFile_132d05b4f9deb02fd1b4f3cac3ff4c79_ELRsETXqy6.icns",
+    "credit": "https://twitter.com/DavidkolendaBR"
+  },
+  "Superhuman": {
+    "pngPath": "/icons/superhuman.png",
+    "icnsPath": "/icons/superhuman.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/hGGFDutXhE/lowResPngFile_efb94400af0c2287522827fdec1ec123_low_res_Superhuman.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/hGGFDutXhE/icnsFile_63553fe63cc2d64fef758eb75dd9b56c_Superhuman.icns",
+    "credit": "https://adamfairhead.com"
+  },
+  "Google Chrome": {
+    "pngPath": "/icons/google-chrome.png",
+    "icnsPath": "/icons/google-chrome.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/PHhqrUbITm/lowResPngFile_7d32b7fc5864b5acfdff27dec2219cbe_PHhqrUbITm.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/PHhqrUbITm/icnsFile_7d879bcd6e120e7e8e50a33bc2ec8972_PHhqrUbITm.icns",
+    "credit": "https://github.com/electromeow"
+  },
+  "Anki": {
+    "pngPath": "/icons/anki.png",
+    "icnsPath": "/icons/anki.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/dT8nKCVnSe/lowResPngFile_c78efae4790552a7264383b2febe0295_dT8nKCVnSe.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/dT8nKCVnSe/icnsFile_b405c007b09a578c216979103ab65e70_dT8nKCVnSe.icns",
+    "credit": null
+  },
+  "Obsidian": {
+    "pngPath": "/icons/obsidian.png",
+    "icnsPath": "/icons/obsidian.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/DaqFFuFvXL/lowResPngFile_76711802d44991538e218995b6f4822d_DaqFFuFvXL.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/DaqFFuFvXL/icnsFile_f359f4e9c4726dbf53732d92e99bb489_DaqFFuFvXL.icns",
+    "credit": null
+  },
+  "WhatsApp": {
+    "pngPath": "/icons/whatsapp.png",
+    "icnsPath": "/icons/whatsapp.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/EKbKc054gq/lowResPngFile_aaaea5e4848117093083a13cf1f205de_EKbKc054gq.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/EKbKc054gq/icnsFile_ba69a74d7fd44219b0fe1c32169675b1_EKbKc054gq.icns",
+    "credit": "https://github.com/electromeow"
+  },
+  "Discord": {
+    "pngPath": "/icons/discord.png",
+    "icnsPath": "/icons/discord.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/xT1zFJW7PL/lowResPngFile_778fa123651ecd560629f2eed164a8e7_xT1zFJW7PL.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/xT1zFJW7PL/icnsFile_486945094d0c6b87a92d72201f5e8e67_xT1zFJW7PL.icns",
+    "credit": "https://twitter.com/poonxal"
+  },
+  "Safari": {
+    "pngPath": "/icons/safari.png",
+    "icnsPath": "/icons/safari.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/LWzZ6l63vI/lowResPngFile_a1dd6c2143868c36ab74dc1129da983b_LWzZ6l63vI.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/LWzZ6l63vI/icnsFile_4e2844c5758c2f26c650abd89129ca37_LWzZ6l63vI.icns",
+    "credit": "https://www.deviantart.com/octaviotti"
+  },
+  "Trello": {
+    "pngPath": "/icons/trello.png",
+    "icnsPath": "/icons/trello.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/dESUAPdx3T/lowResPngFile_0990bb1a07a387421eb88afec8bca384_dESUAPdx3T.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/dESUAPdx3T/icnsFile_f0dadbe99296fd17ff95abc6c0c169ca_dESUAPdx3T.icns",
+    "credit": "https://www.behance.net/lvcasgomes"
+  },
+  "zoom.us": {
+    "pngPath": "/icons/zoom-us.png",
+    "icnsPath": "/icons/zoom-us.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/bkunxhzqAN/lowResPngFile_99e459ae7ecfa09e12fa4d982d0db94c_bkunxhzqAN.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/bkunxhzqAN/icnsFile_8956293a26cde92045ffc1d91d2ae3df_bkunxhzqAN.icns",
+    "credit": null
+  },
+  "QMK Toolbox": {
+    "pngPath": "/icons/qmk-toolbox.png",
+    "icnsPath": "/icons/qmk-toolbox.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/a0FdFPBLlP/lowResPngFile_25f1be62df8d8b6874f17558ed0de323_a0FdFPBLlP.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/a0FdFPBLlP/icnsFile_9ab132a6bde445ea14b9516776b109ff_a0FdFPBLlP.icns",
+    "credit": null
+  },
+  "Stats": {
+    "pngPath": "/icons/stats.png",
+    "icnsPath": "/icons/stats.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/iQUE5BuLz1/lowResPngFile_e9b9b65cedfe19d4112389db1eaad818_low_res_Stats.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/iQUE5BuLz1/icnsFile_03dc1f726d39c7a3a59604737dc36711_Stats.icns",
+    "credit": "https://github.com/Zabriskije/MacOS-Icons"
+  },
+  "ChatGPT": {
+    "pngPath": "/icons/chatgpt.png",
+    "icnsPath": "/icons/chatgpt.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/MLvyq8BTp5/lowResPngFile_f40fb5cf8bb9310a9c7a9d5d52833b04_low_res_ChatGPT.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/MLvyq8BTp5/icnsFile_bc433483d3593a7391e5ace2ec529887_ChatGPT.icns",
+    "credit": null
+  },
+  "Raindrop.io": {
+    "pngPath": "/icons/raindrop-io.png",
+    "icnsPath": "/icons/raindrop-io.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/H51UCTAcjD/lowResPngFile_ae36b09ea8783509119fd53aec20aacf_H51UCTAcjD.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/H51UCTAcjD/icnsFile_b45fed465cba6318eec8868b01b1c4d1_H51UCTAcjD.icns",
+    "credit": null
+  },
+  "Loom": {
+    "pngPath": "/icons/loom.png",
+    "icnsPath": "/icons/loom.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/1FlJUWZoWV/lowResPngFile_2608a5211f957e563da7e83baa04abce_1FlJUWZoWV.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/1FlJUWZoWV/icnsFile_65572f7c21adff1bb39f4e50840369cd_1FlJUWZoWV.icns",
+    "credit": null
+  },
+  "Amazon Kindle": {
+    "pngPath": "/icons/amazon-kindle.png",
+    "icnsPath": "/icons/amazon-kindle.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/GQ2wlFNpkD/lowResPngFile_70fc0739bd92aa614ccc653043f72365_GQ2wlFNpkD.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/GQ2wlFNpkD/icnsFile_a1fc4784d6b3a1d38ba31a5966970ebe_GQ2wlFNpkD.icns",
+    "credit": null
+  },
+  "Linear": {
+    "pngPath": "/icons/linear.png",
+    "icnsPath": "/icons/linear.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/B4HShpeK27/lowResPngFile_82bb7ccb82b424d9106ce48c57f456df_B4HShpeK27.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/B4HShpeK27/icnsFile_64e82560bea8709a62d8e548043c48cb_B4HShpeK27.icns",
+    "credit": "https://bradkinsbeats.com"
+  },
+  "Windsurf": {
+    "pngPath": "/icons/windsurf.png",
+    "icnsPath": "/icons/windsurf.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/9JC69qmvDf/lowResPngFile_a3cc1f2d56daca76b6747b2d7a3d95ef_low_res_Windsurf.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/9JC69qmvDf/icnsFile_97e3085808f0fec12f2e8694865407be_Windsurf.icns",
+    "credit": null
+  },
+  "Conductor": {
+    "pngPath": "/icons/conductor.png",
+    "icnsPath": "/icons/conductor.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/KkyWQoxp5o/lowResPngFile_d78288a55f2db2700bdd806d22190d66_low_res_MATLAB_Connector.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/KkyWQoxp5o/icnsFile_aa8768565242a5eb57c2d3c2d369ab5b_MATLAB_Connector.icns",
+    "credit": null
+  },
+  "TablePlus": {
+    "pngPath": "/icons/tableplus.png",
+    "icnsPath": "/icons/tableplus.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/MoXZyuzFBQ/lowResPngFile_a0cc8976bf763a3dbd5e3f791c5128df_low_res_TablePlus.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/MoXZyuzFBQ/icnsFile_236c1a1ff28b5a0f898b46ea338fdcea_TablePlus.icns",
+    "credit": null
+  },
+  "RuneLite": {
+    "pngPath": "/icons/runelite.png",
+    "icnsPath": "/icons/runelite.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/Ks2GdxruQR/lowResPngFile_d980bfdd34935e3b808d8e326b4d962d_Ks2GdxruQR.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/Ks2GdxruQR/icnsFile_eba62c3f5c0e7b68d082fa87b5318cad_Ks2GdxruQR.icns",
+    "credit": null
+  },
+  "NordVPN": {
+    "pngPath": "/icons/nordvpn.png",
+    "icnsPath": "/icons/nordvpn.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/IAO0viADAX/lowResPngFile_a27024d5f2e880d8fdc2770c2d9e1284_IAO0viADAX.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/IAO0viADAX/icnsFile_df465eb785190cb016b997d776516733_IAO0viADAX.icns",
+    "credit": null
+  },
+  "OrbStack": {
+    "pngPath": "/icons/orbstack.png",
+    "icnsPath": "/icons/orbstack.icns",
+    "pngUrl": "https://s3.macosicons.com/macosicons/icons/38aqygkeD4/lowResPngFile_b07e56db006660074bf880085e77a0c0_low_res_OrbStack.png",
+    "icnsUrl": "https://s3.macosicons.com/macosicons/icons/38aqygkeD4/icnsFile_cff156ad2f6baef08f0fd1b695c4100b_OrbStack.icns",
+    "credit": "Sidewinder"
+  }
+}
