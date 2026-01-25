@@ -1,3 +1,4 @@
+import { Dialog } from "@base-ui-components/react/dialog";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useLayerContext } from "../context/LayerContext";
@@ -133,6 +134,84 @@ const CreditsLink = styled.a`
   }
 `;
 
+const DialogBackdrop = styled(Dialog.Backdrop)`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+`;
+
+const DialogPopup = styled(Dialog.Popup)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1a1614;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 360px;
+  width: calc(100% - 32px);
+  z-index: 101;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+`;
+
+const DialogTitle = styled(Dialog.Title)`
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 8px 0;
+`;
+
+const DialogDescription = styled(Dialog.Description)`
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+`;
+
+const DialogActions = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+`;
+
+const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  ${({ $variant }) =>
+    $variant === "danger"
+      ? `
+    background: rgba(220, 80, 80, 0.9);
+    color: white;
+    &:hover {
+      background: rgba(220, 80, 80, 1);
+    }
+  `
+      : `
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.9);
+    }
+  `}
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
 function CopyIcon() {
   return (
     <svg
@@ -166,10 +245,28 @@ function CheckIcon() {
   );
 }
 
+function ResetIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </svg>
+  );
+}
+
 export function ActionBar() {
-  const { mappings } = useMappingContext();
+  const { mappings, resetToDefaults } = useMappingContext();
   const { layers, currentLayer } = useLayerContext();
   const [copied, setCopied] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
   const hyperCount = mappings.hyper.length;
   const commandCount = mappings.command.length;
@@ -211,6 +308,37 @@ export function ActionBar() {
         <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
         <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
       </ActionButton>
+
+      <Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <Dialog.Trigger render={<ActionButton />}>
+          <ButtonIcon>
+            <ResetIcon />
+          </ButtonIcon>
+          <ButtonLabel>Reset</ButtonLabel>
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <DialogBackdrop />
+          <DialogPopup>
+            <DialogTitle>Reset to Defaults?</DialogTitle>
+            <DialogDescription>
+              This will replace all your current keyboard mappings with the default configuration. This action cannot be
+              undone.
+            </DialogDescription>
+            <DialogActions>
+              <Dialog.Close render={<DialogButton $variant="secondary" />}>Cancel</Dialog.Close>
+              <DialogButton
+                $variant="danger"
+                onClick={() => {
+                  resetToDefaults();
+                  setResetDialogOpen(false);
+                }}
+              >
+                Reset
+              </DialogButton>
+            </DialogActions>
+          </DialogPopup>
+        </Dialog.Portal>
+      </Dialog.Root>
     </ActionBarContainer>
   );
 }
