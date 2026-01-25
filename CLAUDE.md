@@ -1,113 +1,119 @@
----
-description: Use Bun instead of Node.js, npm, pnpm, or vite.
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json"
-alwaysApply: false
----
+# Keyboard Shortcut Mapper
 
-Default to using Bun instead of Node.js.
+A visual keyboard mapping tool for MacBook that displays and edits keyboard shortcut layers. Built with React and Bun.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Bun automatically loads .env, so don't use dotenv.
+**Live:** https://tigershen23.github.io/keyboard_shortcut_mapper/
 
-## APIs
+## Project Overview
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+This is a fully functional React app deployed to GitHub Pages. It renders a 64-key MacBook US ANSI keyboard layout with three layers (Base, Hyper, Command) and lets users click keys to assign app shortcuts via a searchable combobox.
 
-## Testing
+### Key Features
 
-Use `bun test` to run tests.
+- Three keyboard layers with Tab/Shift+Tab cycling
+- Inline key editing via popover with app icon dropdown
+- Mappings and selected layer persisted to localStorage
+- Ink ripple animation on key press
+- Copy mappings to clipboard as markdown
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
+## Development
 
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+### Dev Server (PM2-managed)
+
+The dev server runs under PM2 as, separately so you don't need to manage it as a bash `keyboard_shortcut_mapper`:
+
+```bash
+# View logs
+pm2 logs keyboard_shortcut_mapper
+
+# Restart server
+pm2 restart keyboard_shortcut_mapper
+
+# Check status
+pm2 describe keyboard_shortcut_mapper
 ```
 
-## Frontend
+Logs are stored in `~/.pm2/logs/`.
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+### Manual Commands
 
-Server:
+```bash
+# Install dependencies
+bun install
 
-```ts#index.ts
-import index from "./index.html"
+# Run dev server directly (with HMR)
+bun --hot src/index.ts
 
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+# Build for production
+bun run build
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+Dev server runs at http://localhost:3000
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
+### Testing
+
+```bash
+bun test
 ```
 
-With the following `frontend.tsx`:
+## Architecture
 
-```tsx#frontend.tsx
-import React from "react";
+### State Management
 
-// import .css files directly and it works
-import './index.css';
+- `LayerContext` - Selected layer (base/hyper/command), persisted to localStorage
+- `MappingContext` - Key→mapping data, persisted to localStorage
+- No external state library - React Context + localStorage
 
-import { createRoot } from "react-dom/client";
+### Data Flow
 
-const root = createRoot(document.body);
+1. `src/data/macbook-layout.ts` - Key positions/sizes
+2. `src/data/default-mappings.ts` - Initial mapping data
+3. `MappingContext` loads from localStorage or falls back to defaults
+4. `Keyboard` component renders keys
+5. `KeyPopover` allows editing via `AppCombobox`
 
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
+### Build Pipeline
 
-root.render(<Frontend />);
+- **Dev:** `bun --hot src/index.ts` (Bun.serve with HMR)
+- **Prod:** `bun build ./src/index.html --outdir ./dist --minify`
+- **Deploy:** GitHub Actions on push to master → GitHub Pages
+
+## Project Structure
+
+```
+src/
+├── index.ts            # Bun.serve() dev server
+├── index.html          # HTML entry point
+├── frontend.tsx        # React app entry
+├── components/         # UI components (Keyboard, Key, KeyPopover, etc.)
+├── context/            # React context (LayerContext, MappingContext)
+├── data/               # Static data (layout, mappings, icons)
+├── hooks/              # Custom hooks
+├── styles/             # Global styles
+├── types/              # TypeScript interfaces
+├── utils/              # Helpers (storage, markdown export)
+└── static/icons/       # App icons (33 PNGs)
 ```
 
-Then, run index.ts
+## Key Files
 
-```sh
-bun --hot ./index.ts
-```
+| File | Purpose |
+|------|---------|
+| `src/index.ts` | Dev server (Bun.serve) |
+| `src/frontend.tsx` | React app entry |
+| `src/components/Keyboard.tsx` | Main keyboard grid |
+| `src/components/Key.tsx` | Individual key with ripple |
+| `src/components/KeyPopover.tsx` | Edit popover |
+| `src/context/MappingContext.tsx` | Mapping state + persistence |
+| `src/data/default-mappings.ts` | Initial key mappings |
+| `.github/workflows/deploy.yml` | GitHub Pages deployment |
+| `ecosystem.config.cjs` | PM2 process configuration |
 
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+## Conventions
 
-- When writing plans do not include a bunch of code, always mostly instructions and prose, the code should be left for the coding step
+- When writing plans, use prose and instructions rather than code blocks
+- Code should be written during the coding step, not the planning step
+
+## Imported Rules
+
+@.claude/rules/bun.md
