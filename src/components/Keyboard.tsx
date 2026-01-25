@@ -49,6 +49,21 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
   --layer-glow: transparent;
   transition: box-shadow 0.4s ease;
 
+  @media (max-width: 768px) {
+    max-width: 100%;
+    width: 100%;
+    box-shadow:
+      0 0 clamp(30px, 8vw, 80px) clamp(10px, 3vw, 30px) rgba(180, 100, 60, 0.1),
+      0 0 clamp(20px, 5vw, 50px) clamp(5px, 1.5vw, 15px) rgba(160, 120, 70, 0.06),
+      0 clamp(10px, 3vw, 30px) clamp(20px, 6vw, 60px) clamp(-5px, -1.5vw, -15px)
+        rgba(0, 0, 0, 0.5),
+      0 clamp(5px, 1.5vw, 15px) clamp(10px, 3vw, 30px) clamp(-4px, -1vw, -10px)
+        rgba(0, 0, 0, 0.35),
+      0 clamp(2px, 0.6vw, 6px) clamp(6px, 1.5vw, 15px) rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+  }
+
   &::before {
     content: "";
     position: absolute;

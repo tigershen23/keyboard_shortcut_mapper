@@ -42,10 +42,10 @@ const StyledKey = styled.div<StyledKeyProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: ${({ $height }) =>
+  height: ${({ $height }: { $height: number }) =>
     $height === 0.5 ? `calc(var(--key-unit) / 2 - var(--key-gap) / 2)` : `var(--key-unit)`};
   min-width: var(--key-unit);
-  width: ${({ $width }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
+  width: ${({ $width }: { $width: number }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
   background: linear-gradient(
     180deg,
     #fcfcfd 0%,
@@ -315,6 +315,7 @@ const KeyMappingIcon = styled.img<{ $isSpace?: boolean }>`
 const KeyMappingLabel = styled.span<{
   $isSpace?: boolean;
   $isCommandLayer?: boolean;
+  $hasIcon?: boolean;
 }>`
   font-family: "Instrument Sans", sans-serif;
   font-size: clamp(7px, 0.8vw, 11px);
@@ -338,6 +339,18 @@ const KeyMappingLabel = styled.span<{
     css`
       font-weight: 600;
       letter-spacing: 0.02em;
+    `}
+
+  ${({ $isCommandLayer, $hasIcon }) =>
+    $isCommandLayer &&
+    !$hasIcon &&
+    css`
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     `}
 `;
 
@@ -437,12 +450,13 @@ function renderMappingContent(
   isSpace?: boolean,
   isCommandLayer?: boolean,
 ) {
+  const hasIcon = Boolean(iconPath);
   return (
     <KeyMapping $isSpace={isSpace}>
       {iconPath && (
         <KeyMappingIcon src={iconPath} alt={mapping.action} $isSpace={isSpace} loading="lazy" />
       )}
-      <KeyMappingLabel $isSpace={isSpace} $isCommandLayer={isCommandLayer}>
+      <KeyMappingLabel $isSpace={isSpace} $isCommandLayer={isCommandLayer} $hasIcon={hasIcon}>
         {mapping.action}
       </KeyMappingLabel>
     </KeyMapping>

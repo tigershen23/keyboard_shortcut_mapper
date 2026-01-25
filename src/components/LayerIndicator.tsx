@@ -18,6 +18,17 @@ const IndicatorContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: clamp(10px, 1.2vw, 16px);
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 12px 12px;
+    background: linear-gradient(180deg, rgba(20, 16, 14, 0.95) 0%, rgba(20, 16, 14, 0.8) 70%, transparent 100%);
+    z-index: 50;
+    gap: 8px;
+  }
 `;
 
 const PageTitle = styled.h1`

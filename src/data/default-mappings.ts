@@ -27,8 +27,8 @@ export const defaultMappings: LayerMappings = {
     { keyId: "m", action: "Linear", appName: "Linear" },
   ],
   command: [
-    { keyId: "i", action: "Audio Input", description: "Set audio input" },
-    { keyId: "o", action: "Audio Output", description: "Set audio output" },
+    { keyId: "i", action: "Set Audio Input", description: "Set audio input" },
+    { keyId: "o", action: "Set Audio Output", description: "Set audio output" },
     { keyId: "e", action: "Emoji", description: "Emoji picker" },
     { keyId: "t", action: "Translate", description: "Translate" },
     { keyId: "a", action: "Theme", description: "Change theme" },

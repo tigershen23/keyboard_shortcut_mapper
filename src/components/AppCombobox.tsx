@@ -2,15 +2,16 @@ import React, { useMemo, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { getIconPath, iconManifest } from "../data/icon-manifest";
 
-const apps = Object.keys(iconManifest);
+const apps = Object.keys(iconManifest).sort();
 
 interface AppComboboxProps {
   value: string;
   onChange: (value: string) => void;
   layerAccent: string;
+  onSubmit: () => void;
 }
 
-export function AppCombobox({ value, onChange, layerAccent }: AppComboboxProps) {
+export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppComboboxProps) {
   const [inputValue, setInputValue] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -59,12 +60,20 @@ export function AppCombobox({ value, onChange, layerAccent }: AppComboboxProps) 
         break;
       case "Enter":
         e.preventDefault();
-        if (filteredApps[highlightedIndex]) {
+        if (filteredApps.length === 0) {
+          onSubmit();
+        } else if (e.metaKey) {
+          onSubmit();
+        } else if (filteredApps[highlightedIndex]) {
           handleSelect(filteredApps[highlightedIndex]);
         }
         break;
       case "Escape":
-        setIsOpen(false);
+        if (filteredApps.length === 0) {
+          // Let the event propagate to close the form
+        } else {
+          setIsOpen(false);
+        }
         break;
     }
   };

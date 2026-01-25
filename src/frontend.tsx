@@ -75,6 +75,7 @@ function AppContent() {
           keyId={selectedKeyId}
           keyRect={selectedKeyRect}
           currentMapping={currentMapping}
+          currentLayer={currentLayer}
           layerAccent={currentLayerConfig.accentColor}
           onSave={handleSave}
           onDelete={handleDelete}

@@ -144,15 +144,21 @@ export const GlobalStyles = createGlobalStyle`
 
   @media (max-width: 768px) {
     :root {
-      --key-unit: clamp(24px, 8vw, 48px);
-      --key-gap: clamp(1px, 0.5vw, 3px);
-      --key-radius: clamp(3px, 0.8vw, 6px);
-      --frame-padding: clamp(8px, 2vw, 16px);
-      --frame-radius: clamp(6px, 1.5vw, 12px);
-      --font-key: clamp(8px, 2vw, 12px);
-      --font-key-secondary: clamp(6px, 1.5vw, 10px);
-      --font-key-modifier: clamp(10px, 2.5vw, 16px);
-      --font-key-function: clamp(6px, 1.8vw, 11px);
+      --key-unit: clamp(16px, 4.8vw, 32px);
+      --key-gap: clamp(1px, 0.3vw, 2px);
+      --key-radius: clamp(2px, 0.5vw, 4px);
+      --frame-padding: clamp(4px, 1.2vw, 10px);
+      --frame-radius: clamp(4px, 1vw, 8px);
+      --font-key: clamp(5px, 1.4vw, 9px);
+      --font-key-secondary: clamp(4px, 1vw, 7px);
+      --font-key-modifier: clamp(7px, 1.8vw, 12px);
+      --font-key-function: clamp(5px, 1.2vw, 8px);
+    }
+
+    #root {
+      padding: 80px 8px 80px 8px;
+      gap: 0;
+      justify-content: center;
     }
   }
 `;

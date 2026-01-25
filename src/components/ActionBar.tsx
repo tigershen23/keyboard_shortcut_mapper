@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
+import { useLayerContext } from "../context/LayerContext";
 import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
 import { generateMappingsMarkdown } from "../utils/generateMarkdown";
@@ -19,6 +20,16 @@ const ActionBarContainer = styled.div`
   gap: clamp(12px, 1.5vw, 20px);
   animation: ${fadeIn} 0.5s ease 0.4s forwards;
   opacity: 0;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 12px 16px;
+    background: linear-gradient(0deg, rgba(20, 16, 14, 0.95) 0%, rgba(20, 16, 14, 0.8) 30%, transparent 100%);
+    z-index: 50;
+  }
 `;
 
 interface ActionButtonProps {
@@ -87,6 +98,41 @@ const ButtonLabel = styled.span`
   white-space: nowrap;
 `;
 
+const StatsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px);
+  font-family: "Instrument Sans", sans-serif;
+  font-size: clamp(10px, 1vw, 13px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+`;
+
+const StatItem = styled.span<{ $color: string; $isActive?: boolean }>`
+  color: ${({ $color }) => $color};
+  opacity: ${({ $isActive }) => ($isActive ? 1 : 0.4)};
+  transition: opacity 0.2s ease;
+`;
+
+const Divider = styled.span`
+  width: 1px;
+  height: clamp(12px, 1.2vw, 16px);
+  background: rgba(255, 255, 255, 0.15);
+`;
+
+const CreditsLink = styled.a`
+  display: flex;
+  align-items: center;
+  font-size: clamp(14px, 1.4vw, 18px);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
 function CopyIcon() {
   return (
     <svg
@@ -122,7 +168,14 @@ function CheckIcon() {
 
 export function ActionBar() {
   const { mappings } = useMappingContext();
+  const { layers, currentLayer } = useLayerContext();
   const [copied, setCopied] = useState(false);
+
+  const hyperCount = mappings.hyper.length;
+  const commandCount = mappings.command.length;
+
+  const hyperColor = layers.find((l) => l.id === "hyper")?.accentColor ?? "rgba(100, 180, 160, 0.85)";
+  const commandColor = layers.find((l) => l.id === "command")?.accentColor ?? "rgba(200, 140, 120, 0.85)";
 
   const handleCopy = async () => {
     const markdown = generateMappingsMarkdown(mappings, macbookLayout);
@@ -142,6 +195,18 @@ export function ActionBar() {
 
   return (
     <ActionBarContainer>
+      <CreditsLink href="https://tigershen.com" target="_blank" rel="noopener noreferrer" title="Credits">
+        🐯
+      </CreditsLink>
+
+      <StatsContainer>
+        <StatItem $color={hyperColor} $isActive={currentLayer === "hyper"}>Hyper: {hyperCount}</StatItem>
+        <span>•</span>
+        <StatItem $color={commandColor} $isActive={currentLayer === "command"}>Command: {commandCount}</StatItem>
+      </StatsContainer>
+
+      <Divider />
+
       <ActionButton onClick={handleCopy} $isSuccess={copied}>
         <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
         <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>

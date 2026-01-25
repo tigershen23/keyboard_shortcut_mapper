@@ -8,7 +8,7 @@ const LAYERS: LayerConfig[] = [
     label: "Base",
     shortLabel: "Base",
     accentColor: "rgba(255, 255, 255, 0.6)",
-    rippleColor: "rgba(140, 160, 150, 0.45)",
+    rippleColor: "rgba(160, 160, 170, 0.4)",
   },
   {
     id: "hyper",

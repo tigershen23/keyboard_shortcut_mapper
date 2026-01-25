@@ -8,6 +8,7 @@ interface KeyPopoverProps {
   keyId: string;
   keyRect: DOMRect;
   currentMapping: KeyMapping | null;
+  currentLayer: string;
   layerAccent: string;
   onSave: (mapping: KeyMapping) => void;
   onDelete: () => void;
@@ -18,6 +19,7 @@ export function KeyPopover({
   keyId,
   keyRect,
   currentMapping,
+  currentLayer,
   layerAccent,
   onSave,
   onDelete,
@@ -74,6 +76,7 @@ export function KeyPopover({
     <>
       <Backdrop />
       <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent}>
+        <Arrow $accent={layerAccent} />
         <FormGroup>
           <FormLabel>Action</FormLabel>
           <StyledInput
@@ -86,10 +89,12 @@ export function KeyPopover({
           />
         </FormGroup>
 
-        <FormGroup>
-          <FormLabel>App</FormLabel>
-          <AppCombobox value={appName} onChange={setAppName} layerAccent={layerAccent} />
-        </FormGroup>
+        {currentLayer !== "command" && (
+          <FormGroup>
+            <FormLabel>App</FormLabel>
+            <AppCombobox value={appName} onChange={setAppName} layerAccent={layerAccent} onSubmit={handleSave} />
+          </FormGroup>
+        )}
 
         <ButtonRow>
           {currentMapping && <DeleteButton onClick={onDelete}>Delete</DeleteButton>}
@@ -108,6 +113,30 @@ const Backdrop = styled.div`
   inset: 0;
   background: rgba(0, 0, 0, 0.2);
   z-index: 99;
+`;
+
+const Arrow = styled.div<{ $accent: string }>`
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin-top: -6px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid rgba(28, 28, 32, 0.95);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: -7px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 7px solid rgba(255, 255, 255, 0.1);
+  }
 `;
 
 const PopupContainer = styled.div<{ $accent: string }>`
