@@ -102,6 +102,11 @@ const ArrowCluster = styled.div`
   gap: var(--key-gap);
 `;
 
+const ArrowSingle = styled.div`
+  display: flex;
+  align-items: flex-end;
+`;
+
 const ArrowVertical = styled.div`
   display: flex;
   flex-direction: column;
@@ -219,12 +224,16 @@ function ModifierRow({ keys, renderKey }: ModifierRowProps) {
     <KeyboardRow>
       {modifierKeys.map(renderKey)}
       <ArrowCluster>
-        {arrowLeft && renderKey(arrowLeft)}
+        <ArrowSingle>
+          {arrowLeft && renderKey(arrowLeft)}
+        </ArrowSingle>
         <ArrowVertical>
           {arrowUp && renderKey(arrowUp)}
           {arrowDown && renderKey(arrowDown)}
         </ArrowVertical>
-        {arrowRight && renderKey(arrowRight)}
+        <ArrowSingle>
+          {arrowRight && renderKey(arrowRight)}
+        </ArrowSingle>
       </ArrowCluster>
     </KeyboardRow>
   );

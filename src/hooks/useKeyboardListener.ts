@@ -57,11 +57,13 @@ const codeToKeyId: Record<string, string> = {
   ShiftLeft: "shift-left",
   ShiftRight: "shift-right",
   ControlLeft: "control",
+  ControlRight: "control",
   AltLeft: "option-left",
   AltRight: "option-right",
   MetaLeft: "command-left",
   MetaRight: "command-right",
   CapsLock: "caps",
+  Fn: "fn",
   // Function keys
   Escape: "esc",
   F1: "f1",
@@ -100,29 +102,39 @@ export function useKeyboardListener({
     if (disabled) return;
 
     function handleKeyDown(event: KeyboardEvent) {
-      // Allow system shortcuts through (but not shift alone)
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        return;
-      }
-
       const keyId = codeToKeyId[event.code];
       if (!keyId) return;
 
-      // Tab cycles layers (shift+tab goes backward)
+      // Tab cycles layers - this is the ONLY key we prevent default on
       if (keyId === "tab") {
         event.preventDefault();
         onLayerCycle(event.shiftKey ? "backward" : "forward");
+        // No animation for tab per user preference
         return;
       }
 
-      // Shift keys should not trigger ripple (they're modifiers for shortcuts)
-      if (keyId === "shift-left" || keyId === "shift-right") {
+      // For system shortcuts (Cmd+C, etc.), still animate the keys but don't prevent default
+      // This allows system shortcuts to work while showing visual feedback
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        // Animate the pressed key
+        onKeyPress(keyId);
+        // Don't prevent default - let the system shortcut work
         return;
       }
 
-      // Trigger key action
-      event.preventDefault();
+      // For regular key presses without modifiers, animate the key
       onKeyPress(keyId);
+
+      // Only prevent default for non-modifier keys to avoid interfering with typing
+      // But allow modifiers themselves to animate without blocking
+      const isModifierKey = [
+        "shift-left", "shift-right", "control", "option-left",
+        "option-right", "command-left", "command-right", "caps", "fn"
+      ].includes(keyId);
+
+      if (!isModifierKey) {
+        event.preventDefault();
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown);

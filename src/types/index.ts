@@ -2,6 +2,9 @@ export interface KeyDefinition {
   id: string;
   label: string;
   secondaryLabel?: string; // For keys with shift symbols (e.g., "1" and "!")
+  textLabel?: string; // Text name like "tab", "caps lock", "shift", etc.
+  symbolLabel?: string; // Symbol like ⌃, ⌥, ⌘ for bottom-row modifiers
+  hasIndicator?: boolean; // For caps lock LED indicator dot
   width?: number; // Width in units, default 1
   height?: number; // Height in units, default 1 (0.5 for half-height arrows)
   isModifier?: boolean;

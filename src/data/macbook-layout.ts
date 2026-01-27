@@ -20,14 +20,14 @@ export const macbookLayout: KeyboardLayout = [
       { id: "0", label: "0", secondaryLabel: ")" },
       { id: "minus", label: "-", secondaryLabel: "_" },
       { id: "equals", label: "=", secondaryLabel: "+" },
-      { id: "backspace", label: "⌫", width: 1.5, isModifier: true },
+      { id: "backspace", label: "", textLabel: "delete", width: 1.5, isModifier: true },
     ],
   },
   // Row 2: Top letter row (QWERTY) - 15 units total
   // 1.5 + 1×12 + 1.5 = 15
   {
     keys: [
-      { id: "tab", label: "⇥", width: 1.5, isModifier: true },
+      { id: "tab", label: "", textLabel: "tab", width: 1.5, isModifier: true },
       { id: "q", label: "Q" },
       { id: "w", label: "W" },
       { id: "e", label: "E" },
@@ -47,7 +47,7 @@ export const macbookLayout: KeyboardLayout = [
   // 1.75 + 1×11 + 2.25 = 15
   {
     keys: [
-      { id: "caps", label: "⇪", width: 1.75, isModifier: true },
+      { id: "caps", label: "", textLabel: "caps lock", hasIndicator: true, width: 1.75, isModifier: true },
       { id: "a", label: "A" },
       { id: "s", label: "S" },
       { id: "d", label: "D" },
@@ -59,14 +59,14 @@ export const macbookLayout: KeyboardLayout = [
       { id: "l", label: "L" },
       { id: "semicolon", label: ";", secondaryLabel: ":" },
       { id: "quote", label: "'", secondaryLabel: '"' },
-      { id: "return", label: "↵", width: 2.25, isModifier: true },
+      { id: "return", label: "", textLabel: "return", width: 2.25, isModifier: true },
     ],
   },
   // Row 4: Bottom letter row (ZXCV) - 15 units total
   // 2.25 + 1×10 + 2.75 = 15
   {
     keys: [
-      { id: "shift-left", label: "⇧", width: 2.25, isModifier: true },
+      { id: "shift-left", label: "", textLabel: "shift", width: 2.25, isModifier: true },
       { id: "z", label: "Z" },
       { id: "x", label: "X" },
       { id: "c", label: "C" },
@@ -77,7 +77,7 @@ export const macbookLayout: KeyboardLayout = [
       { id: "comma", label: ",", secondaryLabel: "<" },
       { id: "period", label: ".", secondaryLabel: ">" },
       { id: "slash", label: "/", secondaryLabel: "?" },
-      { id: "shift-right", label: "⇧", width: 2.75, isModifier: true },
+      { id: "shift-right", label: "", textLabel: "shift", width: 2.75, isModifier: true },
     ],
   },
   // Row 5: Modifier row (bottom)
@@ -86,18 +86,18 @@ export const macbookLayout: KeyboardLayout = [
   // Total: 1 + 1 + 1.25 + 1.25 + 4.75 + 1.25 + 1.25 + 1 + 1 + 1 = 14.75
   {
     keys: [
-      { id: "fn", label: "fn", width: 1, isModifier: true },
-      { id: "control", label: "⌃", width: 1, isModifier: true },
-      { id: "option-left", label: "⌥", width: 1.25, isModifier: true },
-      { id: "command-left", label: "⌘", width: 1.25, isModifier: true },
+      { id: "fn", label: "fn", symbolLabel: "🌐", width: 1, isModifier: true },
+      { id: "control", label: "", symbolLabel: "⌃", textLabel: "control", width: 1, isModifier: true },
+      { id: "option-left", label: "", symbolLabel: "⌥", textLabel: "option", width: 1.25, isModifier: true },
+      { id: "command-left", label: "", symbolLabel: "⌘", textLabel: "command", width: 1.25, isModifier: true },
       { id: "space", label: "", width: 5 },
-      { id: "command-right", label: "⌘", width: 1.25, isModifier: true },
-      { id: "option-right", label: "⌥", width: 1.25, isModifier: true },
-      // Arrow keys - grouped together (3 visual units)
-      { id: "arrow-left", label: "◀", width: 1 },
+      { id: "command-right", label: "", symbolLabel: "⌘", textLabel: "command", width: 1.25, isModifier: true },
+      { id: "option-right", label: "", symbolLabel: "⌥", textLabel: "option", width: 1.25, isModifier: true },
+      // Arrow keys - all half-height, grouped together (3 visual units)
+      { id: "arrow-left", label: "◀", width: 1, height: 0.5 },
       { id: "arrow-up", label: "▲", width: 1, height: 0.5 },
       { id: "arrow-down", label: "▼", width: 1, height: 0.5 },
-      { id: "arrow-right", label: "▶", width: 1 },
+      { id: "arrow-right", label: "▶", width: 1, height: 0.5 },
     ],
   },
 ];
