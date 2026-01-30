@@ -22,9 +22,9 @@ export const GlobalStyles = createGlobalStyle`
     --key-radius: clamp(4px, 0.6vw, 10px);
     --frame-padding: clamp(12px, 1.8vw, 32px);
     --frame-radius: clamp(10px, 1.4vw, 20px);
-    --font-key: clamp(10px, 1.3vw, 20px);
-    --font-key-secondary: clamp(8px, 1vw, 15px);
-    --font-key-modifier: clamp(12px, 1.6vw, 24px);
+    --font-key: clamp(12px, 1.5vw, 24px);
+    --font-key-secondary: clamp(10px, 1.2vw, 18px);
+    --font-key-modifier: clamp(14px, 1.8vw, 28px);
     --font-key-function: clamp(8px, 1.1vw, 16px);
   }
 
@@ -135,9 +135,9 @@ export const GlobalStyles = createGlobalStyle`
       --key-radius: clamp(4px, 0.5vh, 9px);
       --frame-padding: clamp(12px, 1.5vh, 28px);
       --frame-radius: clamp(8px, 1vh, 18px);
-      --font-key: clamp(10px, 1.1vh, 18px);
-      --font-key-secondary: clamp(8px, 0.85vh, 14px);
-      --font-key-modifier: clamp(12px, 1.4vh, 22px);
+      --font-key: clamp(12px, 1.3vh, 22px);
+      --font-key-secondary: clamp(10px, 1vh, 16px);
+      --font-key-modifier: clamp(14px, 1.6vh, 26px);
       --font-key-function: clamp(8px, 0.95vh, 15px);
     }
   }
@@ -149,9 +149,9 @@ export const GlobalStyles = createGlobalStyle`
       --key-radius: clamp(2px, 0.5vw, 4px);
       --frame-padding: clamp(4px, 1.2vw, 10px);
       --frame-radius: clamp(4px, 1vw, 8px);
-      --font-key: clamp(5px, 1.4vw, 9px);
-      --font-key-secondary: clamp(4px, 1vw, 7px);
-      --font-key-modifier: clamp(7px, 1.8vw, 12px);
+      --font-key: clamp(6px, 1.6vw, 11px);
+      --font-key-secondary: clamp(5px, 1.2vw, 9px);
+      --font-key-modifier: clamp(8px, 2vw, 14px);
       --font-key-function: clamp(5px, 1.2vw, 8px);
     }
 

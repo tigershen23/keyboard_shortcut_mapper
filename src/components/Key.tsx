@@ -194,7 +194,7 @@ const KeyLabels = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(2px, 0.3vw, 5px);
+  gap: clamp(4px, 0.5vw, 8px);
   line-height: 1;
   position: relative;
   z-index: 2;
@@ -268,6 +268,19 @@ const KeyMapping = styled.div<{ $isSpace?: boolean }>`
       flex-direction: row;
       gap: clamp(6px, 0.8vw, 10px);
     `}
+`;
+
+const BaseKeyIndicator = styled.span`
+  position: absolute;
+  top: clamp(2px, 0.3vw, 4px);
+  left: clamp(3px, 0.4vw, 6px);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-size: clamp(6px, 0.7vw, 10px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1;
+  z-index: 3;
+  text-transform: uppercase;
 `;
 
 const KeyMappingIcon = styled.img<{ $isSpace?: boolean }>`
@@ -364,27 +377,43 @@ const ModifierStackedLayout = styled.div`
   z-index: 2;
 `;
 
-const ModifierSymbol = styled.span`
+const ModifierSymbol = styled.span<{ $isRightSide?: boolean }>`
   position: absolute;
   top: clamp(3px, 0.4vw, 6px);
-  right: clamp(4px, 0.5vw, 8px);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: clamp(10px, 1.3vw, 18px);
+  font-size: clamp(12px, 1.5vw, 22px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.95);
   line-height: 1;
+
+  ${({ $isRightSide }) =>
+    $isRightSide
+      ? css`
+          left: clamp(4px, 0.5vw, 8px);
+        `
+      : css`
+          right: clamp(4px, 0.5vw, 8px);
+        `}
 `;
 
-const ModifierText = styled.span`
+const ModifierText = styled.span<{ $isRightSide?: boolean }>`
   position: absolute;
   bottom: clamp(4px, 0.5vw, 8px);
-  left: clamp(4px, 0.5vw, 8px);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: clamp(6px, 0.75vw, 10px);
+  font-size: clamp(7px, 0.85vw, 12px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.95);
   text-transform: lowercase;
   line-height: 1;
+
+  ${({ $isRightSide }) =>
+    $isRightSide
+      ? css`
+          right: clamp(4px, 0.5vw, 8px);
+        `
+      : css`
+          left: clamp(4px, 0.5vw, 8px);
+        `}
 `;
 
 const FnKeyLayout = styled.div`
@@ -400,7 +429,7 @@ const FnGlobe = styled.span`
   left: clamp(4px, 0.5vw, 8px);
   font-size: clamp(10px, 1.2vw, 16px);
   line-height: 1;
-  filter: grayscale(1) brightness(1.5);
+  filter: grayscale(1) contrast(0.8) opacity(0.85);
 `;
 
 const FnText = styled.span`
@@ -417,8 +446,7 @@ const FnText = styled.span`
 const CapsLockIndicator = styled.span`
   position: absolute;
   left: clamp(4px, 0.5vw, 8px);
-  top: 50%;
-  transform: translateY(-50%);
+  top: clamp(4px, 0.5vw, 8px);
   width: clamp(3px, 0.4vw, 5px);
   height: clamp(3px, 0.4vw, 5px);
   border-radius: 50%;
@@ -473,6 +501,9 @@ export function Key({
     }
   };
 
+  const baseLabel = definition.label;
+  const showDimmedIndicator = isDimmed && baseLabel;
+
   return (
     <StyledKey
       $isFunction={isFunction}
@@ -490,7 +521,8 @@ export function Key({
       onClick={handleClick}
     >
       {showBaseLabel && renderBaseLabel(definition, isFunction, isModifier)}
-      {showMapping && mapping && renderMappingContent(mapping, iconPath, isSpace, isCommandLayer)}
+      {showMapping && mapping && renderMappingContent(mapping, iconPath, isSpace, isCommandLayer, baseLabel)}
+      {showDimmedIndicator && <BaseKeyIndicator>{baseLabel}</BaseKeyIndicator>}
     </StyledKey>
   );
 }
@@ -510,10 +542,11 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
 
   // Bottom-row modifiers with symbol on top, text below (control, option, command)
   if (symbolLabel && textLabel) {
+    const isRightSide = id.endsWith("-right");
     return (
       <ModifierStackedLayout>
-        <ModifierSymbol>{symbolLabel}</ModifierSymbol>
-        <ModifierText>{textLabel}</ModifierText>
+        <ModifierSymbol $isRightSide={isRightSide}>{symbolLabel}</ModifierSymbol>
+        <ModifierText $isRightSide={isRightSide}>{textLabel}</ModifierText>
       </ModifierStackedLayout>
     );
   }
@@ -568,10 +601,12 @@ function renderMappingContent(
   iconPath?: string | null,
   isSpace?: boolean,
   isCommandLayer?: boolean,
+  baseLabel?: string,
 ) {
   const hasIcon = Boolean(iconPath);
   return (
     <KeyMapping $isSpace={isSpace}>
+      {baseLabel && !isSpace && <BaseKeyIndicator>{baseLabel}</BaseKeyIndicator>}
       {iconPath && (
         <KeyMappingIcon src={iconPath} alt={mapping.action} $isSpace={isSpace} loading="lazy" />
       )}
