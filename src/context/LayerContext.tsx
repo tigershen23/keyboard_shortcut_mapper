@@ -1,4 +1,4 @@
-import React, { createContext, type ReactNode, useCallback, useContext, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useState } from "react";
 import type { LayerConfig, LayerType } from "../types";
 import { loadSelectedLayer, saveSelectedLayer } from "../utils/storage";
 
@@ -7,22 +7,16 @@ const LAYERS: LayerConfig[] = [
     id: "base",
     label: "Base",
     shortLabel: "Base",
-    accentColor: "rgba(255, 255, 255, 0.6)",
-    rippleColor: "rgba(160, 160, 170, 0.4)",
   },
   {
     id: "hyper",
     label: "Hyper",
     shortLabel: "Hyper",
-    accentColor: "rgba(100, 180, 160, 0.85)",
-    rippleColor: "rgba(100, 180, 160, 0.5)",
   },
   {
     id: "command",
     label: "Command",
     shortLabel: "Command",
-    accentColor: "rgba(200, 140, 120, 0.85)",
-    rippleColor: "rgba(200, 140, 120, 0.5)",
   },
 ];
 
@@ -46,7 +40,7 @@ export function LayerProvider({ children }: { children: ReactNode }) {
         direction === "forward"
           ? (currentIndex + 1) % LAYERS.length
           : (currentIndex - 1 + LAYERS.length) % LAYERS.length;
-      const nextLayer = LAYERS[nextIndex].id;
+      const nextLayer = LAYERS[nextIndex]!.id;
       saveSelectedLayer(nextLayer);
       return nextLayer;
     });
@@ -57,7 +51,7 @@ export function LayerProvider({ children }: { children: ReactNode }) {
     setCurrentLayer(layer);
   }, []);
 
-  const currentLayerConfig = LAYERS.find((l) => l.id === currentLayer) ?? LAYERS[0];
+  const currentLayerConfig = LAYERS.find((l) => l.id === currentLayer) ?? LAYERS[0]!;
 
   return (
     <LayerContext.Provider

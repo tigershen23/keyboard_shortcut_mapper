@@ -1,5 +1,5 @@
 import { Dialog } from "@base-ui-components/react/dialog";
-import React, { useState } from "react";
+import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
@@ -27,13 +27,13 @@ const ActionBarContainer = styled.div`
     left: 0;
     right: 0;
     padding: 12px 12px 16px;
-    background: linear-gradient(0deg, rgba(20, 16, 14, 0.95) 0%, rgba(20, 16, 14, 0.8) 30%, transparent 100%);
+    background: linear-gradient(0deg, ${({ theme }) => theme.surface.popover} 0%, ${({ theme }) => theme.surface.popover.replace(/[\d.]+\)$/, "0.8)")} 30%, transparent 100%);
     z-index: 50;
   }
 `;
 
 interface ActionButtonProps {
-  $isSuccess?: boolean;
+	$isSuccess?: boolean;
 }
 
 const ActionButton = styled.button<ActionButtonProps>`
@@ -45,8 +45,7 @@ const ActionButton = styled.button<ActionButtonProps>`
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: ${({ $isSuccess }) =>
-    $isSuccess ? "rgba(120, 220, 150, 0.85)" : "rgba(255, 255, 255, 0.3)"};
+  color: ${({ $isSuccess, theme }) => ($isSuccess ? theme.semantic.success : theme.text.hint)};
   position: relative;
 
   &::after {
@@ -63,8 +62,7 @@ const ActionButton = styled.button<ActionButtonProps>`
   }
 
   &:hover {
-    color: ${({ $isSuccess }) =>
-      $isSuccess ? "rgba(120, 220, 150, 0.85)" : "rgba(255, 255, 255, 0.6)"};
+    color: ${({ $isSuccess, theme }) => ($isSuccess ? theme.semantic.success : theme.text.muted)};
 
     &::after {
       transform: scaleX(1);
@@ -82,7 +80,7 @@ const ButtonIcon = styled.span`
   justify-content: center;
   width: clamp(11px, 1.1vw, 14px);
   height: clamp(11px, 1.1vw, 14px);
-
+  
   svg {
     width: 100%;
     height: 100%;
@@ -101,7 +99,7 @@ const ButtonLabel = styled.span`
 const Divider = styled.span`
   width: 1px;
   height: clamp(12px, 1.2vw, 16px);
-  background: rgba(255, 255, 255, 0.15);
+  background: ${({ theme }) => theme.border.light};
 `;
 
 const CreditsLink = styled.a`
@@ -110,7 +108,7 @@ const CreditsLink = styled.a`
   font-size: clamp(14px, 1.4vw, 18px);
   text-decoration: none;
   transition: transform 0.15s ease;
-
+  
   &:hover {
     transform: scale(1.1);
   }
@@ -119,7 +117,7 @@ const CreditsLink = styled.a`
 const DialogBackdrop = styled(Dialog.Backdrop)`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: ${({ theme }) => theme.shadow.backdrop};
   backdrop-filter: blur(4px);
   z-index: 100;
 `;
@@ -129,28 +127,28 @@ const DialogPopup = styled(Dialog.Popup)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #1a1614;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.surface.dialog};
+  border: 1px solid ${({ theme }) => theme.border.light};
   border-radius: 12px;
   padding: 24px;
   max-width: 360px;
   width: calc(100% - 32px);
   z-index: 101;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px ${({ theme }) => theme.shadow.heavy};
 `;
 
 const DialogTitle = styled(Dialog.Title)`
   font-family: "Instrument Sans", sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.text.tertiary};
   margin: 0 0 8px 0;
 `;
 
 const DialogDescription = styled(Dialog.Description)`
   font-family: "Instrument Sans", sans-serif;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: ${({ theme }) => theme.text.muted};
   margin: 0 0 20px 0;
   line-height: 1.5;
 `;
@@ -171,21 +169,21 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
   cursor: pointer;
   transition: all 0.15s ease;
 
-  ${({ $variant }) =>
-    $variant === "danger"
-      ? `
-    background: rgba(220, 80, 80, 0.9);
-    color: white;
+  ${({ $variant, theme }) =>
+		$variant === "danger"
+			? `
+    background: ${theme.semantic.danger};
+    color: ${theme.text.primary};
     &:hover {
-      background: rgba(220, 80, 80, 1);
+      background: ${theme.semantic.dangerHover};
     }
   `
-      : `
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+			: `
+    background: ${theme.border.light};
+    color: ${theme.text.muted};
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.9);
+      background: ${theme.border.medium};
+      color: ${theme.text.tertiary};
     }
   `}
 
@@ -195,124 +193,139 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
 `;
 
 function CopyIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  );
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+		</svg>
+	);
 }
 
 function CheckIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<polyline points="20 6 9 17 4 12" />
+		</svg>
+	);
 }
 
 function ResetIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-    </svg>
-  );
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+			<path d="M3 3v5h5" />
+		</svg>
+	);
 }
 
 export function ActionBar() {
-  const { mappings, resetToDefaults } = useMappingContext();
-  const [copied, setCopied] = useState(false);
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+	const { mappings, resetToDefaults } = useMappingContext();
+	const [copied, setCopied] = useState(false);
+	const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
-  const handleCopy = async () => {
-    const markdown = generateMappingsMarkdown(mappings, macbookLayout);
+	const handleCopy = async () => {
+		const markdown = generateMappingsMarkdown(mappings, macbookLayout);
 
-    if (!markdown) {
-      return;
-    }
+		if (!markdown) {
+			return;
+		}
 
-    try {
-      await navigator.clipboard.writeText(markdown);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      console.error("Failed to copy to clipboard");
-    }
-  };
+		try {
+			await navigator.clipboard.writeText(markdown);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 1500);
+		} catch {
+			console.error("Failed to copy to clipboard");
+		}
+	};
 
-  return (
-    <ActionBarContainer>
-      <CreditsLink
-        href="https://tigershen.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Credits"
-      >
-        🐯
-      </CreditsLink>
+	return (
+		<ActionBarContainer>
+			<CreditsLink
+				href="https://tigershen.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				title="Credits link to tigershen.com"
+			>
+				🐯
+			</CreditsLink>
 
-      <Divider />
+			<Divider />
 
-      <ActionButton onClick={handleCopy} $isSuccess={copied}>
-        <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
-        <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
-      </ActionButton>
+			<ActionButton
+				onClick={handleCopy}
+				$isSuccess={copied}
+				title={
+					copied ? "Copied mappings to clipboard" : "Copy mappings to clipboard"
+				}
+			>
+				<ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
+				<ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
+			</ActionButton>
 
-      <Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <Dialog.Trigger render={<ActionButton />}>
-          <ButtonIcon>
-            <ResetIcon />
-          </ButtonIcon>
-          <ButtonLabel>Reset</ButtonLabel>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <DialogBackdrop />
-          <DialogPopup>
-            <DialogTitle>Reset to Defaults?</DialogTitle>
-            <DialogDescription>
-              This will replace all your current keyboard mappings with the default configuration.
-              This action cannot be undone.
-            </DialogDescription>
-            <DialogActions>
-              <Dialog.Close render={<DialogButton $variant="secondary" />}>Cancel</Dialog.Close>
-              <DialogButton
-                $variant="danger"
-                onClick={() => {
-                  resetToDefaults();
-                  setResetDialogOpen(false);
-                }}
-              >
-                Reset
-              </DialogButton>
-            </DialogActions>
-          </DialogPopup>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </ActionBarContainer>
-  );
+			<Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+				<Dialog.Trigger
+					render={<ActionButton title="Reset mappings to defaults" />}
+				>
+					<ButtonIcon>
+						<ResetIcon />
+					</ButtonIcon>
+					<ButtonLabel>Reset</ButtonLabel>
+				</Dialog.Trigger>
+				<Dialog.Portal>
+					<DialogBackdrop />
+					<DialogPopup title="Reset confirmation dialog">
+						<DialogTitle>Reset to Defaults?</DialogTitle>
+						<DialogDescription>
+							This will replace all your current keyboard mappings with the
+							default configuration. This action cannot be undone.
+						</DialogDescription>
+						<DialogActions>
+							<Dialog.Close
+								render={
+									<DialogButton $variant="secondary" title="Cancel reset" />
+								}
+							>
+								Cancel
+							</Dialog.Close>
+							<DialogButton
+								$variant="danger"
+								title="Confirm reset to defaults"
+								onClick={() => {
+									resetToDefaults();
+									setResetDialogOpen(false);
+								}}
+							>
+								Reset
+							</DialogButton>
+						</DialogActions>
+					</DialogPopup>
+				</Dialog.Portal>
+			</Dialog.Root>
+		</ActionBarContainer>
+	);
 }

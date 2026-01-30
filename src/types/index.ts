@@ -23,8 +23,6 @@ export interface LayerConfig {
   id: LayerType;
   label: string;
   shortLabel: string;
-  accentColor: string;
-  rippleColor: string;
 }
 
 export interface KeyMapping {

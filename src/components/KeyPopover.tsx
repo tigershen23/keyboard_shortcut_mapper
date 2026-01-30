@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
-import type { KeyMapping } from "../types";
-import { AppCombobox } from "./AppCombobox";
+import type { KeyMapping } from "../types/index.js";
+import { getActionInputLabel, getSaveButtonLabel } from "../utils/labels.js";
+import { AppCombobox } from "./AppCombobox.js";
 
 interface KeyPopoverProps {
   keyId: string;
@@ -47,7 +49,6 @@ export function KeyPopover({
     }
   };
 
-  // Position the popup to the right of the key
   const popupStyle: React.CSSProperties = {
     position: "fixed",
     left: keyRect.right + 12,
@@ -55,14 +56,12 @@ export function KeyPopover({
     transform: "translateY(-50%)",
   };
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
-    // Delay adding listener to avoid immediate close from the click that opened it
     const timeoutId = setTimeout(() => {
       document.addEventListener("mousedown", handleClickOutside);
     }, 0);
@@ -75,7 +74,7 @@ export function KeyPopover({
   return createPortal(
     <>
       <Backdrop />
-      <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent}>
+      <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent} title={`Edit mapping for ${keyId} key`}>
         <Arrow $accent={layerAccent} />
         <FormGroup>
           <FormLabel>Action</FormLabel>
@@ -86,24 +85,29 @@ export function KeyPopover({
             placeholder="Action name"
             autoFocus
             $accent={layerAccent}
+            title={getActionInputLabel(action)}
           />
         </FormGroup>
 
         {currentLayer !== "command" && (
           <FormGroup>
             <FormLabel>App</FormLabel>
-            <AppCombobox
-              value={appName}
-              onChange={setAppName}
-              layerAccent={layerAccent}
-              onSubmit={handleSave}
-            />
+            <AppCombobox value={appName} onChange={setAppName} layerAccent={layerAccent} onSubmit={handleSave} />
           </FormGroup>
         )}
 
         <ButtonRow>
-          {currentMapping && <DeleteButton onClick={onDelete}>Delete</DeleteButton>}
-          <SaveButton onClick={handleSave} disabled={!action.trim()} $accent={layerAccent}>
+          {currentMapping && (
+            <DeleteButton onClick={onDelete} title="Delete mapping">
+              Delete
+            </DeleteButton>
+          )}
+          <SaveButton
+            onClick={handleSave}
+            disabled={!action.trim()}
+            $accent={layerAccent}
+            title={getSaveButtonLabel(!action.trim())}
+          >
             Save
           </SaveButton>
         </ButtonRow>
@@ -116,7 +120,7 @@ export function KeyPopover({
 const Backdrop = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.2);
+  background: ${({ theme }) => theme.shadow.light};
   z-index: 99;
 `;
 
@@ -129,7 +133,7 @@ const Arrow = styled.div<{ $accent: string }>`
   margin-top: -6px;
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
-  border-right: 6px solid rgba(28, 28, 32, 0.95);
+  border-right: 6px solid ${({ theme }) => theme.surface.popover};
 
   &::before {
     content: "";
@@ -140,20 +144,20 @@ const Arrow = styled.div<{ $accent: string }>`
     height: 0;
     border-top: 7px solid transparent;
     border-bottom: 7px solid transparent;
-    border-right: 7px solid rgba(255, 255, 255, 0.1);
+    border-right: 7px solid ${({ theme }) => theme.border.light};
   }
 `;
 
 const PopupContainer = styled.div<{ $accent: string }>`
-  background: rgba(28, 28, 32, 0.95);
+  background: ${({ theme }) => theme.surface.popover};
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid ${({ theme }) => theme.border.light};
   border-radius: 12px;
   padding: 16px;
   min-width: 240px;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.2);
+    0 8px 32px ${({ theme }) => theme.shadow.medium},
+    0 2px 8px ${({ theme }) => theme.shadow.light};
   z-index: 100;
   --layer-accent: ${({ $accent }) => $accent};
   animation: popoverIn 0.15s ease-out;
@@ -179,7 +183,7 @@ const FormLabel = styled.label`
   font-family: "Instrument Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${({ theme }) => theme.text.muted};
   margin-bottom: 6px;
 `;
 
@@ -188,9 +192,9 @@ const StyledInput = styled.input<{ $accent: string }>`
   height: 36px;
   padding: 0 12px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid ${({ theme }) => theme.border.medium};
   border-radius: 6px;
-  color: white;
+  color: ${({ theme }) => theme.text.primary};
   font-family: "Instrument Sans", sans-serif;
   font-size: 14px;
 
@@ -201,7 +205,7 @@ const StyledInput = styled.input<{ $accent: string }>`
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: ${({ theme }) => theme.text.dimmed};
   }
 `;
 
@@ -215,10 +219,10 @@ const ButtonRow = styled.div`
 const SaveButton = styled.button<{ $accent: string; disabled?: boolean }>`
   height: 32px;
   padding: 0 16px;
-  background: ${({ $accent, disabled }) => (disabled ? "rgba(255,255,255,0.1)" : $accent)};
+  background: ${({ $accent, disabled, theme }) => (disabled ? theme.border.light : $accent)};
   border: none;
   border-radius: 6px;
-  color: white;
+  color: ${({ theme }) => theme.text.primary};
   font-family: "Instrument Sans", sans-serif;
   font-weight: 500;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
@@ -239,13 +243,13 @@ const DeleteButton = styled.button`
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: rgba(220, 80, 80, 0.9);
+  color: ${({ theme }) => theme.semantic.danger};
   font-family: "Instrument Sans", sans-serif;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s;
 
   &:hover {
-    background: rgba(220, 80, 80, 0.15);
+    background: ${({ theme }) => theme.semantic.danger.replace(/[\d.]+\)$/, "0.15)")};
   }
 `;

@@ -93,11 +93,7 @@ interface UseKeyboardListenerOptions {
   disabled?: boolean;
 }
 
-export function useKeyboardListener({
-  onKeyPress,
-  onLayerCycle,
-  disabled,
-}: UseKeyboardListenerOptions) {
+export function useKeyboardListener({ onKeyPress, onLayerCycle, disabled }: UseKeyboardListenerOptions) {
   useEffect(() => {
     if (disabled) return;
 
@@ -128,8 +124,15 @@ export function useKeyboardListener({
       // Only prevent default for non-modifier keys to avoid interfering with typing
       // But allow modifiers themselves to animate without blocking
       const isModifierKey = [
-        "shift-left", "shift-right", "control", "option-left",
-        "option-right", "command-left", "command-right", "caps", "fn"
+        "shift-left",
+        "shift-right",
+        "control",
+        "option-left",
+        "option-right",
+        "command-left",
+        "command-right",
+        "caps",
+        "fn",
       ].includes(keyId);
 
       if (!isModifierKey) {

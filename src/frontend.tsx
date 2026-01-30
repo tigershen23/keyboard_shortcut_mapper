@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { ThemeProvider, useTheme } from "styled-components";
 import { ActionBar } from "./components/ActionBar";
 import { Keyboard } from "./components/Keyboard";
 import { KeyPopover } from "./components/KeyPopover";
@@ -9,22 +10,19 @@ import { MappingProvider, useMappingContext } from "./context/MappingContext";
 import { macbookLayout } from "./data/macbook-layout";
 import { useKeyboardListener } from "./hooks/useKeyboardListener";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import { darkTheme } from "./styles/theme";
 import type { KeyMapping } from "./types";
 
 function AppContent() {
-  const { currentLayer, currentLayerConfig, cycleLayer } = useLayerContext();
-  const {
-    selectedKeyId,
-    selectedKeyRect,
-    selectKey,
-    clearSelection,
-    getMappingForKey,
-    updateMapping,
-    deleteMapping,
-  } = useMappingContext();
+  const { currentLayer, cycleLayer } = useLayerContext();
+  const { selectedKeyId, selectedKeyRect, selectKey, clearSelection, getMappingForKey, updateMapping, deleteMapping } =
+    useMappingContext();
   const [pressedKeyId, setPressedKeyId] = useState<string | null>(null);
+  const theme = useTheme();
 
   const isEditing = selectedKeyId !== null;
+
+  const layerColors = theme.layers[currentLayer];
 
   const handleKeyPress = useCallback((keyId: string) => {
     setPressedKeyId(keyId);
@@ -64,8 +62,8 @@ function AppContent() {
         currentLayer={currentLayer}
         pressedKeyId={pressedKeyId}
         onKeyPress={handleKeyPress}
-        rippleColor={currentLayerConfig.rippleColor}
-        layerAccent={currentLayerConfig.accentColor}
+        rippleColor={layerColors.ripple}
+        layerAccent={layerColors.accent}
         selectedKeyId={selectedKeyId}
         onKeySelect={selectKey}
       />
@@ -76,7 +74,7 @@ function AppContent() {
           keyRect={selectedKeyRect}
           currentMapping={currentMapping}
           currentLayer={currentLayer}
-          layerAccent={currentLayerConfig.accentColor}
+          layerAccent={layerColors.accent}
           onSave={handleSave}
           onDelete={handleDelete}
           onClose={clearSelection}
@@ -90,14 +88,14 @@ function AppContent() {
 
 function App() {
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <GlobalStyles />
       <LayerProvider>
         <MappingProvider>
           <AppContent />
         </MappingProvider>
       </LayerProvider>
-    </>
+    </ThemeProvider>
   );
 }
 

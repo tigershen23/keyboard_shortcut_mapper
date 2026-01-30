@@ -27,23 +27,23 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
   padding: var(--frame-padding);
   background: linear-gradient(
     168deg,
-    #d8d8dc 0%,
+    ${({ theme }) => theme.surface.frame.start} 0%,
     #cdcdd1 15%,
     #c2c2c6 40%,
     #b7b7bb 70%,
-    #acacb0 100%
+    ${({ theme }) => theme.surface.frame.end} 100%
   );
   border-radius: var(--frame-radius);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid ${({ theme }) => theme.border.focus};
   box-shadow:
     0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(180, 100, 60, 0.1),
     0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(160, 120, 70, 0.06),
     0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 120px) clamp(-10px, -2vw, -30px)
-      rgba(0, 0, 0, 0.5),
+      ${({ theme }) => theme.shadow.heavy},
     0 clamp(10px, 2vw, 30px) clamp(20px, 4vw, 60px) clamp(-8px, -1.5vw, -20px)
-      rgba(0, 0, 0, 0.35),
-    0 clamp(4px, 0.8vw, 12px) clamp(12px, 2vw, 30px) rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      ${({ theme }) => theme.shadow.medium},
+    0 clamp(4px, 0.8vw, 12px) clamp(12px, 2vw, 30px) ${({ theme }) => theme.shadow.light},
+    inset 0 1px 0 ${({ theme }) => theme.shadow.heavy.replace("0, 0, 0", "255, 255, 255")},
     inset 0 -1px 2px rgba(0, 0, 0, 0.06);
   animation: ${keyboardEnter} 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --layer-glow: transparent;
@@ -56,10 +56,10 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
       0 0 clamp(30px, 8vw, 80px) clamp(10px, 3vw, 30px) rgba(180, 100, 60, 0.1),
       0 0 clamp(20px, 5vw, 50px) clamp(5px, 1.5vw, 15px) rgba(160, 120, 70, 0.06),
       0 clamp(10px, 3vw, 30px) clamp(20px, 6vw, 60px) clamp(-5px, -1.5vw, -15px)
-        rgba(0, 0, 0, 0.5),
+        ${({ theme }) => theme.shadow.heavy},
       0 clamp(5px, 1.5vw, 15px) clamp(10px, 3vw, 30px) clamp(-4px, -1vw, -10px)
-        rgba(0, 0, 0, 0.35),
-      0 clamp(2px, 0.6vw, 6px) clamp(6px, 1.5vw, 15px) rgba(0, 0, 0, 0.2),
+        ${({ theme }) => theme.shadow.medium},
+      0 clamp(2px, 0.6vw, 6px) clamp(6px, 1.5vw, 15px) ${({ theme }) => theme.shadow.light},
       inset 0 1px 0 rgba(255, 255, 255, 0.5),
       inset 0 -1px 2px rgba(0, 0, 0, 0.06);
   }
@@ -77,16 +77,18 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
     pointer-events: none;
   }
 
-  ${({ $layer }) =>
+  ${({ $layer, theme }) =>
     $layer === "hyper" &&
+    theme.layers.hyper.glow &&
     css`
-      --layer-glow: rgba(100, 180, 160, 0.15);
+      --layer-glow: ${theme.layers.hyper.glow};
     `}
 
-  ${({ $layer }) =>
+  ${({ $layer, theme }) =>
     $layer === "command" &&
+    theme.layers.command.glow &&
     css`
-      --layer-glow: rgba(200, 140, 120, 0.15);
+      --layer-glow: ${theme.layers.command.glow};
     `}
 `;
 
@@ -111,16 +113,16 @@ const ArrowVertical = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1px;
-
+  
   & > div {
     border-radius: var(--key-radius);
   }
-
+  
   & > div:first-child {
     border-bottom-left-radius: clamp(1px, 0.2vw, 3px);
     border-bottom-right-radius: clamp(1px, 0.2vw, 3px);
   }
-
+  
   & > div:last-child {
     border-top-left-radius: clamp(1px, 0.2vw, 3px);
     border-top-right-radius: clamp(1px, 0.2vw, 3px);

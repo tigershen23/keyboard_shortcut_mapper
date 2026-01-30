@@ -1,6 +1,6 @@
-import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import type { KeyDefinition, KeyMapping, LayerType } from "../types";
+import { getKeyLabel } from "../utils/labels.js";
 
 const keyFlash = keyframes`
   0% { opacity: 0; }
@@ -48,19 +48,19 @@ const StyledKey = styled.div<StyledKeyProps>`
   width: ${({ $width }: { $width: number }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
   background: linear-gradient(
     180deg,
-    #2c2c2e 0%,
-    #1d1d1f 100%
+    ${({ theme }) => theme.surface.key.start} 0%,
+    ${({ theme }) => theme.surface.key.end} 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid ${({ theme }) => theme.border.subtle};
   border-radius: var(--key-radius);
   cursor: default;
   user-select: none;
   transition: all 0.1s ease-out;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 1px ${({ theme }) => theme.shadow.medium};
   flex-shrink: 0;
   overflow: hidden;
 
-  --ripple-color: ${({ $rippleColor }) => $rippleColor || "rgba(140, 160, 150, 0.3)"};
+  --ripple-color: ${({ $rippleColor, theme }) => $rippleColor || theme.layers.base.ripple};
 
   &::before {
     content: "";
@@ -71,7 +71,10 @@ const StyledKey = styled.div<StyledKeyProps>`
       135deg,
       var(--ripple-color) 0%,
       transparent 50%,
-      ${({ $rippleColor }) => $rippleColor || "rgba(140, 160, 150, 0.15)"} 100%
+      ${({ $rippleColor, theme }) => {
+        const color = $rippleColor || theme.layers.base.ripple;
+        return color.replace(/[\d.]+\)$/, "0.15)");
+      }} 100%
     );
     opacity: 0;
     pointer-events: none;
@@ -92,51 +95,51 @@ const StyledKey = styled.div<StyledKeyProps>`
   &:hover {
     background: linear-gradient(
       180deg,
-      #3a3a3c 0%,
-      #2c2c2e 100%
+      ${({ theme }) => theme.surface.keyHover.start} 0%,
+      ${({ theme }) => theme.surface.keyHover.end} 100%
     );
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 2px ${({ theme }) => theme.shadow.medium};
   }
 
   &:active {
     background: linear-gradient(
       180deg,
-      #252527 0%,
-      #1a1a1c 100%
+      ${({ theme }) => theme.surface.keyActive.start} 0%,
+      ${({ theme }) => theme.surface.keyActive.end} 100%
     );
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 1px ${({ theme }) => theme.shadow.medium};
   }
 
-  ${({ $isFunction }) =>
+  ${({ $isFunction, theme }) =>
     $isFunction &&
     css`
       background: linear-gradient(
         180deg,
-        #2a2a2c 0%,
-        #1c1c1e 100%
+        ${theme.surface.keyFunction.start} 0%,
+        ${theme.surface.keyFunction.end} 100%
       );
       &:hover {
         background: linear-gradient(
           180deg,
-          #383838 0%,
-          #2a2a2c 100%
+          ${theme.surface.keyFunctionHover.start} 0%,
+          ${theme.surface.keyFunctionHover.end} 100%
         );
       }
     `}
 
-  ${({ $isSpace }) =>
+  ${({ $isSpace, theme }) =>
     $isSpace &&
     css`
       background: linear-gradient(
         180deg,
-        #2e2e30 0%,
-        #1f1f21 100%
+        ${theme.surface.keySpace.start} 0%,
+        ${theme.surface.keySpace.end} 100%
       );
       &:hover {
         background: linear-gradient(
           180deg,
-          #3c3c3e 0%,
-          #2e2e30 100%
+          ${theme.surface.keySpaceHover.start} 0%,
+          ${theme.surface.keySpaceHover.end} 100%
         );
       }
     `}
@@ -153,21 +156,21 @@ const StyledKey = styled.div<StyledKeyProps>`
       }
     `}
 
-  ${({ $isDimmed }) =>
+  ${({ $isDimmed, theme }) =>
     $isDimmed &&
     css`
       opacity: 0.4;
       background: linear-gradient(
         180deg,
-        #252527 0%,
-        #1a1a1c 100%
+        ${theme.surface.keyDimmed.start} 0%,
+        ${theme.surface.keyDimmed.end} 100%
       );
       &:hover {
         opacity: 0.55;
         background: linear-gradient(
           180deg,
-          #2a2a2c 0%,
-          #1e1e20 100%
+          ${theme.surface.keyDimmedHover.start} 0%,
+          ${theme.surface.keyDimmedHover.end} 100%
         );
       }
     `}
@@ -178,13 +181,13 @@ const StyledKey = styled.div<StyledKeyProps>`
       cursor: pointer;
     `}
 
-  ${({ $isSelected, $layerAccent }) =>
+  ${({ $isSelected, $layerAccent, theme }) =>
     $isSelected &&
     css`
       box-shadow:
-        inset 0 0 0 2px ${$layerAccent || "rgba(100, 180, 160, 0.9)"},
-        0 0 16px ${$layerAccent || "rgba(100, 180, 160, 0.4)"},
-        0 1px 2px rgba(0, 0, 0, 0.3);
+        inset 0 0 0 2px ${$layerAccent || theme.layers.hyper.accent},
+        0 0 16px ${$layerAccent ? $layerAccent.replace(/[\d.]+\)$/, "0.4)") : theme.layers.hyper.accent.replace(/[\d.]+\)$/, "0.4)")},
+        0 1px 2px ${theme.shadow.medium};
       z-index: 10;
     `}
 `;
@@ -200,39 +203,43 @@ const KeyLabels = styled.div`
   z-index: 2;
 `;
 
-const KeyLabel = styled.span<{ $isFunction?: boolean; $isModifier?: boolean; $isArrow?: boolean }>`
+const KeyLabel = styled.span<{
+  $isFunction?: boolean;
+  $isModifier?: boolean;
+  $isArrow?: boolean;
+}>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: var(--font-key);
   font-weight: 500;
-  color: #ffffff;
+  color: ${({ theme }) => theme.text.primary};
   line-height: 1;
   white-space: nowrap;
   text-align: center;
   position: relative;
   z-index: 2;
 
-  ${({ $isFunction }) =>
+  ${({ $isFunction, theme }) =>
     $isFunction &&
     css`
       font-size: var(--font-key-function);
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
+      color: ${theme.text.tertiary};
       text-transform: lowercase;
     `}
 
-  ${({ $isModifier }) =>
+  ${({ $isModifier, theme }) =>
     $isModifier &&
     css`
       font-size: var(--font-key-modifier);
       font-weight: 400;
-      color: rgba(255, 255, 255, 0.95);
+      color: ${theme.text.secondary};
     `}
 
-  ${({ $isArrow }) =>
+  ${({ $isArrow, theme }) =>
     $isArrow &&
     css`
       font-size: clamp(8px, 1.0vw, 14px);
-      color: rgba(255, 255, 255, 0.9);
+      color: ${theme.text.tertiary};
     `}
 `;
 
@@ -240,17 +247,17 @@ const KeyLabelSecondary = styled.span`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: var(--font-key-secondary);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: ${({ theme }) => theme.text.tertiary};
 `;
 
 const KeyLabelPrimary = styled.span`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: var(--font-key);
   font-weight: 500;
-  color: #ffffff;
+  color: ${({ theme }) => theme.text.primary};
 `;
 
-const KeyMapping = styled.div<{ $isSpace?: boolean }>`
+const KeyMappingContainer = styled.div<{ $isSpace?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -277,7 +284,7 @@ const BaseKeyIndicator = styled.span`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(6px, 0.7vw, 10px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.25);
+  color: ${({ theme }) => theme.text.hint};
   line-height: 1;
   z-index: 3;
   text-transform: uppercase;
@@ -288,7 +295,7 @@ const KeyMappingIcon = styled.img<{ $isSpace?: boolean }>`
   height: clamp(16px, 2vw, 32px);
   object-fit: contain;
   border-radius: clamp(3px, 0.4vw, 6px);
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 1px 2px ${({ theme }) => theme.shadow.medium});
 
   ${({ $isSpace }) =>
     $isSpace &&
@@ -306,7 +313,7 @@ const KeyMappingLabel = styled.span<{
   font-family: "Instrument Sans", sans-serif;
   font-size: clamp(7px, 0.8vw, 11px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: ${({ theme }) => theme.text.tertiary};
   text-align: center;
   line-height: 1.1;
   max-width: 100%;
@@ -340,12 +347,11 @@ const KeyMappingLabel = styled.span<{
     `}
 `;
 
-// Modifier key specific styled components
 const ModifierTextLabel = styled.span<{ $align?: "left" | "right" | "center" }>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(8px, 1.0vw, 14px);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.95);
+  color: ${({ theme }) => theme.text.secondary};
   text-transform: lowercase;
   line-height: 1;
   position: absolute;
@@ -383,7 +389,7 @@ const ModifierSymbol = styled.span<{ $isRightSide?: boolean }>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(12px, 1.5vw, 22px);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.95);
+  color: ${({ theme }) => theme.text.secondary};
   line-height: 1;
 
   ${({ $isRightSide }) =>
@@ -402,7 +408,7 @@ const ModifierText = styled.span<{ $isRightSide?: boolean }>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(7px, 0.85vw, 12px);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.95);
+  color: ${({ theme }) => theme.text.secondary};
   text-transform: lowercase;
   line-height: 1;
 
@@ -439,7 +445,7 @@ const FnText = styled.span`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(7px, 0.9vw, 12px);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.95);
+  color: ${({ theme }) => theme.text.secondary};
   line-height: 1;
 `;
 
@@ -450,7 +456,7 @@ const CapsLockIndicator = styled.span`
   width: clamp(3px, 0.4vw, 5px);
   height: clamp(3px, 0.4vw, 5px);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: ${({ theme }) => theme.shadow.light};
   z-index: 2;
 `;
 
@@ -504,6 +510,8 @@ export function Key({
   const baseLabel = definition.label;
   const showDimmedIndicator = isDimmed && baseLabel;
 
+  const titleLabel = getKeyLabel(definition, currentLayer, mapping, isEditable, isSelected);
+
   return (
     <StyledKey
       $isFunction={isFunction}
@@ -519,6 +527,7 @@ export function Key({
       $height={height}
       data-key-id={id}
       onClick={handleClick}
+      title={titleLabel}
     >
       {showBaseLabel && renderBaseLabel(definition, isFunction, isModifier)}
       {showMapping && mapping && renderMappingContent(mapping, iconPath, isSpace, isCommandLayer, baseLabel)}
@@ -530,7 +539,6 @@ export function Key({
 function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModifier?: boolean) {
   const { id, label, secondaryLabel, textLabel, symbolLabel, hasIndicator } = definition;
 
-  // Fn key has special stacked layout with globe
   if (id === "fn") {
     return (
       <FnKeyLayout>
@@ -540,7 +548,6 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
     );
   }
 
-  // Bottom-row modifiers with symbol on top, text below (control, option, command)
   if (symbolLabel && textLabel) {
     const isRightSide = id.endsWith("-right");
     return (
@@ -551,7 +558,6 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
     );
   }
 
-  // Text-only modifiers (tab, caps lock, shift, delete, return)
   if (textLabel && !symbolLabel) {
     const align = getTextLabelAlignment(id);
     return (
@@ -562,7 +568,6 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
     );
   }
 
-  // Standard keys with secondary labels (number row, punctuation)
   if (secondaryLabel) {
     return (
       <KeyLabels>
@@ -572,7 +577,6 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
     );
   }
 
-  // Simple single-label keys (letters, arrows)
   const isArrow = id.startsWith("arrow-");
   return (
     <KeyLabel $isFunction={isFunction} $isModifier={isModifier} $isArrow={isArrow}>
@@ -605,15 +609,13 @@ function renderMappingContent(
 ) {
   const hasIcon = Boolean(iconPath);
   return (
-    <KeyMapping $isSpace={isSpace}>
+    <KeyMappingContainer $isSpace={isSpace}>
       {baseLabel && !isSpace && <BaseKeyIndicator>{baseLabel}</BaseKeyIndicator>}
-      {iconPath && (
-        <KeyMappingIcon src={iconPath} alt={mapping.action} $isSpace={isSpace} loading="lazy" />
-      )}
+      {iconPath && <KeyMappingIcon src={iconPath} alt={mapping.action} $isSpace={isSpace} loading="lazy" />}
       <KeyMappingLabel $isSpace={isSpace} $isCommandLayer={isCommandLayer} $hasIcon={hasIcon}>
         {mapping.action}
       </KeyMappingLabel>
-    </KeyMapping>
+    </KeyMappingContainer>
   );
 }
 

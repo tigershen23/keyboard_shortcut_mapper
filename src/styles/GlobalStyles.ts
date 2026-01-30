@@ -1,6 +1,6 @@
 import { createGlobalStyle, keyframes } from "styled-components";
 
-export const meshShift = keyframes`
+export const meshShift: ReturnType<typeof keyframes> = keyframes`
   0%, 100% {
     transform: translate(0, 0) rotate(0deg);
     filter: blur(80px);
@@ -43,7 +43,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html {
-    background: #231418;
+    background: ${({ theme }) => theme.surface.page};
   }
 
   body {
@@ -63,7 +63,7 @@ export const GlobalStyles = createGlobalStyle`
     right: -100px;
     bottom: -100px;
     z-index: 0;
-    background: linear-gradient(170deg, #1a1410 0%, #12100c 35%, #14100e 60%, #1a1215 80%, #231418 100%);
+    background: ${({ theme }) => theme.mesh.baseGradient};
   }
 
   .bg-gradient::before {
@@ -73,12 +73,7 @@ export const GlobalStyles = createGlobalStyle`
     left: -150px;
     right: -150px;
     bottom: -150px;
-    background:
-      radial-gradient(ellipse 60% 50% at 15% 25%, rgba(180, 90, 50, 0.5) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 85% 15%, rgba(200, 120, 60, 0.4) 0%, transparent 65%),
-      radial-gradient(ellipse 70% 50% at 75% 75%, rgba(160, 70, 90, 0.45) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 50% at 5% 70%, rgba(140, 100, 50, 0.35) 0%, transparent 65%),
-      radial-gradient(ellipse 100% 60% at 50% 100%, rgba(100, 50, 70, 0.5) 0%, transparent 70%);
+    background: ${({ theme }) => theme.mesh.primary.join(", ")};
     filter: blur(80px);
     animation: meshShift 30s ease-in-out infinite;
   }
@@ -90,10 +85,7 @@ export const GlobalStyles = createGlobalStyle`
     left: -100px;
     right: -100px;
     bottom: -100px;
-    background:
-      radial-gradient(ellipse 70% 60% at 50% 50%, rgba(190, 100, 70, 0.2) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 60% at 25% 60%, rgba(170, 130, 60, 0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(120, 60, 70, 0.3) 0%, transparent 65%);
+    background: ${({ theme }) => theme.mesh.secondary.join(", ")};
     filter: blur(60px);
     animation: meshShift 22s ease-in-out infinite reverse;
   }

@@ -43,11 +43,7 @@ function sortMappingsByKeyOrder(mappings: KeyMapping[], keyOrder: string[]): Key
 /**
  * Formats a single layer section with header and mapping list.
  */
-function formatLayerSection(
-  layerName: string,
-  mappings: KeyMapping[],
-  _keyOrder: string[],
-): string {
+function formatLayerSection(layerName: string, mappings: KeyMapping[], _keyOrder: string[]): string {
   const header = `## ${layerName}`;
   const items = mappings.map((m) => `- ${formatKeyLabel(m.keyId)}: ${m.action}`);
   return [header, "", ...items].join("\n");
