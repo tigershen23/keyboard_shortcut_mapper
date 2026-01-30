@@ -65,17 +65,53 @@ bun test
 - **tsgo** - TypeScript type checker (10x faster than tsc)
 
 ```bash
-# Run all checks (typecheck, lint, format) - ALWAYS run before commits
+# Run all read-only checks - ALWAYS run before commits
 mise check
 
-# Individual tools
-mise typecheck    # Type checking with tsgo
-mise lint         # Linting with oxlint
-mise format       # Format files with oxfmt
-mise format:check # Check formatting without changes
+# Apply all auto-fixes
+mise fix
 
-# Auto-fix
-mise lint:fix     # Fix lint issues (uses --fix-dangerously)
+# Individual tools
+mise typecheck    # Type checking with tsgo (read-only)
+mise lint         # Linting with oxlint (read-only)
+mise format       # Format files with oxfmt (applies changes)
+mise format:check # Check formatting without changes (read-only)
+mise lint:fix     # Fix lint issues (uses --fix-dangerously, applies changes)
+```
+
+#### Targeting Specific Paths
+
+All lint and format commands accept an optional path argument to target specific files or directories. If omitted, they default to `src/`.
+
+```bash
+# Lint a specific directory
+mise lint src/components/
+mise lint src/context/
+
+# Lint a specific file
+mise lint src/components/Key.tsx
+
+# Format specific paths
+mise format src/hooks/
+mise format src/utils/storage.ts
+
+# Check formatting on specific paths
+mise format:check src/data/
+
+# Auto-fix lint issues in a directory
+mise lint:fix src/components/
+```
+
+Note: `mise typecheck` and `mise check` run project-wide and don't accept path arguments.
+
+#### Using bun run
+
+The same path argument pattern works with `bun run`:
+
+```bash
+bun run lint                        # Defaults to src/
+bun run lint src/components/        # Lint specific directory
+bun run format src/components/Key.tsx  # Format a single file
 ```
 
 ## Architecture

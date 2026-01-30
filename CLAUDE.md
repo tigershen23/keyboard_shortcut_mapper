@@ -78,6 +78,41 @@ mise format:check # Check formatting without changes
 mise lint:fix     # Fix lint issues (uses --fix-dangerously)
 ```
 
+#### Targeting Specific Paths
+
+All lint and format commands accept an optional path argument to target specific files or directories. If omitted, they default to `src/`.
+
+```bash
+# Lint a specific directory
+mise lint src/components/
+mise lint src/context/
+
+# Lint a specific file
+mise lint src/components/Key.tsx
+
+# Format specific paths
+mise format src/hooks/
+mise format src/utils/storage.ts
+
+# Check formatting on specific paths
+mise format:check src/data/
+
+# Auto-fix lint issues in a directory
+mise lint:fix src/components/
+```
+
+Note: `mise typecheck` and `mise check` run project-wide and don't accept path arguments.
+
+#### Using bun run
+
+The same path argument pattern works with `bun run`:
+
+```bash
+bun run lint                        # Defaults to src/
+bun run lint src/components/        # Lint specific directory
+bun run format src/components/Key.tsx  # Format a single file
+```
+
 ## Architecture
 
 ### State Management

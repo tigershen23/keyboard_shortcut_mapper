@@ -23,13 +23,24 @@ description = "Run tsgo type checking"
 run = "bunx tsgo --noEmit"
 
 [tasks.check]
-description = "Run all checks (typecheck, lint:fix, format) - auto-fixes issues"
+description = "Run all read-only checks (typecheck, lint, format:check)"
 run = '''
 #!/bin/bash
 exit_code=0
 echo "=== TypeCheck ===" && bunx tsgo --noEmit || exit_code=1
 echo ""
-echo "=== Lint (fix) ===" && bunx oxlint --type-aware --fix-dangerously src/ || exit_code=1
+echo "=== Lint ===" && bunx oxlint --type-aware src/ || exit_code=1
+echo ""
+echo "=== Format Check ===" && bunx oxfmt --check src/ || exit_code=1
+exit $exit_code
+'''
+
+[tasks.fix]
+description = "Apply auto-fixes (lint:fix, format)"
+run = '''
+#!/bin/bash
+exit_code=0
+echo "=== Lint Fix ===" && bunx oxlint --type-aware --fix-dangerously src/ || exit_code=1
 echo ""
 echo "=== Format ===" && bunx oxfmt src/ || exit_code=1
 exit $exit_code
