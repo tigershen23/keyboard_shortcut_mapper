@@ -92,7 +92,12 @@ export function KeyPopover({
         {currentLayer !== "command" && (
           <FormGroup>
             <FormLabel>App</FormLabel>
-            <AppCombobox value={appName} onChange={setAppName} layerAccent={layerAccent} onSubmit={handleSave} />
+            <AppCombobox
+              value={appName}
+              onChange={setAppName}
+              layerAccent={layerAccent}
+              onSubmit={handleSave}
+            />
           </FormGroup>
         )}
 

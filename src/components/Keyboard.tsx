@@ -224,16 +224,12 @@ function ModifierRow({ keys, renderKey }: ModifierRowProps) {
     <KeyboardRow>
       {modifierKeys.map(renderKey)}
       <ArrowCluster>
-        <ArrowSingle>
-          {arrowLeft && renderKey(arrowLeft)}
-        </ArrowSingle>
+        <ArrowSingle>{arrowLeft && renderKey(arrowLeft)}</ArrowSingle>
         <ArrowVertical>
           {arrowUp && renderKey(arrowUp)}
           {arrowDown && renderKey(arrowDown)}
         </ArrowVertical>
-        <ArrowSingle>
-          {arrowRight && renderKey(arrowRight)}
-        </ArrowSingle>
+        <ArrowSingle>{arrowRight && renderKey(arrowRight)}</ArrowSingle>
       </ArrowCluster>
     </KeyboardRow>
   );

@@ -271,8 +271,10 @@ export function ActionBar() {
   const hyperCount = mappings.hyper.length;
   const commandCount = mappings.command.length;
 
-  const hyperColor = layers.find((l) => l.id === "hyper")?.accentColor ?? "rgba(100, 180, 160, 0.85)";
-  const commandColor = layers.find((l) => l.id === "command")?.accentColor ?? "rgba(200, 140, 120, 0.85)";
+  const hyperColor =
+    layers.find((l) => l.id === "hyper")?.accentColor ?? "rgba(100, 180, 160, 0.85)";
+  const commandColor =
+    layers.find((l) => l.id === "command")?.accentColor ?? "rgba(200, 140, 120, 0.85)";
 
   const handleCopy = async () => {
     const markdown = generateMappingsMarkdown(mappings, macbookLayout);
@@ -292,14 +294,23 @@ export function ActionBar() {
 
   return (
     <ActionBarContainer>
-      <CreditsLink href="https://tigershen.com" target="_blank" rel="noopener noreferrer" title="Credits">
+      <CreditsLink
+        href="https://tigershen.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Credits"
+      >
         🐯
       </CreditsLink>
 
       <StatsContainer>
-        <StatItem $color={hyperColor} $isActive={currentLayer === "hyper"}>Hyper: {hyperCount}</StatItem>
+        <StatItem $color={hyperColor} $isActive={currentLayer === "hyper"}>
+          Hyper: {hyperCount}
+        </StatItem>
         <span>•</span>
-        <StatItem $color={commandColor} $isActive={currentLayer === "command"}>Command: {commandCount}</StatItem>
+        <StatItem $color={commandColor} $isActive={currentLayer === "command"}>
+          Command: {commandCount}
+        </StatItem>
       </StatsContainer>
 
       <Divider />
@@ -321,8 +332,8 @@ export function ActionBar() {
           <DialogPopup>
             <DialogTitle>Reset to Defaults?</DialogTitle>
             <DialogDescription>
-              This will replace all your current keyboard mappings with the default configuration. This action cannot be
-              undone.
+              This will replace all your current keyboard mappings with the default configuration.
+              This action cannot be undone.
             </DialogDescription>
             <DialogActions>
               <Dialog.Close render={<DialogButton $variant="secondary" />}>Cancel</Dialog.Close>

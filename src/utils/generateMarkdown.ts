@@ -1,14 +1,10 @@
-import React from "react";
 import type { KeyboardLayout, KeyMapping, LayerMappings } from "../types";
 
 /**
  * Generates a markdown string of all keyboard mappings, organized by layer.
  * Keys are ordered by keyboard row (top to bottom), then left to right.
  */
-export function generateMappingsMarkdown(
-  mappings: LayerMappings,
-  layout: KeyboardLayout,
-): string {
+export function generateMappingsMarkdown(mappings: LayerMappings, layout: KeyboardLayout): string {
   const keyOrder = getKeyOrder(layout);
 
   const sections: string[] = [];
@@ -36,10 +32,7 @@ function getKeyOrder(layout: KeyboardLayout): string[] {
 /**
  * Sorts mappings according to keyboard key order.
  */
-function sortMappingsByKeyOrder(
-  mappings: KeyMapping[],
-  keyOrder: string[],
-): KeyMapping[] {
+function sortMappingsByKeyOrder(mappings: KeyMapping[], keyOrder: string[]): KeyMapping[] {
   return [...mappings].sort((a, b) => {
     const indexA = keyOrder.indexOf(a.keyId);
     const indexB = keyOrder.indexOf(b.keyId);
@@ -56,9 +49,7 @@ function formatLayerSection(
   _keyOrder: string[],
 ): string {
   const header = `## ${layerName}`;
-  const items = mappings.map(
-    (m) => `- ${formatKeyLabel(m.keyId)}: ${m.action}`,
-  );
+  const items = mappings.map((m) => `- ${formatKeyLabel(m.keyId)}: ${m.action}`);
   return [header, "", ...items].join("\n");
 }
 

@@ -441,7 +441,7 @@ export function Key({
   layerAccent,
   onSelect,
 }: KeyProps) {
-  const { id, label, secondaryLabel, textLabel, symbolLabel, hasIndicator, width = 1, height = 1, isModifier, isFunction } = definition;
+  const { id, width = 1, height = 1, isModifier, isFunction } = definition;
 
   const isBaseLayer = currentLayer === "base";
   const isRegularKey = !isModifier && !isFunction && !isSpecialKey(id);
@@ -483,11 +483,7 @@ export function Key({
   );
 }
 
-function renderBaseLabel(
-  definition: KeyDefinition,
-  isFunction?: boolean,
-  isModifier?: boolean,
-) {
+function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModifier?: boolean) {
   const { id, label, secondaryLabel, textLabel, symbolLabel, hasIndicator } = definition;
 
   // Fn key has special stacked layout with globe
