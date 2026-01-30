@@ -1,7 +1,6 @@
 import { Dialog } from "@base-ui-components/react/dialog";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { useLayerContext } from "../context/LayerContext";
 import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
 import { generateMappingsMarkdown } from "../utils/generateMarkdown";
@@ -97,23 +96,6 @@ const ButtonLabel = styled.span`
   letter-spacing: 0.15em;
   text-transform: uppercase;
   white-space: nowrap;
-`;
-
-const StatsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1vw, 14px);
-  font-family: "Instrument Sans", sans-serif;
-  font-size: clamp(10px, 1vw, 13px);
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.35);
-  letter-spacing: 0.05em;
-`;
-
-const StatItem = styled.span<{ $color: string; $isActive?: boolean }>`
-  color: ${({ $color }) => $color};
-  opacity: ${({ $isActive }) => ($isActive ? 1 : 0.4)};
-  transition: opacity 0.2s ease;
 `;
 
 const Divider = styled.span`
@@ -264,17 +246,8 @@ function ResetIcon() {
 
 export function ActionBar() {
   const { mappings, resetToDefaults } = useMappingContext();
-  const { layers, currentLayer } = useLayerContext();
   const [copied, setCopied] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
-
-  const hyperCount = mappings.hyper.length;
-  const commandCount = mappings.command.length;
-
-  const hyperColor =
-    layers.find((l) => l.id === "hyper")?.accentColor ?? "rgba(100, 180, 160, 0.85)";
-  const commandColor =
-    layers.find((l) => l.id === "command")?.accentColor ?? "rgba(200, 140, 120, 0.85)";
 
   const handleCopy = async () => {
     const markdown = generateMappingsMarkdown(mappings, macbookLayout);
@@ -302,16 +275,6 @@ export function ActionBar() {
       >
         🐯
       </CreditsLink>
-
-      <StatsContainer>
-        <StatItem $color={hyperColor} $isActive={currentLayer === "hyper"}>
-          Hyper: {hyperCount}
-        </StatItem>
-        <span>•</span>
-        <StatItem $color={commandColor} $isActive={currentLayer === "command"}>
-          Command: {commandCount}
-        </StatItem>
-      </StatsContainer>
 
       <Divider />
 

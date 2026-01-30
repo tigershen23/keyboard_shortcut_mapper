@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useLayerContext } from "../context/LayerContext";
+import { useMappingContext } from "../context/MappingContext";
 
 const indicatorEnter = keyframes`
   from {
@@ -120,8 +121,29 @@ const TabLabel = styled.span`
   white-space: nowrap;
 `;
 
+interface TabCountProps {
+  $accentColor: string;
+  $isActive: boolean;
+}
+
+const TabCount = styled.span<TabCountProps>`
+  font-family: "Instrument Sans", sans-serif;
+  font-size: clamp(9px, 0.9vw, 11px);
+  font-weight: 600;
+  color: ${({ $accentColor }) => $accentColor};
+  opacity: ${({ $isActive }) => ($isActive ? 0.9 : 0.7)};
+  margin-left: clamp(2px, 0.3vw, 4px);
+`;
+
 export function LayerIndicator() {
   const { currentLayer, setLayer, layers } = useLayerContext();
+  const { mappings } = useMappingContext();
+
+  const getMappingCount = (layerId: string): number | null => {
+    if (layerId === "hyper") return mappings.hyper.length;
+    if (layerId === "command") return mappings.command.length;
+    return null;
+  };
 
   return (
     <IndicatorContainer>
@@ -131,10 +153,12 @@ export function LayerIndicator() {
           <IndicatorLabel>Layer →</IndicatorLabel>
           {layers.map((layer) => {
             const isActive = currentLayer === layer.id;
+            const count = getMappingCount(layer.id);
             return (
               <LayerTab key={layer.id} $isActive={isActive} onClick={() => setLayer(layer.id)}>
                 <TabDot $isActive={isActive} $accentColor={layer.accentColor} />
                 <TabLabel>{layer.shortLabel}</TabLabel>
+                {count !== null && <TabCount $accentColor={layer.accentColor} $isActive={isActive}>{count}</TabCount>}
               </LayerTab>
             );
           })}
