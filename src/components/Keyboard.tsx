@@ -26,25 +26,21 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
   gap: var(--key-gap);
   padding: var(--frame-padding);
   background: linear-gradient(
-    168deg,
-    #d8d8dc 0%,
-    #cdcdd1 15%,
-    #c2c2c6 40%,
-    #b7b7bb 70%,
-    #acacb0 100%
+    180deg,
+    #1f1f1f 0%,
+    #171717 50%,
+    #0f0f0f 100%
   );
   border-radius: var(--frame-radius);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 0 clamp(60px, 10vw, 150px) clamp(20px, 4vw, 60px) rgba(180, 100, 60, 0.1),
-    0 0 clamp(40px, 6vw, 100px) clamp(10px, 2vw, 30px) rgba(160, 120, 70, 0.06),
     0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 120px) clamp(-10px, -2vw, -30px)
-      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.6),
     0 clamp(10px, 2vw, 30px) clamp(20px, 4vw, 60px) clamp(-8px, -1.5vw, -20px)
-      rgba(0, 0, 0, 0.35),
-    0 clamp(4px, 0.8vw, 12px) clamp(12px, 2vw, 30px) rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+      rgba(0, 0, 0, 0.4),
+    0 clamp(4px, 0.8vw, 12px) clamp(12px, 2vw, 30px) rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2);
   animation: ${keyboardEnter} 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --layer-glow: transparent;
   transition: box-shadow 0.4s ease;
@@ -53,15 +49,13 @@ const KeyboardFrame = styled.div<KeyboardFrameProps>`
     max-width: 100%;
     width: 100%;
     box-shadow:
-      0 0 clamp(30px, 8vw, 80px) clamp(10px, 3vw, 30px) rgba(180, 100, 60, 0.1),
-      0 0 clamp(20px, 5vw, 50px) clamp(5px, 1.5vw, 15px) rgba(160, 120, 70, 0.06),
       0 clamp(10px, 3vw, 30px) clamp(20px, 6vw, 60px) clamp(-5px, -1.5vw, -15px)
-        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.6),
       0 clamp(5px, 1.5vw, 15px) clamp(10px, 3vw, 30px) clamp(-4px, -1vw, -10px)
-        rgba(0, 0, 0, 0.35),
-      0 clamp(2px, 0.6vw, 6px) clamp(6px, 1.5vw, 15px) rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      inset 0 -1px 2px rgba(0, 0, 0, 0.06);
+        rgba(0, 0, 0, 0.4),
+      0 clamp(2px, 0.6vw, 6px) clamp(6px, 1.5vw, 15px) rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.2);
   }
 
   &::before {

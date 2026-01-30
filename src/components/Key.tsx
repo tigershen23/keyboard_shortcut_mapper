@@ -194,13 +194,13 @@ const KeyLabels = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(0px, 0.15vw, 2px);
+  gap: clamp(2px, 0.3vw, 5px);
   line-height: 1;
   position: relative;
   z-index: 2;
 `;
 
-const KeyLabel = styled.span<{ $isFunction?: boolean; $isModifier?: boolean }>`
+const KeyLabel = styled.span<{ $isFunction?: boolean; $isModifier?: boolean; $isArrow?: boolean }>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: var(--font-key);
   font-weight: 500;
@@ -227,13 +227,20 @@ const KeyLabel = styled.span<{ $isFunction?: boolean; $isModifier?: boolean }>`
       font-weight: 400;
       color: rgba(255, 255, 255, 0.95);
     `}
+
+  ${({ $isArrow }) =>
+    $isArrow &&
+    css`
+      font-size: clamp(8px, 1.0vw, 14px);
+      color: rgba(255, 255, 255, 0.9);
+    `}
 `;
 
 const KeyLabelSecondary = styled.span`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: var(--font-key-secondary);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.85);
 `;
 
 const KeyLabelPrimary = styled.span`
@@ -323,7 +330,7 @@ const KeyMappingLabel = styled.span<{
 // Modifier key specific styled components
 const ModifierTextLabel = styled.span<{ $align?: "left" | "right" | "center" }>`
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: clamp(7px, 0.9vw, 12px);
+  font-size: clamp(8px, 1.0vw, 14px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.95);
   text-transform: lowercase;
@@ -335,34 +342,32 @@ const ModifierTextLabel = styled.span<{ $align?: "left" | "right" | "center" }>`
     if ($align === "left") {
       return css`
         left: clamp(4px, 0.5vw, 8px);
-        bottom: clamp(3px, 0.4vw, 6px);
+        bottom: clamp(5px, 0.6vw, 10px);
       `;
     }
     if ($align === "right") {
       return css`
         right: clamp(4px, 0.5vw, 8px);
-        bottom: clamp(3px, 0.4vw, 6px);
+        bottom: clamp(5px, 0.6vw, 10px);
       `;
     }
     return css`
-      bottom: clamp(3px, 0.4vw, 6px);
+      bottom: clamp(5px, 0.6vw, 10px);
     `;
   }}
 `;
 
 const ModifierStackedLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
+  position: relative;
   width: 100%;
   height: 100%;
-  padding: clamp(3px, 0.4vw, 6px) clamp(4px, 0.5vw, 8px);
-  position: relative;
   z-index: 2;
 `;
 
 const ModifierSymbol = styled.span`
+  position: absolute;
+  top: clamp(3px, 0.4vw, 6px);
+  right: clamp(4px, 0.5vw, 8px);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(10px, 1.3vw, 18px);
   font-weight: 400;
@@ -371,6 +376,9 @@ const ModifierSymbol = styled.span`
 `;
 
 const ModifierText = styled.span`
+  position: absolute;
+  bottom: clamp(4px, 0.5vw, 8px);
+  left: clamp(4px, 0.5vw, 8px);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(6px, 0.75vw, 10px);
   font-weight: 400;
@@ -380,21 +388,25 @@ const ModifierText = styled.span`
 `;
 
 const FnKeyLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1px, 0.15vw, 3px);
   position: relative;
+  width: 100%;
+  height: 100%;
   z-index: 2;
 `;
 
 const FnGlobe = styled.span`
+  position: absolute;
+  bottom: clamp(3px, 0.4vw, 6px);
+  left: clamp(4px, 0.5vw, 8px);
   font-size: clamp(10px, 1.2vw, 16px);
   line-height: 1;
+  filter: grayscale(1) brightness(1.5);
 `;
 
 const FnText = styled.span`
+  position: absolute;
+  top: clamp(3px, 0.4vw, 6px);
+  right: clamp(4px, 0.5vw, 8px);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: clamp(7px, 0.9vw, 12px);
   font-weight: 400;
@@ -528,8 +540,9 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
   }
 
   // Simple single-label keys (letters, arrows)
+  const isArrow = id.startsWith("arrow-");
   return (
-    <KeyLabel $isFunction={isFunction} $isModifier={isModifier}>
+    <KeyLabel $isFunction={isFunction} $isModifier={isModifier} $isArrow={isArrow}>
       {label}
     </KeyLabel>
   );
