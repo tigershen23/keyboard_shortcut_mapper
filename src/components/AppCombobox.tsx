@@ -1,150 +1,135 @@
-import React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { getIconPath, iconManifest } from "../data/icon-manifest.js";
-import {
-	getAppDropdownLabel,
-	getAppOptionLabel,
-	getAppSearchLabel,
-} from "../utils/labels.js";
+import { getAppDropdownLabel, getAppOptionLabel, getAppSearchLabel } from "../utils/labels.js";
 
 const apps = Object.keys(iconManifest).sort();
 
 interface AppComboboxProps {
-	value: string;
-	onChange: (value: string) => void;
-	layerAccent: string;
-	onSubmit: () => void;
+  value: string;
+  onChange: (value: string) => void;
+  layerAccent: string;
+  onSubmit: () => void;
 }
 
-export function AppCombobox({
-	value,
-	onChange,
-	layerAccent,
-	onSubmit,
-}: AppComboboxProps) {
-	const [inputValue, setInputValue] = useState(value);
-	const [isOpen, setIsOpen] = useState(false);
-	const [highlightedIndex, setHighlightedIndex] = useState(0);
-	const containerRef = useRef<HTMLDivElement>(null);
-	const listRef = useRef<HTMLDivElement>(null);
+export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppComboboxProps) {
+  const [inputValue, setInputValue] = useState(value);
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
-	const filteredApps = useMemo(() => {
-		if (!inputValue) return apps;
-		const lower = inputValue.toLowerCase();
-		return apps.filter((app) => app.toLowerCase().includes(lower));
-	}, [inputValue]);
+  const filteredApps = useMemo(() => {
+    if (!inputValue) return apps;
+    const lower = inputValue.toLowerCase();
+    return apps.filter((app) => app.toLowerCase().includes(lower));
+  }, [inputValue]);
 
-	useEffect(() => {
-		setHighlightedIndex(0);
-	}, []);
+  useEffect(() => {
+    setHighlightedIndex(0);
+  }, []);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputValue(e.target.value);
-		setIsOpen(true);
-	};
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    setIsOpen(true);
+  };
 
-	const handleSelect = (app: string) => {
-		setInputValue(app);
-		onChange(app);
-		setIsOpen(false);
-	};
+  const handleSelect = (app: string) => {
+    setInputValue(app);
+    onChange(app);
+    setIsOpen(false);
+  };
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (!isOpen) {
-			if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-				setIsOpen(true);
-				e.preventDefault();
-			}
-			return;
-		}
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        setIsOpen(true);
+        e.preventDefault();
+      }
+      return;
+    }
 
-		switch (e.key) {
-			case "ArrowDown":
-				e.preventDefault();
-				setHighlightedIndex((prev) =>
-					Math.min(prev + 1, filteredApps.length - 1),
-				);
-				break;
-			case "ArrowUp":
-				e.preventDefault();
-				setHighlightedIndex((prev) => Math.max(prev - 1, 0));
-				break;
-			case "Enter":
-				e.preventDefault();
-				if (filteredApps.length === 0) {
-					onSubmit();
-				} else if (e.metaKey) {
-					onSubmit();
-				} else if (filteredApps[highlightedIndex]) {
-					handleSelect(filteredApps[highlightedIndex]);
-				}
-				break;
-			case "Escape":
-				if (filteredApps.length === 0) {
-					// Let the event propagate to close the form
-				} else {
-					setIsOpen(false);
-				}
-				break;
-		}
-	};
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setHighlightedIndex((prev) => Math.min(prev + 1, filteredApps.length - 1));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (filteredApps.length === 0) {
+          onSubmit();
+        } else if (e.metaKey) {
+          onSubmit();
+        } else if (filteredApps[highlightedIndex]) {
+          handleSelect(filteredApps[highlightedIndex]);
+        }
+        break;
+      case "Escape":
+        if (filteredApps.length === 0) {
+          // Let the event propagate to close the form
+        } else {
+          setIsOpen(false);
+        }
+        break;
+    }
+  };
 
-	useEffect(() => {
-		const handleClickOutside = (e: MouseEvent) => {
-			if (
-				containerRef.current &&
-				!containerRef.current.contains(e.target as Node)
-			) {
-				setIsOpen(false);
-			}
-		};
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, []);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-	useEffect(() => {
-		if (isOpen && listRef.current) {
-			const item = listRef.current.children[highlightedIndex] as HTMLElement;
-			if (item) {
-				item.scrollIntoView({ block: "nearest" });
-			}
-		}
-	}, [highlightedIndex, isOpen]);
+  useEffect(() => {
+    if (isOpen && listRef.current) {
+      const item = listRef.current.children[highlightedIndex] as HTMLElement;
+      if (item) {
+        item.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [highlightedIndex, isOpen]);
 
-	const inputTitle = getAppSearchLabel(inputValue, isOpen);
-	const dropdownTitle = getAppDropdownLabel(apps.length, filteredApps.length);
+  const inputTitle = getAppSearchLabel(inputValue, isOpen);
+  const dropdownTitle = getAppDropdownLabel(apps.length, filteredApps.length);
 
-	return (
-		<Container ref={containerRef}>
-			<StyledInput
-				value={inputValue}
-				onChange={handleInputChange}
-				onKeyDown={handleKeyDown}
-				onFocus={() => setIsOpen(true)}
-				placeholder="Search apps..."
-				$accent={layerAccent}
-				title={inputTitle}
-			/>
-			{isOpen && filteredApps.length > 0 && (
-				<Dropdown ref={listRef} title={dropdownTitle}>
-					{filteredApps.map((app, index) => (
-						<DropdownItem
-							key={app}
-							onClick={() => handleSelect(app)}
-							$highlighted={index === highlightedIndex}
-							$selected={app === value}
-							onMouseEnter={() => setHighlightedIndex(index)}
-							title={getAppOptionLabel(app)}
-						>
-							<AppIcon src={getIconPath(app) ?? ""} alt="" />
-							<AppName>{app}</AppName>
-						</DropdownItem>
-					))}
-				</Dropdown>
-			)}
-		</Container>
-	);
+  return (
+    <Container ref={containerRef}>
+      <StyledInput
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setIsOpen(true)}
+        placeholder="Search apps..."
+        $accent={layerAccent}
+        title={inputTitle}
+      />
+      {isOpen && filteredApps.length > 0 && (
+        <Dropdown ref={listRef} title={dropdownTitle}>
+          {filteredApps.map((app, index) => (
+            <DropdownItem
+              key={app}
+              onClick={() => handleSelect(app)}
+              $highlighted={index === highlightedIndex}
+              $selected={app === value}
+              onMouseEnter={() => setHighlightedIndex(index)}
+              title={getAppOptionLabel(app)}
+            >
+              <AppIcon src={getIconPath(app) ?? ""} alt="" />
+              <AppName>{app}</AppName>
+            </DropdownItem>
+          ))}
+        </Dropdown>
+      )}
+    </Container>
+  );
 }
 
 const Container = styled.div`
@@ -201,11 +186,7 @@ const DropdownItem = styled.div<{ $highlighted: boolean; $selected: boolean }>`
   font-family: "Instrument Sans", sans-serif;
   font-size: 13px;
   background: ${({ $highlighted, $selected, theme }) =>
-		$selected
-			? "var(--layer-accent)"
-			: $highlighted
-				? theme.border.light
-				: "transparent"};
+    $selected ? "var(--layer-accent)" : $highlighted ? theme.border.light : "transparent"};
 `;
 
 const AppIcon = styled.img`

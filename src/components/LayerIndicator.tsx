@@ -1,4 +1,3 @@
-import React from "react";
 import styled, { keyframes, useTheme } from "styled-components";
 import { useLayerContext } from "../context/LayerContext.js";
 import { useMappingContext } from "../context/MappingContext.js";

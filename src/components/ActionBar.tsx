@@ -33,7 +33,7 @@ const ActionBarContainer = styled.div`
 `;
 
 interface ActionButtonProps {
-	$isSuccess?: boolean;
+  $isSuccess?: boolean;
 }
 
 const ActionButton = styled.button<ActionButtonProps>`
@@ -170,15 +170,15 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
   transition: all 0.15s ease;
 
   ${({ $variant, theme }) =>
-		$variant === "danger"
-			? `
+    $variant === "danger"
+      ? `
     background: ${theme.semantic.danger};
     color: ${theme.text.primary};
     &:hover {
       background: ${theme.semantic.dangerHover};
     }
   `
-			: `
+      : `
     background: ${theme.border.light};
     color: ${theme.text.muted};
     &:hover {
@@ -193,139 +193,129 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
 `;
 
 function CopyIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			aria-hidden="true"
-		>
-			<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-		</svg>
-	);
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
 }
 
 function CheckIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			aria-hidden="true"
-		>
-			<polyline points="20 6 9 17 4 12" />
-		</svg>
-	);
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
 }
 
 function ResetIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			aria-hidden="true"
-		>
-			<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-			<path d="M3 3v5h5" />
-		</svg>
-	);
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </svg>
+  );
 }
 
 export function ActionBar() {
-	const { mappings, resetToDefaults } = useMappingContext();
-	const [copied, setCopied] = useState(false);
-	const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const { mappings, resetToDefaults } = useMappingContext();
+  const [copied, setCopied] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
-	const handleCopy = async () => {
-		const markdown = generateMappingsMarkdown(mappings, macbookLayout);
+  const handleCopy = async () => {
+    const markdown = generateMappingsMarkdown(mappings, macbookLayout);
 
-		if (!markdown) {
-			return;
-		}
+    if (!markdown) {
+      return;
+    }
 
-		try {
-			await navigator.clipboard.writeText(markdown);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 1500);
-		} catch {
-			console.error("Failed to copy to clipboard");
-		}
-	};
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      console.error("Failed to copy to clipboard");
+    }
+  };
 
-	return (
-		<ActionBarContainer>
-			<CreditsLink
-				href="https://tigershen.com"
-				target="_blank"
-				rel="noopener noreferrer"
-				title="Credits link to tigershen.com"
-			>
-				🐯
-			</CreditsLink>
+  return (
+    <ActionBarContainer>
+      <CreditsLink
+        href="https://tigershen.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Credits link to tigershen.com"
+      >
+        🐯
+      </CreditsLink>
 
-			<Divider />
+      <Divider />
 
-			<ActionButton
-				onClick={handleCopy}
-				$isSuccess={copied}
-				title={
-					copied ? "Copied mappings to clipboard" : "Copy mappings to clipboard"
-				}
-			>
-				<ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
-				<ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
-			</ActionButton>
+      <ActionButton
+        onClick={handleCopy}
+        $isSuccess={copied}
+        title={copied ? "Copied mappings to clipboard" : "Copy mappings to clipboard"}
+      >
+        <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
+        <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
+      </ActionButton>
 
-			<Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-				<Dialog.Trigger
-					render={<ActionButton title="Reset mappings to defaults" />}
-				>
-					<ButtonIcon>
-						<ResetIcon />
-					</ButtonIcon>
-					<ButtonLabel>Reset</ButtonLabel>
-				</Dialog.Trigger>
-				<Dialog.Portal>
-					<DialogBackdrop />
-					<DialogPopup title="Reset confirmation dialog">
-						<DialogTitle>Reset to Defaults?</DialogTitle>
-						<DialogDescription>
-							This will replace all your current keyboard mappings with the
-							default configuration. This action cannot be undone.
-						</DialogDescription>
-						<DialogActions>
-							<Dialog.Close
-								render={
-									<DialogButton $variant="secondary" title="Cancel reset" />
-								}
-							>
-								Cancel
-							</Dialog.Close>
-							<DialogButton
-								$variant="danger"
-								title="Confirm reset to defaults"
-								onClick={() => {
-									resetToDefaults();
-									setResetDialogOpen(false);
-								}}
-							>
-								Reset
-							</DialogButton>
-						</DialogActions>
-					</DialogPopup>
-				</Dialog.Portal>
-			</Dialog.Root>
-		</ActionBarContainer>
-	);
+      <Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <Dialog.Trigger render={<ActionButton title="Reset mappings to defaults" />}>
+          <ButtonIcon>
+            <ResetIcon />
+          </ButtonIcon>
+          <ButtonLabel>Reset</ButtonLabel>
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <DialogBackdrop />
+          <DialogPopup title="Reset confirmation dialog">
+            <DialogTitle>Reset to Defaults?</DialogTitle>
+            <DialogDescription>
+              This will replace all your current keyboard mappings with the default configuration. This action cannot be
+              undone.
+            </DialogDescription>
+            <DialogActions>
+              <Dialog.Close render={<DialogButton $variant="secondary" title="Cancel reset" />}>Cancel</Dialog.Close>
+              <DialogButton
+                $variant="danger"
+                title="Confirm reset to defaults"
+                onClick={() => {
+                  resetToDefaults();
+                  setResetDialogOpen(false);
+                }}
+              >
+                Reset
+              </DialogButton>
+            </DialogActions>
+          </DialogPopup>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </ActionBarContainer>
+  );
 }

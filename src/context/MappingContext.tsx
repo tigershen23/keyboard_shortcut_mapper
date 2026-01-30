@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getIconPath } from "../data/icon-manifest";
 import type { KeyMapping, LayerMappings, LayerType } from "../types";
 import { loadMappings, resetMappings as resetStoredMappings, saveMappings } from "../utils/storage";

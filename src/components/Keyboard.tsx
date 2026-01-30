@@ -1,4 +1,3 @@
-import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
