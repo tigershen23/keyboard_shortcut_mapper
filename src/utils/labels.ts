@@ -9,23 +9,26 @@ export function getKeyLabel(
 ): string {
   const { id, label, textLabel } = definition;
 
-  // Build base key identity
+  // Build base key identity - all keys use " key" suffix for consistency
   let keyIdentity: string;
   if (textLabel) {
     // For modifiers, use textLabel with side distinction
     if (id === "control-left" || id === "control-right") {
-      keyIdentity = id === "control-left" ? "Left Control modifier" : "Right Control modifier";
+      keyIdentity = id === "control-left" ? "Left Control key" : "Right Control key";
     } else if (id === "option-left" || id === "option-right") {
-      keyIdentity = id === "option-left" ? "Left Option modifier" : "Right Option modifier";
+      keyIdentity = id === "option-left" ? "Left Option key" : "Right Option key";
     } else if (id === "command-left" || id === "command-right") {
-      keyIdentity = id === "command-left" ? "Left Command modifier" : "Right Command modifier";
+      keyIdentity = id === "command-left" ? "Left Command key" : "Right Command key";
     } else {
-      // Other text-based keys (tab, caps lock, shift, backspace, return, fn)
+      // Other text-based keys (tab, caps lock, shift, backspace, return, fn, control)
       keyIdentity = `${textLabel} key`;
     }
-  } else {
+  } else if (label) {
     // Standard keys use their label
     keyIdentity = `${label} key`;
+  } else {
+    // Space key and any other keys without label
+    keyIdentity = `${id} key`;
   }
 
   // Base layer: just show key identity

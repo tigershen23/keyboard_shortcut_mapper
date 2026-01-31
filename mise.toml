@@ -40,8 +40,18 @@ description = "Apply auto-fixes (lint:fix, format)"
 run = '''
 #!/bin/bash
 exit_code=0
+echo "=== TypeCheck ===" && bunx tsgo --noEmit || exit_code=1
+echo ""
 echo "=== Lint Fix ===" && bunx oxlint --type-aware --fix-dangerously src/ || exit_code=1
 echo ""
 echo "=== Format ===" && bunx oxfmt src/ || exit_code=1
 exit $exit_code
 '''
+
+[tasks.test]
+description = "Run unit tests with bun"
+run = "bun test"
+
+[tasks."test:e2e"]
+description = "Run Playwright E2E tests (requires dev server running)"
+run = "bunx playwright test"

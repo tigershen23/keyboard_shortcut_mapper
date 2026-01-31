@@ -53,8 +53,16 @@ Dev server runs at http://localhost:3000
 ### Testing
 
 ```bash
+# Unit tests
 bun test
+mise test
+
+# E2E tests (requires dev server running via PM2)
+mise test:e2e
+bun run test:e2e
 ```
+
+E2E tests use Playwright with Chromium. The dev server must be running at http://localhost:3000 before running E2E tests. Tests are located in `tests/e2e/`.
 
 ### Code Quality
 
@@ -151,6 +159,9 @@ src/
 ├── types/              # TypeScript interfaces
 ├── utils/              # Helpers (storage, markdown export)
 └── static/icons/       # App icons (33 PNGs)
+tests/
+└── e2e/                # Playwright E2E tests
+    └── critical-path.spec.ts
 ```
 
 ## Key Files
@@ -166,6 +177,8 @@ src/
 | `src/data/default-mappings.ts` | Initial key mappings |
 | `.github/workflows/deploy.yml` | GitHub Pages deployment |
 | `ecosystem.config.cjs` | PM2 process configuration |
+| `playwright.config.ts` | Playwright E2E test configuration |
+| `tests/e2e/critical-path.spec.ts` | E2E test covering critical user journey |
 
 ## Conventions
 
