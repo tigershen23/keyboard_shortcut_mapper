@@ -98,7 +98,7 @@ const KeyboardRow = styled.div`
   display: flex;
   gap: var(--key-gap);
   justify-content: flex-start;
-
+  
   @media (max-width: 768px) {
     width: 100%;
     justify-content: space-between;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
 import type { KeyMapping } from "../types/index.js";
@@ -29,6 +29,7 @@ export function KeyPopover({
   const [appName, setAppName] = useState(currentMapping?.appName ?? "");
   const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
   const [arrowSide, setArrowSide] = useState<"left" | "right">("left");
+  const [isPositioned, setIsPositioned] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const openedAtRef = useRef<number>(Date.now());
   const padding = 8;
@@ -87,9 +88,10 @@ export function KeyPopover({
       top,
       transform: "translateY(-50%)",
     });
+    setIsPositioned(true);
   }, [getPreferredPosition, keyRect]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { baseLeft, baseTop } = getPreferredPosition();
     setPopupStyle({
       position: "fixed",
@@ -98,9 +100,10 @@ export function KeyPopover({
       transform: "translateY(-50%)",
     });
     setArrowSide("left");
+    setIsPositioned(false);
   }, [getPreferredPosition]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updatePlacement();
     const handleResize = () => updatePlacement();
     window.addEventListener("resize", handleResize);
@@ -136,7 +139,13 @@ export function KeyPopover({
   return createPortal(
     <>
       <Backdrop onClick={onClose} />
-      <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent} data-testid="key-popover">
+      <PopupContainer
+        ref={popupRef}
+        style={popupStyle}
+        $accent={layerAccent}
+        $isPositioned={isPositioned}
+        data-testid="key-popover"
+      >
         <Arrow $side={arrowSide} />
         <FormGroup>
           <FormLabel>Action</FormLabel>
@@ -238,7 +247,7 @@ const Arrow = styled.div<{ $side: "left" | "right" }>`
   }
 `;
 
-const PopupContainer = styled.div<{ $accent: string }>`
+const PopupContainer = styled.div<{ $accent: string; $isPositioned: boolean }>`
   background: ${({ theme }) => theme.surface.popover};
   backdrop-filter: blur(12px);
   border: 1px solid ${({ theme }) => theme.border.light};
@@ -247,12 +256,16 @@ const PopupContainer = styled.div<{ $accent: string }>`
   min-width: 240px;
   max-height: calc(100vh - 16px);
   overflow: auto;
+  opacity: ${({ $isPositioned }) => ($isPositioned ? 1 : 0)};
+  pointer-events: ${({ $isPositioned }) => ($isPositioned ? "auto" : "none")};
   box-shadow:
     0 8px 32px ${({ theme }) => theme.shadow.medium},
     0 2px 8px ${({ theme }) => theme.shadow.light};
   z-index: 100;
   --layer-accent: ${({ $accent }) => $accent};
   animation: popoverIn 0.15s ease-out;
+  transition: opacity 0.12s ease-out;
+  will-change: transform;
 
   @media (max-width: 768px) {
     width: min(320px, calc(100vw - 16px));
