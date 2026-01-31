@@ -5,7 +5,7 @@ export const GlobalStyles = createGlobalStyle`
     --key-unit: clamp(28px, 5vw, 70px);
     --key-gap: clamp(2px, 0.35vw, 6px);
     --key-radius: clamp(4px, 0.6vw, 10px);
-    --frame-padding: clamp(12px, 1.8vw, 32px);
+    --frame-padding: clamp(6px, 0.9vw, 16px);
     --frame-radius: clamp(10px, 1.4vw, 20px);
     --font-key: clamp(12px, 1.5vw, 24px);
     --font-key-secondary: clamp(10px, 1.2vw, 18px);
@@ -110,7 +110,7 @@ export const GlobalStyles = createGlobalStyle`
       --key-unit: clamp(32px, 4.5vh, 72px);
       --key-gap: clamp(2px, 0.3vh, 5px);
       --key-radius: clamp(4px, 0.5vh, 9px);
-      --frame-padding: clamp(12px, 1.5vh, 28px);
+      --frame-padding: clamp(6px, 0.75vh, 14px);
       --frame-radius: clamp(8px, 1vh, 18px);
       --font-key: clamp(12px, 1.3vh, 22px);
       --font-key-secondary: clamp(10px, 1vh, 16px);
@@ -124,7 +124,7 @@ export const GlobalStyles = createGlobalStyle`
       --key-unit: clamp(16px, 4.8vw, 32px);
       --key-gap: clamp(1px, 0.3vw, 2px);
       --key-radius: clamp(2px, 0.5vw, 4px);
-      --frame-padding: clamp(4px, 1.2vw, 10px);
+      --frame-padding: clamp(2px, 0.6vw, 5px);
       --frame-radius: clamp(4px, 1vw, 8px);
       --font-key: clamp(6px, 1.6vw, 11px);
       --font-key-secondary: clamp(5px, 1.2vw, 9px);

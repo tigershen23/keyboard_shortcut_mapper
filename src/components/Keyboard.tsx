@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
@@ -136,17 +137,10 @@ interface KeyboardProps {
   onKeySelect: (keyId: string, element: HTMLElement) => void;
 }
 
-export function Keyboard({
-  layout,
-  className,
-  currentLayer,
-  pressedKeyId,
-  onKeyPress,
-  rippleColor,
-  layerAccent,
-  selectedKeyId,
-  onKeySelect,
-}: KeyboardProps) {
+export const Keyboard = forwardRef<HTMLDivElement, KeyboardProps>(function Keyboard(
+  { layout, className, currentLayer, pressedKeyId, onKeyPress, rippleColor, layerAccent, selectedKeyId, onKeySelect },
+  ref,
+) {
   const { getMappingForKey, getIconForMapping } = useMappingContext();
 
   const isEditable = currentLayer !== "base";
@@ -175,7 +169,7 @@ export function Keyboard({
   };
 
   return (
-    <KeyboardFrame $layer={currentLayer} className={className}>
+    <KeyboardFrame ref={ref} $layer={currentLayer} className={className}>
       {layout.map((row, rowIndex) => {
         if (rowIndex === 4) {
           return <ModifierRow key={rowIndex} keys={row.keys} renderKey={renderKey} />;
@@ -185,7 +179,7 @@ export function Keyboard({
       })}
     </KeyboardFrame>
   );
-}
+});
 
 interface ModifierRowProps {
   keys: KeyDefinition[];

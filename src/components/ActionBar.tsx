@@ -1,10 +1,14 @@
 import { Dialog } from "@base-ui-components/react/dialog";
-import { useState } from "react";
+import { Menu } from "@base-ui-components/react/menu";
+import { useCallback, useState } from "react";
+import { toPng } from "html-to-image";
 import styled, { keyframes } from "styled-components";
+import { useLayerContext } from "../context/LayerContext";
 import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
 import { generateMappingsMarkdown } from "../utils/generateMarkdown";
-import { CheckIcon, CopyIcon, ResetIcon } from "./icons";
+import type { LayerType } from "../types";
+import { CheckIcon, ChevronDownIcon, CopyIcon, DownloadIcon, ResetIcon } from "./icons";
 
 const fadeIn = keyframes`
   from {
@@ -193,12 +197,137 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
   }
 `;
 
-export function ActionBar() {
+// Menu styled components
+const MenuTrigger = styled(Menu.Trigger)`
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.5vw, 6px);
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: ${({ theme }) => theme.text.hint};
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.text.muted};
+
+    &::after {
+      transform: scaleX(1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+const MenuPositioner = styled(Menu.Positioner)`
+  z-index: 100;
+`;
+
+const MenuPopup = styled(Menu.Popup)`
+  background: ${({ theme }) => theme.surface.popover};
+  backdrop-filter: blur(12px);
+  border: 1px solid ${({ theme }) => theme.border.light};
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 180px;
+  box-shadow:
+    0 8px 32px ${({ theme }) => theme.shadow.medium},
+    0 2px 8px ${({ theme }) => theme.shadow.light};
+  animation: menuIn 0.15s ease-out;
+
+  @keyframes menuIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+`;
+
+const MenuItem = styled(Menu.Item)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: ${({ theme }) => theme.text.tertiary};
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  user-select: none;
+
+  &:hover {
+    background: ${({ theme }) => theme.border.light};
+    color: ${({ theme }) => theme.text.primary};
+  }
+
+  &[data-highlighted] {
+    background: ${({ theme }) => theme.border.light};
+    color: ${({ theme }) => theme.text.primary};
+  }
+`;
+
+const MenuSeparator = styled.div`
+  height: 1px;
+  background: ${({ theme }) => theme.border.light};
+  margin: 8px 0;
+`;
+
+const MenuItemIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const ExportTriggerContent = styled.div<{ $isSuccess?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.5vw, 6px);
+  color: ${({ $isSuccess, theme }) => ($isSuccess ? theme.semantic.success : "inherit")};
+`;
+
+interface ActionBarProps {
+  keyboardRef: React.RefObject<HTMLDivElement | null>;
+}
+
+export function ActionBar({ keyboardRef }: ActionBarProps) {
   const { mappings, resetToDefaults } = useMappingContext();
+  const { currentLayer, setLayer } = useLayerContext();
   const [copied, setCopied] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopyMarkdown = useCallback(async () => {
     const markdown = generateMappingsMarkdown(mappings, macbookLayout);
 
     if (!markdown) {
@@ -208,11 +337,74 @@ export function ActionBar() {
     try {
       await navigator.clipboard.writeText(markdown);
       setCopied(true);
+      setMenuOpen(false);
       setTimeout(() => setCopied(false), 1500);
     } catch {
       console.error("Failed to copy to clipboard");
     }
+  }, [mappings]);
+
+  const downloadImage = (dataUrl: string, filename: string) => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
+  const captureLayer = useCallback(
+    async (layer: LayerType): Promise<string | null> => {
+      if (!keyboardRef.current) return null;
+
+      // Switch to the target layer
+      setLayer(layer);
+
+      // Wait for render with a small delay
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      try {
+        const dataUrl = await toPng(keyboardRef.current, {
+          pixelRatio: 2,
+          cacheBust: true,
+        });
+        return dataUrl;
+      } catch (error) {
+        console.error(`Failed to capture ${layer} layer:`, error);
+        return null;
+      }
+    },
+    [keyboardRef, setLayer],
+  );
+
+  const handleSaveImages = useCallback(async () => {
+    if (!keyboardRef.current) return;
+
+    const originalLayer = currentLayer;
+    setMenuOpen(false);
+
+    try {
+      // Capture hyper layer
+      const hyperDataUrl = await captureLayer("hyper");
+      if (hyperDataUrl) {
+        downloadImage(hyperDataUrl, "mac-keyboard-hyper.png");
+      }
+
+      // Small delay between downloads
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Capture command layer
+      const commandDataUrl = await captureLayer("command");
+      if (commandDataUrl) {
+        downloadImage(commandDataUrl, "mac-keyboard-command.png");
+      }
+    } finally {
+      // Always restore original layer
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      setLayer(originalLayer);
+    }
+  }, [keyboardRef, currentLayer, captureLayer, setLayer]);
 
   return (
     <ActionBarContainer>
@@ -227,10 +419,36 @@ export function ActionBar() {
 
       <Divider />
 
-      <ActionButton onClick={handleCopy} $isSuccess={copied} data-testid="copy-button">
-        <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
-        <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
-      </ActionButton>
+      <Menu.Root open={menuOpen} onOpenChange={setMenuOpen}>
+        <MenuTrigger data-testid="export-button">
+          <ExportTriggerContent $isSuccess={copied}>
+            <ButtonIcon>{copied ? <CheckIcon /> : <DownloadIcon />}</ButtonIcon>
+            <ButtonLabel>{copied ? "Copied!" : "Export"}</ButtonLabel>
+            <ButtonIcon style={{ width: "10px", height: "10px", marginLeft: "2px" }}>
+              <ChevronDownIcon />
+            </ButtonIcon>
+          </ExportTriggerContent>
+        </MenuTrigger>
+        <Menu.Portal>
+          <MenuPositioner sideOffset={8} align="end">
+            <MenuPopup>
+              <MenuItem onClick={handleCopyMarkdown} data-testid="export-copy-option">
+                <MenuItemIcon>
+                  <CopyIcon />
+                </MenuItemIcon>
+                Copy as Markdown
+              </MenuItem>
+              <MenuSeparator />
+              <MenuItem onClick={handleSaveImages} data-testid="export-images-option">
+                <MenuItemIcon>
+                  <DownloadIcon />
+                </MenuItemIcon>
+                Save as Images
+              </MenuItem>
+            </MenuPopup>
+          </MenuPositioner>
+        </Menu.Portal>
+      </Menu.Root>
 
       <Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
         <Dialog.Trigger render={<ActionButton data-testid="reset-button" />}>

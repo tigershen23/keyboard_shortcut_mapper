@@ -3,6 +3,7 @@ import type { LayerMappings, LayerType, StoredConfig } from "../types";
 
 const STORAGE_KEY = "keyboard-shortcut-mapper";
 const LAYER_KEY = "keyboard-shortcut-mapper-layer";
+const INFO_DISMISSED_KEY = "keyboard-shortcut-mapper-info-dismissed";
 const CURRENT_VERSION = 1;
 
 export function saveMappings(mappings: LayerMappings): void {
@@ -12,8 +13,8 @@ export function saveMappings(mappings: LayerMappings): void {
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch (e) {
-    console.error("Failed to save mappings:", e);
+  } catch {
+    // Storage unavailable or full
   }
 }
 
@@ -35,8 +36,7 @@ export function loadMappings(): LayerMappings {
     }
 
     return config.layers;
-  } catch (e) {
-    console.error("Failed to load mappings:", e);
+  } catch {
     return defaultMappings;
   }
 }
@@ -51,8 +51,8 @@ const VALID_LAYERS: LayerType[] = ["base", "hyper", "command"];
 export function saveSelectedLayer(layer: LayerType): void {
   try {
     localStorage.setItem(LAYER_KEY, layer);
-  } catch (e) {
-    console.error("Failed to save selected layer:", e);
+  } catch {
+    // Storage unavailable
   }
 }
 
@@ -62,8 +62,24 @@ export function loadSelectedLayer(): LayerType {
     if (stored && VALID_LAYERS.includes(stored as LayerType)) {
       return stored as LayerType;
     }
-  } catch (e) {
-    console.error("Failed to load selected layer:", e);
+  } catch {
+    // Invalid storage or parse error
   }
   return "base";
+}
+
+export function isFirstVisit(): boolean {
+  try {
+    return localStorage.getItem(INFO_DISMISSED_KEY) !== "true";
+  } catch {
+    return true;
+  }
+}
+
+export function markInfoDismissed(): void {
+  try {
+    localStorage.setItem(INFO_DISMISSED_KEY, "true");
+  } catch {
+    // Storage unavailable
+  }
 }

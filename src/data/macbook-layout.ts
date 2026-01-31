@@ -107,3 +107,4 @@ export const macbookLayout: KeyboardLayout = [
 // Row 3: 12 keys (shift, Z-M, ,, ., /, shift)
 // Row 4: 11 keys (fn, ctrl, opt, cmd, space, cmd, opt, arrows x4)
 // Total: 64 keys
+export const TOTAL_KEY_COUNT = 64;

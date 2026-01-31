@@ -4,17 +4,11 @@ A visual keyboard mapping tool for MacBook that displays and edits keyboard shor
 
 **Live:** https://tigershen23.github.io/keyboard_shortcut_mapper/
 
-## Project Overview
-
-This is a fully functional React app deployed to GitHub Pages. It renders a 64-key MacBook US ANSI keyboard layout with three layers (Base, Hyper, Command) and lets users click keys to assign app shortcuts via a searchable combobox.
-
 ### Key Features
 
 - Three keyboard layers with Tab/Shift+Tab cycling
 - Inline key editing via popover with app icon dropdown
 - Mappings and selected layer persisted to localStorage
-- Ink ripple animation on key press
-- Copy mappings to clipboard as markdown
 
 ## Development
 
@@ -35,90 +29,28 @@ pm2 describe keyboard_shortcut_mapper
 
 Logs are stored in `~/.pm2/logs/`.
 
-### Manual Commands
-
-```bash
-# Install dependencies
-bun install
-
-# Run dev server directly (with HMR)
-bun --hot src/index.ts
-
-# Build for production
-bun run build
-```
-
-Dev server runs at http://localhost:3000
-
 ### Testing
 
 ```bash
-# Unit tests
-bun test
-mise test
-
-# E2E tests (requires dev server running via PM2)
+# E2E sanity check test (requires dev server running via PM2)
 mise test:e2e
-bun run test:e2e
-```
+# Quick healthcheck (~1.3s) - use frequently during development
+mise healthcheck
 
-E2E tests use Playwright with Chromium. The dev server must be running at http://localhost:3000 before running E2E tests. Tests are located in `tests/e2e/`.
+```
 
 ### Code Quality
 
-**Always use mise commands for code quality checks.** The project uses three high-performance tools:
-
-- **oxlint** - Linter (50-100x faster than ESLint)
-- **oxfmt** - Formatter (30x faster than Prettier)
-- **tsgo** - TypeScript type checker (10x faster than tsc)
+**Checks run automatically.** mise format, lint, and typecheck are executed automatically after file edits via agent hooks. You should never need to run these commands manually during normal development. The commands are still listed below for your reference
 
 ```bash
-# Run all checks (typecheck, lint, format) - ALWAYS run before commits
+# Run all checks (typecheck, lint, format)
 mise check
 
 # Individual tools
 mise typecheck    # Type checking with tsgo
-mise lint         # Linting with oxlint
+mise lint:fix     # Linting with oxlint
 mise format       # Format files with oxfmt
-mise format:check # Check formatting without changes
-
-# Auto-fix
-mise lint:fix     # Fix lint issues (uses --fix-dangerously)
-```
-
-#### Targeting Specific Paths
-
-All lint and format commands accept an optional path argument to target specific files or directories. If omitted, they default to `src/`.
-
-```bash
-# Lint a specific directory
-mise lint src/components/
-mise lint src/context/
-
-# Lint a specific file
-mise lint src/components/Key.tsx
-
-# Format specific paths
-mise format src/hooks/
-mise format src/utils/storage.ts
-
-# Check formatting on specific paths
-mise format:check src/data/
-
-# Auto-fix lint issues in a directory
-mise lint:fix src/components/
-```
-
-Note: `mise typecheck` and `mise check` run project-wide and don't accept path arguments.
-
-#### Using bun run
-
-The same path argument pattern works with `bun run`:
-
-```bash
-bun run lint                        # Defaults to src/
-bun run lint src/components/        # Lint specific directory
-bun run format src/components/Key.tsx  # Format a single file
 ```
 
 ## Architecture
@@ -143,40 +75,18 @@ bun run format src/components/Key.tsx  # Format a single file
 - **Prod:** `bun build ./src/index.html --outdir ./dist --minify`
 - **Deploy:** GitHub Actions on push to master → GitHub Pages
 
-## Project Structure
-
-```
-src/
-├── index.ts            # Bun.serve() dev server
-├── index.html          # HTML entry point
-├── frontend.tsx        # React app entry
-├── components/         # UI components (Keyboard, Key, KeyPopover, etc.)
-├── context/            # React context (LayerContext, MappingContext)
-├── data/               # Static data (layout, mappings, icons)
-├── hooks/              # Custom hooks
-├── styles/             # Global styles
-├── types/              # TypeScript interfaces
-├── utils/              # Helpers (storage, markdown export)
-└── static/icons/       # App icons (33 PNGs)
-tests/
-└── e2e/                # Playwright E2E tests
-    └── critical-path.spec.ts
-```
-
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `src/index.ts` | Dev server (Bun.serve) |
-| `src/frontend.tsx` | React app entry |
-| `src/components/Keyboard.tsx` | Main keyboard grid |
-| `src/components/Key.tsx` | Individual key with ripple |
-| `src/components/KeyPopover.tsx` | Edit popover |
-| `src/context/MappingContext.tsx` | Mapping state + persistence |
-| `src/data/default-mappings.ts` | Initial key mappings |
-| `.github/workflows/deploy.yml` | GitHub Pages deployment |
-| `ecosystem.config.cjs` | PM2 process configuration |
-| `playwright.config.ts` | Playwright E2E test configuration |
+| File                              | Purpose                                 |
+| --------------------------------- | --------------------------------------- |
+| `src/index.ts`                    | Dev server (Bun.serve)                  |
+| `src/frontend.tsx`                | React app entry                         |
+| `src/components/Keyboard.tsx`     | Main keyboard grid                      |
+| `src/components/Key.tsx`          | Individual key with ripple              |
+| `src/components/KeyPopover.tsx`   | Edit popover                            |
+| `src/context/MappingContext.tsx`  | Mapping state + persistence             |
+| `src/data/default-mappings.ts`    | Initial key mappings                    |
+| `ecosystem.config.cjs`            | PM2 process configuration               |
 | `tests/e2e/critical-path.spec.ts` | E2E test covering critical user journey |
 
 ## Conventions

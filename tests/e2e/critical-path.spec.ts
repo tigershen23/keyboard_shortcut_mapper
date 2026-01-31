@@ -12,6 +12,13 @@ test.describe("Critical User Path", () => {
     await page.goto("/");
     await expect(page.locator("h1")).toContainText("Mac Keyboard Shortcuts");
 
+    // Dismiss first-visit info popover if present
+    const infoPopover = page.getByTestId("info-popover");
+    if (await infoPopover.isVisible()) {
+      await page.keyboard.press("Escape");
+      await expect(infoPopover).not.toBeVisible();
+    }
+
     const keys = page.locator("[data-key-id]");
     await expect(keys).toHaveCount(64);
 
@@ -69,11 +76,16 @@ test.describe("Critical User Path", () => {
     const persistedKey = page.locator("[data-mapped]:has-text('Test Action')");
     await expect(persistedKey).toBeVisible();
 
-    // 8. Click "Copy" -> verify markdown in clipboard
+    // 8. Click "Export" -> select "Copy as Markdown" -> verify markdown in clipboard
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
-    const copyButton = page.getByTestId("copy-button");
-    await copyButton.click();
+    const exportButton = page.getByTestId("export-button");
+    await exportButton.click();
+
+    // Select "Copy as Markdown" from dropdown
+    const copyOption = page.getByTestId("export-copy-option");
+    await expect(copyOption).toBeVisible();
+    await copyOption.click();
 
     // Verify clipboard content contains markdown
     const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());

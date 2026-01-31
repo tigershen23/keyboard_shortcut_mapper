@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider, useTheme } from "styled-components";
 import { ActionBar } from "./components/ActionBar";
@@ -18,6 +18,7 @@ function AppContent() {
   const { selectedKeyId, selectedKeyRect, selectKey, clearSelection, getMappingForKey, updateMapping, deleteMapping } =
     useMappingContext();
   const [pressedKeyId, setPressedKeyId] = useState<string | null>(null);
+  const keyboardRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
 
   const isEditing = selectedKeyId !== null;
@@ -57,6 +58,7 @@ function AppContent() {
     <>
       <LayerIndicator />
       <Keyboard
+        ref={keyboardRef}
         layout={macbookLayout}
         currentLayer={currentLayer}
         pressedKeyId={pressedKeyId}
@@ -80,7 +82,7 @@ function AppContent() {
         />
       )}
 
-      <ActionBar />
+      <ActionBar keyboardRef={keyboardRef} />
     </>
   );
 }

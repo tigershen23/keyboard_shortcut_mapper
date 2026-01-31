@@ -121,7 +121,10 @@ export function useKeyboardListener({ onKeyPress, onLayerCycle, disabled }: UseK
 
       onKeyPress(keyId);
 
-      if (!MODIFIER_KEYS.has(keyId)) {
+      // Only prevent default for plain key presses (no modifiers).
+      // Allow browser shortcuts like Cmd+R, Ctrl+C etc. to propagate.
+      const hasModifier = event.metaKey || event.ctrlKey || event.altKey;
+      if (!MODIFIER_KEYS.has(keyId) && !hasModifier) {
         event.preventDefault();
       }
     }
