@@ -22,10 +22,11 @@ interface KeyboardFrameProps {
 
 const KeyboardFrame = styled.div<KeyboardFrameProps>`
   position: relative;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: var(--key-gap);
   padding: var(--frame-padding);
+  align-items: stretch;
   background: linear-gradient(
     168deg,
     ${({ theme }) => theme.surface.frame.start} 0%,
@@ -97,6 +98,11 @@ const KeyboardRow = styled.div`
   display: flex;
   gap: var(--key-gap);
   justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-between;
+  }
 `;
 
 const ArrowCluster = styled.div`

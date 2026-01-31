@@ -121,11 +121,15 @@ export const GlobalStyles = createGlobalStyle`
 
   @media (max-width: 768px) {
     :root {
-      --key-unit: clamp(16px, 4.8vw, 32px);
       --key-gap: clamp(1px, 0.3vw, 2px);
       --key-radius: clamp(2px, 0.5vw, 4px);
       --frame-padding: clamp(2px, 0.6vw, 5px);
       --frame-radius: clamp(4px, 1vw, 8px);
+      --key-unit: clamp(
+        14px,
+        calc((100vw - 16px - (2 * var(--frame-padding)) - (14 * var(--key-gap))) / 15),
+        26px
+      );
       --font-key: clamp(6px, 1.6vw, 11px);
       --font-key-secondary: clamp(5px, 1.2vw, 9px);
       --font-key-modifier: clamp(8px, 2vw, 14px);

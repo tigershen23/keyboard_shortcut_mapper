@@ -359,6 +359,10 @@ const ModifierTextLabel = styled.span<{ $align?: "left" | "right" }>`
   position: absolute;
   bottom: clamp(5px, 0.6vw, 10px);
   z-index: 2;
+  max-width: calc(100% - 8px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   ${({ $align }) =>
     $align === "left"
@@ -368,6 +372,11 @@ const ModifierTextLabel = styled.span<{ $align?: "left" | "right" }>`
       : css`
           right: clamp(4px, 0.5vw, 8px);
         `}
+
+  @media (max-width: 768px) {
+    font-size: clamp(6px, 1.6vw, 10px);
+    bottom: clamp(3px, 0.5vw, 6px);
+  }
 `;
 
 const ModifierStackedLayout = styled.div`
@@ -405,6 +414,10 @@ const ModifierText = styled.span<{ $isRightSide?: boolean }>`
   color: ${({ theme }) => theme.text.secondary};
   text-transform: lowercase;
   line-height: 1;
+  max-width: calc(100% - 8px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   ${({ $isRightSide }) =>
     $isRightSide
@@ -414,6 +427,11 @@ const ModifierText = styled.span<{ $isRightSide?: boolean }>`
       : css`
           left: clamp(4px, 0.5vw, 8px);
         `}
+
+  @media (max-width: 768px) {
+    font-size: clamp(6px, 1.4vw, 9px);
+    bottom: clamp(3px, 0.45vw, 6px);
+  }
 `;
 
 const FnKeyLayout = styled.div`
