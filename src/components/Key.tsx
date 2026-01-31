@@ -284,9 +284,9 @@ const BaseKeyIndicator = styled.span`
   top: clamp(2px, 0.3vw, 4px);
   left: clamp(3px, 0.4vw, 6px);
   font-family: ${SYSTEM_FONT_STACK};
-  font-size: clamp(6px, 0.7vw, 10px);
-  font-weight: 500;
-  color: ${({ theme }) => theme.text.hint};
+  font-size: clamp(7px, 0.85vw, 12px);
+  font-weight: 600;
+  color: ${({ theme }) => theme.text.dimmed};
   line-height: 1;
   z-index: 3;
   text-transform: uppercase;

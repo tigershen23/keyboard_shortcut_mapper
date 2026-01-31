@@ -64,7 +64,7 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
         }
         break;
       case "Escape":
-        if (filteredApps.length > 0) {
+        if (isOpen && filteredApps.length > 0) {
           setIsOpen(false);
         }
         break;

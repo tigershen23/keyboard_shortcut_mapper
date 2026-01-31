@@ -44,11 +44,9 @@ export function KeyPopover({
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         handleSave();
-      } else if (e.key === "Escape") {
-        onClose();
       }
     },
-    [handleSave, onClose],
+    [handleSave],
   );
 
   const popupStyle: React.CSSProperties = {
@@ -70,13 +68,23 @@ export function KeyPopover({
       onClose();
     };
 
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
   }, [onClose]);
 
   return createPortal(
     <>
-      <Backdrop />
+      <Backdrop onClick={onClose} />
       <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent} data-testid="key-popover">
         <Arrow />
         <FormGroup>
