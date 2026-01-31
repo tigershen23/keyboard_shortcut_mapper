@@ -1,6 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import type { KeyboardLayout, KeyDefinition, LayerType } from "../types";
+import { isSpecialKey } from "../utils/keys.js";
 import { Key } from "./Key";
 
 const keyboardEnter = keyframes`
@@ -103,11 +104,6 @@ const ArrowCluster = styled.div`
   gap: var(--key-gap);
 `;
 
-const ArrowSingle = styled.div`
-  display: flex;
-  align-items: flex-end;
-`;
-
 const ArrowVertical = styled.div`
   display: flex;
   flex-direction: column;
@@ -191,22 +187,6 @@ export function Keyboard({
   );
 }
 
-function isSpecialKey(id: string): boolean {
-  const specialKeys = [
-    "esc",
-    "backspace",
-    "tab",
-    "caps",
-    "return",
-    "space",
-    "arrow-left",
-    "arrow-right",
-    "arrow-up",
-    "arrow-down",
-  ];
-  return specialKeys.includes(id);
-}
-
 interface ModifierRowProps {
   keys: KeyDefinition[];
   renderKey: (key: KeyDefinition) => React.ReactNode;
@@ -225,12 +205,12 @@ function ModifierRow({ keys, renderKey }: ModifierRowProps) {
     <KeyboardRow>
       {modifierKeys.map(renderKey)}
       <ArrowCluster>
-        <ArrowSingle>{arrowLeft && renderKey(arrowLeft)}</ArrowSingle>
+        {arrowLeft && renderKey(arrowLeft)}
         <ArrowVertical>
           {arrowUp && renderKey(arrowUp)}
           {arrowDown && renderKey(arrowDown)}
         </ArrowVertical>
-        <ArrowSingle>{arrowRight && renderKey(arrowRight)}</ArrowSingle>
+        {arrowRight && renderKey(arrowRight)}
       </ArrowCluster>
     </KeyboardRow>
   );

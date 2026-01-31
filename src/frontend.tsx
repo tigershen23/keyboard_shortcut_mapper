@@ -35,7 +35,6 @@ function AppContent() {
     disabled: isEditing,
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally clearing selection when layer changes
   useEffect(() => {
     clearSelection();
   }, [currentLayer, clearSelection]);

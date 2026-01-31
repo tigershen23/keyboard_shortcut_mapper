@@ -2,7 +2,6 @@ import styled, { keyframes, useTheme } from "styled-components";
 import { useLayerContext } from "../context/LayerContext.js";
 import { useMappingContext } from "../context/MappingContext.js";
 import type { LayerType } from "../types";
-import { getLayerSelectorLabel, getLayerTabLabel } from "../utils/labels.js";
 
 const indicatorEnter = keyframes`
   from {
@@ -145,31 +144,30 @@ export function LayerIndicator() {
   const { mappings } = useMappingContext();
   const theme = useTheme();
 
-  const getMappingCount = (layerId: string): number | null => {
+  const getMappingCount = (layerId: LayerType): number | null => {
     if (layerId === "hyper") return mappings.hyper.length;
     if (layerId === "command") return mappings.command.length;
     return null;
   };
 
-  const getLayerAccent = (layerId: LayerType): string => {
-    return theme.layers[layerId].accent;
-  };
-
-  const selectorTitle = getLayerSelectorLabel(layers.length);
-
   return (
     <IndicatorContainer>
-      <PageTitle title="Mac Keyboard Shortcuts heading">Mac Keyboard Shortcuts</PageTitle>
+      <PageTitle>Mac Keyboard Shortcuts</PageTitle>
       <IndicatorWrapper>
-        <IndicatorTabs title={selectorTitle}>
+        <IndicatorTabs>
           <IndicatorLabel>Layer →</IndicatorLabel>
           {layers.map((layer) => {
             const isActive = currentLayer === layer.id;
             const count = getMappingCount(layer.id);
-            const accentColor = getLayerAccent(layer.id);
-            const tabTitle = getLayerTabLabel(layer.label, isActive, count);
+            const accentColor = theme.layers[layer.id].accent;
             return (
-              <LayerTab key={layer.id} $isActive={isActive} onClick={() => setLayer(layer.id)} title={tabTitle}>
+              <LayerTab
+                key={layer.id}
+                $isActive={isActive}
+                onClick={() => setLayer(layer.id)}
+                data-testid={`layer-tab-${layer.id}`}
+                data-active={isActive}
+              >
                 <TabDot $isActive={isActive} $accentColor={accentColor} />
                 <TabLabel>{layer.shortLabel}</TabLabel>
                 {count !== null && (

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getIconPath, iconManifest } from "../data/icon-manifest.js";
-import { getAppDropdownLabel, getAppOptionLabel, getAppSearchLabel } from "../utils/labels.js";
 
 const apps = Object.keys(iconManifest).sort();
 
@@ -19,15 +18,11 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const filteredApps = useMemo(() => {
-    if (!inputValue) return apps;
-    const lower = inputValue.toLowerCase();
-    return apps.filter((app) => app.toLowerCase().includes(lower));
-  }, [inputValue]);
+  const filteredApps = !inputValue ? apps : apps.filter((app) => app.toLowerCase().includes(inputValue.toLowerCase()));
 
   useEffect(() => {
     setHighlightedIndex(0);
-  }, []);
+  }, [filteredApps]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -69,9 +64,7 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
         }
         break;
       case "Escape":
-        if (filteredApps.length === 0) {
-          // Let the event propagate to close the form
-        } else {
+        if (filteredApps.length > 0) {
           setIsOpen(false);
         }
         break;
@@ -97,9 +90,6 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
     }
   }, [highlightedIndex, isOpen]);
 
-  const inputTitle = getAppSearchLabel(inputValue, isOpen);
-  const dropdownTitle = getAppDropdownLabel(apps.length, filteredApps.length);
-
   return (
     <Container ref={containerRef}>
       <StyledInput
@@ -109,10 +99,10 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
         onFocus={() => setIsOpen(true)}
         placeholder="Search apps..."
         $accent={layerAccent}
-        title={inputTitle}
+        data-testid="app-combobox-input"
       />
       {isOpen && filteredApps.length > 0 && (
-        <Dropdown ref={listRef} title={dropdownTitle}>
+        <Dropdown ref={listRef}>
           {filteredApps.map((app, index) => (
             <DropdownItem
               key={app}
@@ -120,7 +110,7 @@ export function AppCombobox({ value, onChange, layerAccent, onSubmit }: AppCombo
               $highlighted={index === highlightedIndex}
               $selected={app === value}
               onMouseEnter={() => setHighlightedIndex(index)}
-              title={getAppOptionLabel(app)}
+              data-testid={`app-option-${app.toLowerCase().replace(/\s+/g, "-")}`}
             >
               <AppIcon src={getIconPath(app) ?? ""} alt="" />
               <AppName>{app}</AppName>

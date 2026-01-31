@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import type { KeyMapping } from "../types/index.js";
-import { getActionInputLabel, getSaveButtonLabel } from "../utils/labels.js";
 import { AppCombobox } from "./AppCombobox.js";
 
 interface KeyPopoverProps {
@@ -29,24 +28,28 @@ export function KeyPopover({
   const [action, setAction] = useState(currentMapping?.action ?? "");
   const [appName, setAppName] = useState(currentMapping?.appName ?? "");
   const popupRef = useRef<HTMLDivElement>(null);
+  const openedAtRef = useRef<number>(Date.now());
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!action.trim()) return;
     onSave({
       keyId,
       action: action.trim(),
       appName: appName || undefined,
     });
-  };
+  }, [action, appName, keyId, onSave]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    } else if (e.key === "Escape") {
-      onClose();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSave();
+      } else if (e.key === "Escape") {
+        onClose();
+      }
+    },
+    [handleSave, onClose],
+  );
 
   const popupStyle: React.CSSProperties = {
     position: "fixed",
@@ -57,24 +60,25 @@ export function KeyPopover({
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
-        onClose();
-      }
+      // Ignore clicks that happened before popover opened (prevents same-click closing)
+      if (e.timeStamp < openedAtRef.current) return;
+
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (popupRef.current?.contains(target)) return;
+
+      onClose();
     };
-    const timeoutId = setTimeout(() => {
-      document.addEventListener("mousedown", handleClickOutside);
-    }, 0);
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
   return createPortal(
     <>
       <Backdrop />
-      <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent} title={`Edit mapping for ${keyId} key`}>
-        <Arrow $accent={layerAccent} />
+      <PopupContainer ref={popupRef} style={popupStyle} $accent={layerAccent} data-testid="key-popover">
+        <Arrow />
         <FormGroup>
           <FormLabel>Action</FormLabel>
           <StyledInput
@@ -84,7 +88,7 @@ export function KeyPopover({
             placeholder="Action name"
             autoFocus
             $accent={layerAccent}
-            title={getActionInputLabel(action)}
+            data-testid="action-input"
           />
         </FormGroup>
 
@@ -97,7 +101,7 @@ export function KeyPopover({
 
         <ButtonRow>
           {currentMapping && (
-            <DeleteButton onClick={onDelete} title="Delete mapping">
+            <DeleteButton onClick={onDelete} data-testid="delete-mapping-button">
               Delete
             </DeleteButton>
           )}
@@ -105,7 +109,7 @@ export function KeyPopover({
             onClick={handleSave}
             disabled={!action.trim()}
             $accent={layerAccent}
-            title={getSaveButtonLabel(!action.trim())}
+            data-testid="save-mapping-button"
           >
             Save
           </SaveButton>
@@ -123,7 +127,7 @@ const Backdrop = styled.div`
   z-index: 99;
 `;
 
-const Arrow = styled.div<{ $accent: string }>`
+const Arrow = styled.div`
   position: absolute;
   left: -6px;
   top: 50%;

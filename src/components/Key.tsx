@@ -1,6 +1,12 @@
 import styled, { css, keyframes } from "styled-components";
 import type { KeyDefinition, KeyMapping, LayerType } from "../types";
-import { getKeyLabel } from "../utils/labels.js";
+import { isSpecialKey } from "../utils/keys.js";
+
+const SYSTEM_FONT_STACK = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif';
+
+function setAlpha(color: string, alpha: number): string {
+  return color.replace(/[\d.]+\)$/, `${alpha})`);
+}
 
 const keyFlash = keyframes`
   0% { opacity: 0; }
@@ -42,10 +48,9 @@ const StyledKey = styled.div<StyledKeyProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: ${({ $height }: { $height: number }) =>
-    $height === 0.5 ? `calc(var(--key-unit) / 2 - var(--key-gap) / 2)` : `var(--key-unit)`};
+  height: ${({ $height }) => ($height === 0.5 ? `calc(var(--key-unit) / 2 - var(--key-gap) / 2)` : `var(--key-unit)`)};
   min-width: var(--key-unit);
-  width: ${({ $width }: { $width: number }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
+  width: ${({ $width }) => `calc(${$width} * var(--key-unit) + ${$width - 1} * var(--key-gap))`};
   background: linear-gradient(
     180deg,
     ${({ theme }) => theme.surface.key.start} 0%,
@@ -71,10 +76,7 @@ const StyledKey = styled.div<StyledKeyProps>`
       135deg,
       var(--ripple-color) 0%,
       transparent 50%,
-      ${({ $rippleColor, theme }) => {
-        const color = $rippleColor || theme.layers.base.ripple;
-        return color.replace(/[\d.]+\)$/, "0.15)");
-      }} 100%
+      ${({ $rippleColor, theme }) => setAlpha($rippleColor || theme.layers.base.ripple, 0.15)} 100%
     );
     opacity: 0;
     pointer-events: none;
@@ -186,7 +188,7 @@ const StyledKey = styled.div<StyledKeyProps>`
     css`
       box-shadow:
         inset 0 0 0 2px ${$layerAccent || theme.layers.hyper.accent},
-        0 0 16px ${$layerAccent ? $layerAccent.replace(/[\d.]+\)$/, "0.4)") : theme.layers.hyper.accent.replace(/[\d.]+\)$/, "0.4)")},
+        0 0 16px ${setAlpha($layerAccent || theme.layers.hyper.accent, 0.4)},
         0 1px 2px ${theme.shadow.medium};
       z-index: 10;
     `}
@@ -208,7 +210,7 @@ const KeyLabel = styled.span<{
   $isModifier?: boolean;
   $isArrow?: boolean;
 }>`
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: var(--font-key);
   font-weight: 500;
   color: ${({ theme }) => theme.text.primary};
@@ -244,14 +246,14 @@ const KeyLabel = styled.span<{
 `;
 
 const KeyLabelSecondary = styled.span`
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: var(--font-key-secondary);
   font-weight: 500;
   color: ${({ theme }) => theme.text.tertiary};
 `;
 
 const KeyLabelPrimary = styled.span`
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: var(--font-key);
   font-weight: 500;
   color: ${({ theme }) => theme.text.primary};
@@ -281,7 +283,7 @@ const BaseKeyIndicator = styled.span`
   position: absolute;
   top: clamp(2px, 0.3vw, 4px);
   left: clamp(3px, 0.4vw, 6px);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: clamp(6px, 0.7vw, 10px);
   font-weight: 500;
   color: ${({ theme }) => theme.text.hint};
@@ -347,33 +349,25 @@ const KeyMappingLabel = styled.span<{
     `}
 `;
 
-const ModifierTextLabel = styled.span<{ $align?: "left" | "right" | "center" }>`
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+const ModifierTextLabel = styled.span<{ $align?: "left" | "right" }>`
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: clamp(8px, 1.0vw, 14px);
   font-weight: 400;
   color: ${({ theme }) => theme.text.secondary};
   text-transform: lowercase;
   line-height: 1;
   position: absolute;
+  bottom: clamp(5px, 0.6vw, 10px);
   z-index: 2;
 
-  ${({ $align }) => {
-    if ($align === "left") {
-      return css`
-        left: clamp(4px, 0.5vw, 8px);
-        bottom: clamp(5px, 0.6vw, 10px);
-      `;
-    }
-    if ($align === "right") {
-      return css`
-        right: clamp(4px, 0.5vw, 8px);
-        bottom: clamp(5px, 0.6vw, 10px);
-      `;
-    }
-    return css`
-      bottom: clamp(5px, 0.6vw, 10px);
-    `;
-  }}
+  ${({ $align }) =>
+    $align === "left"
+      ? css`
+          left: clamp(4px, 0.5vw, 8px);
+        `
+      : css`
+          right: clamp(4px, 0.5vw, 8px);
+        `}
 `;
 
 const ModifierStackedLayout = styled.div`
@@ -386,7 +380,7 @@ const ModifierStackedLayout = styled.div`
 const ModifierSymbol = styled.span<{ $isRightSide?: boolean }>`
   position: absolute;
   top: clamp(3px, 0.4vw, 6px);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: clamp(12px, 1.5vw, 22px);
   font-weight: 400;
   color: ${({ theme }) => theme.text.secondary};
@@ -405,7 +399,7 @@ const ModifierSymbol = styled.span<{ $isRightSide?: boolean }>`
 const ModifierText = styled.span<{ $isRightSide?: boolean }>`
   position: absolute;
   bottom: clamp(4px, 0.5vw, 8px);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: clamp(7px, 0.85vw, 12px);
   font-weight: 400;
   color: ${({ theme }) => theme.text.secondary};
@@ -442,7 +436,7 @@ const FnText = styled.span`
   position: absolute;
   top: clamp(3px, 0.4vw, 6px);
   right: clamp(4px, 0.5vw, 8px);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-family: ${SYSTEM_FONT_STACK};
   font-size: clamp(7px, 0.9vw, 12px);
   font-weight: 400;
   color: ${({ theme }) => theme.text.secondary};
@@ -510,8 +504,6 @@ export function Key({
   const baseLabel = definition.label;
   const showDimmedIndicator = isDimmed && baseLabel;
 
-  const titleLabel = getKeyLabel(definition, currentLayer, mapping, isEditable, isSelected);
-
   return (
     <StyledKey
       $isFunction={isFunction}
@@ -526,8 +518,9 @@ export function Key({
       $width={width}
       $height={height}
       data-key-id={id}
+      data-mapped={hasMapping ? "true" : undefined}
+      data-unmapped={isDimmed ? "true" : undefined}
       onClick={handleClick}
-      title={titleLabel}
     >
       {showBaseLabel && renderBaseLabel(definition, isFunction, isModifier)}
       {showMapping && mapping && renderMappingContent(mapping, iconPath, isSpace, isCommandLayer, baseLabel)}
@@ -585,16 +578,12 @@ function renderBaseLabel(definition: KeyDefinition, isFunction?: boolean, isModi
   );
 }
 
-function getTextLabelAlignment(keyId: string): "left" | "right" | "center" {
+function getTextLabelAlignment(keyId: string): "left" | "right" {
   switch (keyId) {
     case "backspace":
     case "return":
-      return "right";
     case "shift-right":
       return "right";
-    case "tab":
-    case "caps":
-    case "shift-left":
     default:
       return "left";
   }
@@ -617,20 +606,4 @@ function renderMappingContent(
       </KeyMappingLabel>
     </KeyMappingContainer>
   );
-}
-
-function isSpecialKey(id: string): boolean {
-  const specialKeys = [
-    "esc",
-    "backspace",
-    "tab",
-    "caps",
-    "return",
-    "space",
-    "arrow-left",
-    "arrow-right",
-    "arrow-up",
-    "arrow-down",
-  ];
-  return specialKeys.includes(id);
 }

@@ -1,19 +1,4 @@
-import { createGlobalStyle, keyframes } from "styled-components";
-
-export const meshShift: ReturnType<typeof keyframes> = keyframes`
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-    filter: blur(80px);
-  }
-  33% {
-    transform: translate(5%, -5%) rotate(2deg);
-    filter: blur(90px);
-  }
-  66% {
-    transform: translate(-3%, 3%) rotate(-1deg);
-    filter: blur(70px);
-  }
-`;
+import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
   :root {

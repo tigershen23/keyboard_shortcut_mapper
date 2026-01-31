@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { useMappingContext } from "../context/MappingContext";
 import { macbookLayout } from "../data/macbook-layout";
 import { generateMappingsMarkdown } from "../utils/generateMarkdown";
+import { CheckIcon, CopyIcon, ResetIcon } from "./icons";
 
 const fadeIn = keyframes`
   from {
@@ -192,56 +193,6 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
   }
 `;
 
-function CopyIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function ResetIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-    </svg>
-  );
-}
-
 export function ActionBar() {
   const { mappings, resetToDefaults } = useMappingContext();
   const [copied, setCopied] = useState(false);
@@ -276,17 +227,13 @@ export function ActionBar() {
 
       <Divider />
 
-      <ActionButton
-        onClick={handleCopy}
-        $isSuccess={copied}
-        title={copied ? "Copied mappings to clipboard" : "Copy mappings to clipboard"}
-      >
+      <ActionButton onClick={handleCopy} $isSuccess={copied} data-testid="copy-button">
         <ButtonIcon>{copied ? <CheckIcon /> : <CopyIcon />}</ButtonIcon>
         <ButtonLabel>{copied ? "Copied!" : "Copy"}</ButtonLabel>
       </ActionButton>
 
       <Dialog.Root open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <Dialog.Trigger render={<ActionButton title="Reset mappings to defaults" />}>
+        <Dialog.Trigger render={<ActionButton data-testid="reset-button" />}>
           <ButtonIcon>
             <ResetIcon />
           </ButtonIcon>
@@ -301,10 +248,12 @@ export function ActionBar() {
               undone.
             </DialogDescription>
             <DialogActions>
-              <Dialog.Close render={<DialogButton $variant="secondary" title="Cancel reset" />}>Cancel</Dialog.Close>
+              <Dialog.Close render={<DialogButton $variant="secondary" data-testid="cancel-reset-button" />}>
+                Cancel
+              </Dialog.Close>
               <DialogButton
                 $variant="danger"
-                title="Confirm reset to defaults"
+                data-testid="confirm-reset-button"
                 onClick={() => {
                   resetToDefaults();
                   setResetDialogOpen(false);

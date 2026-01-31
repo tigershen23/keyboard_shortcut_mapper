@@ -1,57 +1,40 @@
 import type { KeyDefinition, KeyMapping, LayerType } from "../types";
 
+const MODIFIER_LABELS: Record<string, string> = {
+  "control-left": "Left Control",
+  "control-right": "Right Control",
+  "option-left": "Left Option",
+  "option-right": "Right Option",
+  "command-left": "Left Command",
+  "command-right": "Right Command",
+};
+
 export function getKeyLabel(
   definition: KeyDefinition,
   currentLayer: LayerType,
   mapping?: KeyMapping | null,
-  isEditable?: boolean,
+  _isEditable?: boolean,
   isSelected?: boolean,
 ): string {
   const { id, label, textLabel } = definition;
 
-  // Build base key identity - all keys use " key" suffix for consistency
-  let keyIdentity: string;
-  if (textLabel) {
-    // For modifiers, use textLabel with side distinction
-    if (id === "control-left" || id === "control-right") {
-      keyIdentity = id === "control-left" ? "Left Control key" : "Right Control key";
-    } else if (id === "option-left" || id === "option-right") {
-      keyIdentity = id === "option-left" ? "Left Option key" : "Right Option key";
-    } else if (id === "command-left" || id === "command-right") {
-      keyIdentity = id === "command-left" ? "Left Command key" : "Right Command key";
-    } else {
-      // Other text-based keys (tab, caps lock, shift, backspace, return, fn, control)
-      keyIdentity = `${textLabel} key`;
-    }
-  } else if (label) {
-    // Standard keys use their label
-    keyIdentity = `${label} key`;
-  } else {
-    // Space key and any other keys without label
-    keyIdentity = `${id} key`;
-  }
+  const keyIdentity = MODIFIER_LABELS[id] ?? textLabel ?? label ?? id;
 
-  // Base layer: just show key identity
   if (currentLayer === "base") {
-    return keyIdentity;
+    return `${keyIdentity} key`;
   }
 
-  // Editable layers (hyper/command): show mapping state
-  const hasMapping = mapping !== null && mapping !== undefined;
-
-  if (!hasMapping) {
-    return `${keyIdentity}: unmapped, click to assign`;
+  if (!mapping) {
+    return `${keyIdentity} key: unmapped, click to assign`;
   }
 
-  // Build mapped label
   let mappedLabel: string;
   if (mapping.appName) {
-    mappedLabel = `${keyIdentity}: ${mapping.appName} - ${mapping.action}`;
+    mappedLabel = `${keyIdentity} key: ${mapping.appName} - ${mapping.action}`;
   } else {
-    mappedLabel = `${keyIdentity}: ${mapping.action}`;
+    mappedLabel = `${keyIdentity} key: ${mapping.action}`;
   }
 
-  // Append editing state if selected
   if (isSelected) {
     mappedLabel += ", editing";
   }

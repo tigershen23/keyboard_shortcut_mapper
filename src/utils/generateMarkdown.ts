@@ -1,88 +1,82 @@
 import type { KeyboardLayout, KeyMapping, LayerMappings } from "../types";
 
-/**
- * Generates a markdown string of all keyboard mappings, organized by layer.
- * Keys are ordered by keyboard row (top to bottom), then left to right.
- */
 export function generateMappingsMarkdown(mappings: LayerMappings, layout: KeyboardLayout): string {
-  const keyOrder = getKeyOrder(layout);
+  const keyLookup = buildKeyLookup(layout);
 
   const sections: string[] = [];
 
-  const hyperMappings = sortMappingsByKeyOrder(mappings.hyper, keyOrder);
+  const hyperMappings = sortMappingsByKeyOrder(mappings.hyper, keyLookup);
   if (hyperMappings.length > 0) {
-    sections.push(formatLayerSection("Hyper", hyperMappings, keyOrder));
+    sections.push(formatLayerSection("Hyper", hyperMappings, keyLookup));
   }
 
-  const commandMappings = sortMappingsByKeyOrder(mappings.command, keyOrder);
+  const commandMappings = sortMappingsByKeyOrder(mappings.command, keyLookup);
   if (commandMappings.length > 0) {
-    sections.push(formatLayerSection("Command", commandMappings, keyOrder));
+    sections.push(formatLayerSection("Command", commandMappings, keyLookup));
   }
 
   return sections.join("\n\n");
 }
 
-/**
- * Creates a flat array of key IDs in keyboard order (row by row, left to right).
- */
-function getKeyOrder(layout: KeyboardLayout): string[] {
-  return layout.flatMap((row) => row.keys.map((key) => key.id));
+interface KeyInfo {
+  order: number;
+  label: string;
 }
 
-/**
- * Sorts mappings according to keyboard key order.
- */
-function sortMappingsByKeyOrder(mappings: KeyMapping[], keyOrder: string[]): KeyMapping[] {
+function buildKeyLookup(layout: KeyboardLayout): Map<string, KeyInfo> {
+  const lookup = new Map<string, KeyInfo>();
+  let order = 0;
+  for (const row of layout) {
+    for (const key of row.keys) {
+      lookup.set(key.id, {
+        order,
+        label: formatKeyLabel(key.id, key.label, key.textLabel),
+      });
+      order++;
+    }
+  }
+  return lookup;
+}
+
+function sortMappingsByKeyOrder(mappings: KeyMapping[], lookup: Map<string, KeyInfo>): KeyMapping[] {
   return [...mappings].sort((a, b) => {
-    const indexA = keyOrder.indexOf(a.keyId);
-    const indexB = keyOrder.indexOf(b.keyId);
-    return indexA - indexB;
+    const orderA = lookup.get(a.keyId)?.order ?? Infinity;
+    const orderB = lookup.get(b.keyId)?.order ?? Infinity;
+    return orderA - orderB;
   });
 }
 
-/**
- * Formats a single layer section with header and mapping list.
- */
-function formatLayerSection(layerName: string, mappings: KeyMapping[], _keyOrder: string[]): string {
+function formatLayerSection(layerName: string, mappings: KeyMapping[], lookup: Map<string, KeyInfo>): string {
   const header = `## ${layerName}`;
-  const items = mappings.map((m) => `- ${formatKeyLabel(m.keyId)}: ${m.action}`);
+  const items = mappings.map((m) => {
+    const label = lookup.get(m.keyId)?.label ?? m.keyId.toUpperCase();
+    return `- ${label}: ${m.action}`;
+  });
   return [header, "", ...items].join("\n");
 }
 
-/**
- * Converts a key ID to a display label for the markdown output.
- */
-function formatKeyLabel(keyId: string): string {
-  const labelMap: Record<string, string> = {
-    backtick: "`",
-    minus: "-",
-    equals: "=",
-    backspace: "Backspace",
-    tab: "Tab",
-    "bracket-left": "[",
-    "bracket-right": "]",
-    backslash: "\\",
-    caps: "Caps Lock",
-    semicolon: ";",
-    quote: "'",
-    return: "Return",
-    "shift-left": "Left Shift",
-    "shift-right": "Right Shift",
-    comma: ",",
-    period: ".",
-    slash: "/",
-    fn: "Fn",
-    control: "Control",
-    "option-left": "Left Option",
-    "option-right": "Right Option",
-    "command-left": "Left Command",
-    "command-right": "Right Command",
-    space: "Space",
-    "arrow-left": "←",
-    "arrow-up": "↑",
-    "arrow-down": "↓",
-    "arrow-right": "→",
-  };
+// Overrides for markdown output where layout labels aren't ideal
+const LABEL_OVERRIDES: Record<string, string> = {
+  backspace: "Backspace",
+  fn: "Fn",
+  space: "Space",
+  "arrow-left": "←",
+  "arrow-up": "↑",
+  "arrow-down": "↓",
+  "arrow-right": "→",
+};
 
-  return labelMap[keyId] ?? keyId.toUpperCase();
+function formatKeyLabel(id: string, label: string, textLabel?: string): string {
+  if (LABEL_OVERRIDES[id]) return LABEL_OVERRIDES[id];
+  if (textLabel) {
+    if (id.endsWith("-left")) return `Left ${capitalize(textLabel)}`;
+    if (id.endsWith("-right")) return `Right ${capitalize(textLabel)}`;
+    return capitalize(textLabel);
+  }
+  if (label) return label;
+  return id.toUpperCase();
+}
+
+function capitalize(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
 }

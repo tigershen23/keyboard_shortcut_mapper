@@ -1,5 +1,17 @@
 import { useEffect } from "react";
 
+const MODIFIER_KEYS = new Set([
+  "shift-left",
+  "shift-right",
+  "control",
+  "option-left",
+  "option-right",
+  "command-left",
+  "command-right",
+  "caps",
+  "fn",
+]);
+
 const codeToKeyId: Record<string, string> = {
   // Letters
   KeyA: "a",
@@ -101,41 +113,15 @@ export function useKeyboardListener({ onKeyPress, onLayerCycle, disabled }: UseK
       const keyId = codeToKeyId[event.code];
       if (!keyId) return;
 
-      // Tab cycles layers - this is the ONLY key we prevent default on
       if (keyId === "tab") {
         event.preventDefault();
         onLayerCycle(event.shiftKey ? "backward" : "forward");
-        // No animation for tab per user preference
         return;
       }
 
-      // For system shortcuts (Cmd+C, etc.), still animate the keys but don't prevent default
-      // This allows system shortcuts to work while showing visual feedback
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        // Animate the pressed key
-        onKeyPress(keyId);
-        // Don't prevent default - let the system shortcut work
-        return;
-      }
-
-      // For regular key presses without modifiers, animate the key
       onKeyPress(keyId);
 
-      // Only prevent default for non-modifier keys to avoid interfering with typing
-      // But allow modifiers themselves to animate without blocking
-      const isModifierKey = [
-        "shift-left",
-        "shift-right",
-        "control",
-        "option-left",
-        "option-right",
-        "command-left",
-        "command-right",
-        "caps",
-        "fn",
-      ].includes(keyId);
-
-      if (!isModifierKey) {
+      if (!MODIFIER_KEYS.has(keyId)) {
         event.preventDefault();
       }
     }

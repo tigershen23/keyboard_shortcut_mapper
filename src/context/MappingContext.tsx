@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { getIconPath } from "../data/icon-manifest";
 import type { KeyMapping, LayerMappings, LayerType } from "../types";
 import { loadMappings, resetMappings as resetStoredMappings, saveMappings } from "../utils/storage";
@@ -18,6 +18,12 @@ interface MappingContextValue {
 
 const MappingContext = createContext<MappingContextValue | null>(null);
 
+type ModifiableLayer = "hyper" | "command";
+
+function isModifiableLayer(layer: LayerType): layer is ModifiableLayer {
+  return layer === "hyper" || layer === "command";
+}
+
 export function MappingProvider({ children }: { children: React.ReactNode }) {
   const [mappings, setMappings] = useState<LayerMappings>(() => loadMappings());
   const [selectedKeyId, setSelectedKeyId] = useState<string | null>(null);
@@ -27,63 +33,43 @@ export function MappingProvider({ children }: { children: React.ReactNode }) {
     saveMappings(mappings);
   }, [mappings]);
 
-  const hyperMap = useMemo(() => {
-    const map = new Map<string, KeyMapping>();
-    mappings.hyper.forEach((m) => map.set(m.keyId, m));
-    return map;
-  }, [mappings.hyper]);
-
-  const commandMap = useMemo(() => {
-    const map = new Map<string, KeyMapping>();
-    mappings.command.forEach((m) => map.set(m.keyId, m));
-    return map;
-  }, [mappings.command]);
-
   const getMappingForKey = useCallback(
     (keyId: string, layer: LayerType): KeyMapping | null => {
-      if (layer === "base") return null;
-      if (layer === "hyper") return hyperMap.get(keyId) ?? null;
-      if (layer === "command") return commandMap.get(keyId) ?? null;
-      return null;
+      if (!isModifiableLayer(layer)) return null;
+      return mappings[layer].find((m) => m.keyId === keyId) ?? null;
     },
-    [hyperMap, commandMap],
+    [mappings],
   );
 
-  const getIconForMapping = useCallback((mapping: KeyMapping): string | null => {
+  const getIconForMapping = (mapping: KeyMapping): string | null => {
     if (mapping.iconPath) return mapping.iconPath;
     if (mapping.appName) return getIconPath(mapping.appName);
     return null;
-  }, []);
+  };
 
   const updateMapping = useCallback((layer: LayerType, mapping: KeyMapping) => {
-    if (layer === "base") return;
+    if (!isModifiableLayer(layer)) return;
 
     setMappings((prev) => {
-      const layerKey = layer as "hyper" | "command";
-      const existingIndex = prev[layerKey].findIndex((m) => m.keyId === mapping.keyId);
+      const existingIndex = prev[layer].findIndex((m) => m.keyId === mapping.keyId);
 
       const newLayerMappings =
-        existingIndex >= 0
-          ? prev[layerKey].map((m, i) => (i === existingIndex ? mapping : m))
-          : [...prev[layerKey], mapping];
+        existingIndex >= 0 ? prev[layer].map((m, i) => (i === existingIndex ? mapping : m)) : [...prev[layer], mapping];
 
       return {
         ...prev,
-        [layerKey]: newLayerMappings,
+        [layer]: newLayerMappings,
       };
     });
   }, []);
 
   const deleteMapping = useCallback((layer: LayerType, keyId: string) => {
-    if (layer === "base") return;
+    if (!isModifiableLayer(layer)) return;
 
-    setMappings((prev) => {
-      const layerKey = layer as "hyper" | "command";
-      return {
-        ...prev,
-        [layerKey]: prev[layerKey].filter((m) => m.keyId !== keyId),
-      };
-    });
+    setMappings((prev) => ({
+      ...prev,
+      [layer]: prev[layer].filter((m) => m.keyId !== keyId),
+    }));
   }, []);
 
   const resetToDefaults = useCallback(() => {
@@ -101,34 +87,24 @@ export function MappingProvider({ children }: { children: React.ReactNode }) {
     setSelectedKeyRect(null);
   }, []);
 
-  const value: MappingContextValue = useMemo(
-    () => ({
-      mappings,
-      getMappingForKey,
-      getIconForMapping,
-      updateMapping,
-      deleteMapping,
-      resetToDefaults,
-      selectedKeyId,
-      selectedKeyRect,
-      selectKey,
-      clearSelection,
-    }),
-    [
-      mappings,
-      getMappingForKey,
-      getIconForMapping,
-      updateMapping,
-      deleteMapping,
-      resetToDefaults,
-      selectedKeyId,
-      selectedKeyRect,
-      selectKey,
-      clearSelection,
-    ],
+  return (
+    <MappingContext.Provider
+      value={{
+        mappings,
+        getMappingForKey,
+        getIconForMapping,
+        updateMapping,
+        deleteMapping,
+        resetToDefaults,
+        selectedKeyId,
+        selectedKeyRect,
+        selectKey,
+        clearSelection,
+      }}
+    >
+      {children}
+    </MappingContext.Provider>
   );
-
-  return <MappingContext.Provider value={value}>{children}</MappingContext.Provider>;
 }
 
 export function useMappingContext() {
