@@ -47,7 +47,7 @@ const ActionButton = styled.button<ActionButtonProps>`
   gap: clamp(4px, 0.5vw, 6px);
   padding: 0;
   background: transparent;
-  border: none;
+border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   color: ${({ $isSuccess, theme }) => ($isSuccess ? theme.semantic.success : theme.text.hint)};
@@ -197,7 +197,6 @@ const DialogButton = styled.button<{ $variant?: "danger" | "secondary" }>`
   }
 `;
 
-// Menu styled components
 const MenuTrigger = styled(Menu.Trigger)`
   display: flex;
   align-items: center;
@@ -408,12 +407,7 @@ export function ActionBar({ keyboardRef }: ActionBarProps) {
 
   return (
     <ActionBarContainer>
-      <CreditsLink
-        href="https://tigershen.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Credits link to tigershen.com"
-      >
+      <CreditsLink href="https://tigershen.com" target="_blank" rel="noopener noreferrer">
         🐯
       </CreditsLink>
 

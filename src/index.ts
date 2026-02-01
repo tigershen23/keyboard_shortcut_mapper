@@ -19,4 +19,5 @@ const server = Bun.serve({
   },
 });
 
+// oxlint-disable-next-line no-console
 console.log(`Server running at http://localhost:${server.port}`);

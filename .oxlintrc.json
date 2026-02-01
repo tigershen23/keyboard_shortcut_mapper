@@ -4,5 +4,8 @@
     "react": {
       "runtime": "automatic"
     }
+  },
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }

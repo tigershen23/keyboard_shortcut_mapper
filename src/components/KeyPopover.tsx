@@ -27,7 +27,12 @@ export function KeyPopover({
 }: KeyPopoverProps) {
   const [action, setAction] = useState(currentMapping?.action ?? "");
   const [appName, setAppName] = useState(currentMapping?.appName ?? "");
-  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
+  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({
+    position: "fixed",
+    left: -9999,
+    top: -9999,
+    transform: "translateY(-50%)",
+  });
   const [arrowSide, setArrowSide] = useState<"left" | "right">("left");
   const [isPositioned, setIsPositioned] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -53,17 +58,12 @@ export function KeyPopover({
     [handleSave],
   );
 
-  const getPreferredPosition = useCallback(() => {
-    const baseLeft = keyRect.right + 12;
-    const baseTop = keyRect.top + keyRect.height / 2;
-    return { baseLeft, baseTop };
-  }, [keyRect]);
-
   const updatePlacement = useCallback(() => {
     const popup = popupRef.current;
     if (!popup) return;
 
-    const { baseLeft, baseTop } = getPreferredPosition();
+    const baseLeft = keyRect.right + 12;
+    const baseTop = keyRect.top + keyRect.height / 2;
     const { width, height } = popup.getBoundingClientRect();
     let left = baseLeft;
     let side: "left" | "right" = "left";
@@ -89,21 +89,10 @@ export function KeyPopover({
       transform: "translateY(-50%)",
     });
     setIsPositioned(true);
-  }, [getPreferredPosition, keyRect]);
+  }, [keyRect, padding]);
 
   useLayoutEffect(() => {
-    const { baseLeft, baseTop } = getPreferredPosition();
-    setPopupStyle({
-      position: "fixed",
-      left: baseLeft,
-      top: baseTop,
-      transform: "translateY(-50%)",
-    });
-    setArrowSide("left");
     setIsPositioned(false);
-  }, [getPreferredPosition]);
-
-  useLayoutEffect(() => {
     updatePlacement();
     const handleResize = () => updatePlacement();
     window.addEventListener("resize", handleResize);

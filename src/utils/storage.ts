@@ -5,6 +5,7 @@ const STORAGE_KEY = "keyboard-shortcut-mapper";
 const LAYER_KEY = "keyboard-shortcut-mapper-layer";
 const INFO_DISMISSED_KEY = "keyboard-shortcut-mapper-info-dismissed";
 const CURRENT_VERSION = 1;
+const VALID_LAYERS: LayerType[] = ["base", "hyper", "command"];
 
 export function saveMappings(mappings: LayerMappings): void {
   const config: StoredConfig = {
@@ -13,8 +14,8 @@ export function saveMappings(mappings: LayerMappings): void {
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch {
-    // Storage unavailable or full
+  } catch (e) {
+    console.error("Failed to save mappings: localStorage unavailable or full.", e);
   }
 }
 
@@ -36,7 +37,8 @@ export function loadMappings(): LayerMappings {
     }
 
     return config.layers;
-  } catch {
+  } catch (e) {
+    console.error("Failed to load mappings from localStorage:", e);
     return defaultMappings;
   }
 }
@@ -46,13 +48,11 @@ export function resetMappings(): LayerMappings {
   return defaultMappings;
 }
 
-const VALID_LAYERS: LayerType[] = ["base", "hyper", "command"];
-
 export function saveSelectedLayer(layer: LayerType): void {
   try {
     localStorage.setItem(LAYER_KEY, layer);
-  } catch {
-    // Storage unavailable
+  } catch (e) {
+    console.error("Failed to save selected layer:", e);
   }
 }
 
@@ -62,8 +62,8 @@ export function loadSelectedLayer(): LayerType {
     if (stored && VALID_LAYERS.includes(stored as LayerType)) {
       return stored as LayerType;
     }
-  } catch {
-    // Invalid storage or parse error
+  } catch (e) {
+    console.error("Failed to load selected layer:", e);
   }
   return "base";
 }
@@ -71,7 +71,8 @@ export function loadSelectedLayer(): LayerType {
 export function isFirstVisit(): boolean {
   try {
     return localStorage.getItem(INFO_DISMISSED_KEY) !== "true";
-  } catch {
+  } catch (e) {
+    console.error("Failed to check if first visit:", e);
     return true;
   }
 }
@@ -79,7 +80,7 @@ export function isFirstVisit(): boolean {
 export function markInfoDismissed(): void {
   try {
     localStorage.setItem(INFO_DISMISSED_KEY, "true");
-  } catch {
-    // Storage unavailable
+  } catch (e) {
+    console.error("Failed to mark info dismissed:", e);
   }
 }
