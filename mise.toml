@@ -27,11 +27,34 @@ description = "Run all read-only checks (typecheck, lint, format:check)"
 run = '''
 #!/bin/bash
 exit_code=0
-echo "=== TypeCheck ===" && bunx tsgo --noEmit || exit_code=1
-echo ""
-echo "=== Lint ===" && bunx oxlint --type-aware src/ || exit_code=1
-echo ""
-echo "=== Format Check ===" && bunx oxfmt --check src/ || exit_code=1
+declare -a pids=()
+declare -a names=()
+declare -a logs=()
+
+run_step() {
+  local name="$1"
+  shift
+  local log
+  log="$(mktemp -t mise-check.XXXXXX)"
+  names+=("$name")
+  logs+=("$log")
+  ("$@") >"$log" 2>&1 &
+  pids+=($!)
+}
+
+run_step "TypeCheck" bunx tsgo --noEmit
+run_step "Lint" bunx oxlint --type-aware src/
+run_step "Format Check" bunx oxfmt --check src/
+
+for i in "${!pids[@]}"; do
+  if ! wait "${pids[$i]}"; then
+    exit_code=1
+  fi
+  echo "=== ${names[$i]} ==="
+  cat "${logs[$i]}"
+  echo ""
+  rm -f "${logs[$i]}"
+done
 exit $exit_code
 '''
 
@@ -40,11 +63,34 @@ description = "Apply auto-fixes (lint:fix, format)"
 run = '''
 #!/bin/bash
 exit_code=0
-echo "=== TypeCheck ===" && bunx tsgo --noEmit || exit_code=1
-echo ""
-echo "=== Lint Fix ===" && bunx oxlint --type-aware --fix-dangerously src/ || exit_code=1
-echo ""
-echo "=== Format ===" && bunx oxfmt src/ || exit_code=1
+declare -a pids=()
+declare -a names=()
+declare -a logs=()
+
+run_step() {
+  local name="$1"
+  shift
+  local log
+  log="$(mktemp -t mise-fix.XXXXXX)"
+  names+=("$name")
+  logs+=("$log")
+  ("$@") >"$log" 2>&1 &
+  pids+=($!)
+}
+
+run_step "TypeCheck" bunx tsgo --noEmit
+run_step "Lint Fix" bunx oxlint --type-aware --fix-dangerously src/
+run_step "Format" bunx oxfmt src/
+
+for i in "${!pids[@]}"; do
+  if ! wait "${pids[$i]}"; then
+    exit_code=1
+  fi
+  echo "=== ${names[$i]} ==="
+  cat "${logs[$i]}"
+  echo ""
+  rm -f "${logs[$i]}"
+done
 exit $exit_code
 '''
 
